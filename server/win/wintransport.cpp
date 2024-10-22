@@ -9,6 +9,7 @@ Axon::Windows::WinUDPSocket::WinUDPSocket(const char* addr, uint16_t port)
 {
     this->addr = addr;
     this->port = port;
+    isRunning = true;
 
     if (!Startup())
     {
@@ -18,7 +19,7 @@ Axon::Windows::WinUDPSocket::WinUDPSocket(const char* addr, uint16_t port)
 
 Axon::Windows::WinUDPSocket::~WinUDPSocket()
 {
-    closesocket(client_socket);
+    closesocket(server_socket);
     WSACleanup();
 }
 
@@ -28,16 +29,27 @@ bool Axon::Windows::WinUDPSocket::Startup()
         throw Axon::AxonError(Axon::Error::AxonErrorCode::INTERNAL_ERROR);
     }
     
-    if ((client_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == SOCKET_ERROR) {
+    if ((server_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == SOCKET_ERROR) {
         return false;
     }
 
     memset((char*)&server, 0, sizeof(server));
     server.sin_family = AF_INET;
     server.sin_port = htons(port);
-    server.sin_addr.S_un.S_addr = inet_addr(addr);
+    server.sin_addr.s_addr = INADDR_ANY;
 
+    if (bind(server_socket, (sockaddr*)&server, sizeof(server)) == SOCKET_ERROR) {
+        return false;
+    }
     return true;
+}
+
+void Axon::Windows::WinUDPSocket::Listen()
+{
+    while (isRunning) {
+        char* buffer;
+
+    }
 }
 
 #endif

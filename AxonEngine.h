@@ -11,7 +11,8 @@ namespace Axon
 	{
 		enum AxonErrorCode
 		{
-			INTERNAL_ERROR = 1
+			INTERNAL_ERROR,
+			LISTEN_SOCKET_ERROR
 		};
 	}
 
