@@ -1,9 +1,9 @@
 #include "wintransport.h"
 #include <iostream>
-#include <AxonEngine.h>
+#include "AxonEngine.h"
 
 
-#ifdef _WIN32 || _WIN64
+#if defined(WIN32) || defined(_WIN32) || defined(_WIN64) || defined(__NT__)
 
 Axon::Windows::WinUDPSocket::WinUDPSocket(const char* addr, uint16_t port)
 {

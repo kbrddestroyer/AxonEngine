@@ -1,18 +1,22 @@
 #pragma once
-
-#ifdef __unix__
-#include <netinet/in.h>
-#define UNIX
-#endif
-
-#ifdef _WIN32 || _WIN64
-#include <winsock2.h>
-#define WINDOWS
-#endif
+#include <cstdint>
 
 
-class Transport
-{
-private:
+namespace Axon {
+    class TransportReceiver {
+    protected:
+#pragma region SERVER_CONFIGURATION
+        const char *addr;
+        uint16_t port;
 
-};
+        bool isRunning;
+#pragma endregion
+    public:
+        explicit TransportReceiver(const char * = "localhost", uint16_t = 7777);
+
+        virtual bool Startup() = 0;
+        virtual void Listen() = 0;
+
+        [[nodiscard]] bool Running() const;
+    };
+}

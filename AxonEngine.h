@@ -1,29 +1,3 @@
 ﻿#pragma once
 
-#include <iostream>
-#include <server.h>
-
-namespace Axon
-{
-	// Network engine global namespace
-
-	namespace Error
-	{
-		enum AxonErrorCode
-		{
-			INTERNAL_ERROR,
-			LISTEN_SOCKET_ERROR
-		};
-	}
-
-	class AxonError
-	{
-	protected:
-		Error::AxonErrorCode reason;
-	public:
-		AxonError(Error::AxonErrorCode = Error::AxonErrorCode::INTERNAL_ERROR);
-
-		Error::AxonErrorCode err();
-	};
-
-}
+// Include all required headers

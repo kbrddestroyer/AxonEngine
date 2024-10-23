@@ -10,7 +10,7 @@ project ("AxonEngine")
 include_directories("server")
 include_directories("client")
 
-add_executable (AxonEngine "entrypoint.cpp" "AxonEngine.h" "AxonEngine.cpp" "server/server.h" "server/server.cpp" "server/transport.h" "server/transport.cpp" "server/win/wintransport.h" "server/win/wintransport.cpp" "client/win/winclient.h" "client/win/winclient.cpp")
+add_executable (AxonEngine "entrypoint.cpp" "AxonEngine.h" "AxonEngine.cpp" "server/server.h" "server/server.cpp" "server/transport.h" "server/transport.cpp" "server/backends/win/wintransport.h" "server/backends/win/wintransport.cpp" "client/win/winclient.h" "client/win/winclient.cpp")
 target_include_directories(AxonEngine PUBLIC .)
 
 if(WIN32)
