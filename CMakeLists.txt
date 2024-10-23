@@ -9,9 +9,20 @@ project ("AxonEngine")
 
 include_directories("server")
 include_directories("client")
+include_directories("common")
 
-add_executable (AxonEngine "entrypoint.cpp" "AxonEngine.h" "AxonEngine.cpp" "server/server.h" "server/server.cpp" "server/transport.h" "server/transport.cpp" "server/backends/win/wintransport.h" "server/backends/win/wintransport.cpp" "client/win/winclient.h" "client/win/winclient.cpp")
+set(AXON_ENGINE "AxonEngine.h" "AxonEngine.cpp" "common/AxonError.h" "common/AxonError.cpp")
+set(AXON_SERVER "server/server.h" "server/server.cpp" "server/transport.h" "server/transport.cpp" "server/backends/win/wintransport.h" "server/backends/win/wintransport.cpp")
+set(AXON_CLIENT "client/backends/win/winclient.h" "client/backends/win/winclient.cpp")
+
+add_executable(AxonEngine "debug-executables/server.cpp" ${AXON_ENGINE} ${AXON_SERVER})
+add_executable(AxonClient "debug-executables/client.cpp" ${AXON_ENGINE} ${AXON_CLIENT})
+
 target_include_directories(AxonEngine PUBLIC .)
+target_include_directories(AxonClient PUBLIC .)
+
+target_sources(AxonEngine PUBLIC "debug-executables/server.cpp")
+target_sources(AxonClient PUBLIC "debug-executables/client.cpp")
 
 if(WIN32)
   target_link_libraries(AxonEngine ws2_32)

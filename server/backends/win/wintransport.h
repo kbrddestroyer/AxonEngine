@@ -8,39 +8,38 @@
 
 namespace Axon
 {
-	namespace Windows
+	namespace Backends
 	{
-		/// <summary>
-		/// Windows server socket implementation
-		/// Uses UDP protocol
-		/// </summary>
-		class WinUDPSocket
+		namespace Windows
 		{
-		private:
+			/// <summary>
+			/// Windows server socket implementation
+			/// Uses UDP protocol
+			/// </summary>
+			class WinUDPSocket
+			{
+			private:
 #pragma region SERVER_DATA
-			WSADATA			ws;
-			SOCKET			server_socket;
-			SOCKET			client_socket;
-			SOCKADDR_IN		server;
+				WSADATA			ws;
+				SOCKET			server_socket;
+				SOCKET			client_socket;
+				SOCKADDR_IN		server;
 #pragma endregion
 #pragma region SERVER_CONFIGURATION
-			const char* addr;
-			std::uint16_t port;
+				const char* addr;
+				std::uint16_t port;
 
-			bool isRunning;
+				bool isRunning;
 #pragma endregion
-		public:
-			WinUDPSocket(const char* = "localhost", uint16_t = 7777);
-			~WinUDPSocket();
+				const uint16_t MAXLINE = 1024;
+			public:
+				WinUDPSocket(const char* addr = "localhost", uint16_t port = 7777);
+				~WinUDPSocket();
 
-			bool Startup();
-			void Listen();
-		};
-
-		class WinUDPClientConnection
-		{
-
-		};
+				bool Startup();
+				void Listen();
+			};
+		}
 	}
 }
 #endif
