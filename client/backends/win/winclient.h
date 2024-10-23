@@ -22,6 +22,7 @@ namespace Axon
 				WSADATA	ws;
 			public:
 				explicit WinUDPClient(uint16_t port = 7777);
+				~WinUDPClient();
 
 				bool Startup();
 				void SendTo();

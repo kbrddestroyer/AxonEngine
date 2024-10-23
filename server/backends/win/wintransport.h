@@ -19,7 +19,7 @@ namespace Axon
 			/// Windows server socket implementation
 			/// Uses UDP protocol
 			/// </summary>
-			class WinUDPConnectionHandler : public Axon::ServerConnectionHandler
+			class WinUDPConnectionHandler : public Axon::Connection::ServerConnectionHandler
 			{
 			private:
 #pragma region SERVER_DATA
@@ -33,10 +33,12 @@ namespace Axon
 				bool			isRunning;
 #pragma endregion
 			public:
-				WinUDPConnectionHandler(AXON_PORT port = 7777);
+				explicit WinUDPConnectionHandler(AXON_PORT port = 7777);
 				~WinUDPConnectionHandler();
 
-				bool Startup();
+				bool Initialize();
+				void SendMessage(Axon::Connection::ServerUDPMessage);
+			protected:
 				void Listen();
 			};
 		}

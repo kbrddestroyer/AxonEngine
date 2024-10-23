@@ -18,7 +18,7 @@ Axon::Backends::Windows::WinUDPConnectionHandler::~WinUDPConnectionHandler()
     WSACleanup();
 }
 
-bool Axon::Backends::Windows::WinUDPConnectionHandler::Startup()
+bool Axon::Backends::Windows::WinUDPConnectionHandler::Initialize()
 {
     if (WSAStartup(MAKEWORD(2, 2), &ws) != 0) {
         throw Axon::AxonError(Axon::Error::AxonErrorCode::INTERNAL_ERROR);
@@ -37,6 +37,11 @@ bool Axon::Backends::Windows::WinUDPConnectionHandler::Startup()
         return false;
     }
     return true;
+}
+
+void Axon::Backends::Windows::WinUDPConnectionHandler::SendMessage(Axon::Connection::ServerUDPMessage)
+{
+
 }
 
 void Axon::Backends::Windows::WinUDPConnectionHandler::Listen()

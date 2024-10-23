@@ -3,6 +3,12 @@
 
 Axon::Backends::Windows::WinUDPClient::WinUDPClient(uint16_t port) : port(port) {}
 
+Axon::Backends::Windows::WinUDPClient::~WinUDPClient()
+{
+	closesocket(client_socket);
+	WSACleanup();
+}
+
 bool Axon::Backends::Windows::WinUDPClient::Startup()
 {
 	if (WSAStartup(MAKEWORD(2, 2), &ws) != 0) {

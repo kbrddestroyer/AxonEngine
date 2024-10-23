@@ -8,10 +8,10 @@ using namespace Axon;
 int main()
 {
 	Backends::Windows::WinUDPConnectionHandler socket = Backends::Windows::WinUDPConnectionHandler(10243);
-	if (socket.Startup())
+	if (socket.Initialize())
 	{
 		std::cout << "Started!" << std::endl;
-		socket.Listen();
+		socket.Start();
 	}
 
 	return 0;
