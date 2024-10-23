@@ -31,7 +31,10 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+
+# CMake generations
 [Oo]ut/
+[Cc][Mm]ake-build-*/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
