@@ -1,6 +1,8 @@
 #include "winclient.h"
 #include <AxonEngine.h>
 
+Axon::Backends::Windows::WinUDPClient::WinUDPClient(uint16_t port) : port(port) {}
+
 bool Axon::Backends::Windows::WinUDPClient::Startup()
 {
 	if (WSAStartup(MAKEWORD(2, 2), &ws) != 0) {

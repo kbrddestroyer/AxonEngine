@@ -38,8 +38,6 @@ namespace Axon
 
 				bool Startup();
 				void Listen();
-
-				static bool StartParallelConnectionHandle(AXON_PORT);
 			};
 		}
 	}
