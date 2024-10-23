@@ -1,8 +1,8 @@
 #pragma once
-#include <AxonEngine.h>
-
 #include <WinSock2.h>
 #include <cstdint>
+
+#pragma comment(lib,"ws2_32.lib")
 
 namespace Axon
 {

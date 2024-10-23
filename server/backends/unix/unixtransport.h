@@ -8,7 +8,7 @@
 namespace Axon {
     namespace Backends {
         namespace Unix {
-            class UnixUDPSocket {
+            class UnixUDPConnectionHandler {
 
             };
         }

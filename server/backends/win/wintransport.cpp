@@ -6,20 +6,19 @@
 
 #if defined(WIN32) || defined(_WIN32) || defined(_WIN64) || defined(__NT__)
 
-Axon::Backends::Windows::WinUDPSocket::WinUDPSocket(const char* addr, uint16_t port)
+Axon::Backends::Windows::WinUDPConnectionHandler::WinUDPConnectionHandler(AXON_PORT port)
 {
-    this->addr = addr;
     this->port = port;
     isRunning = true;
 }
 
-Axon::Backends::Windows::WinUDPSocket::~WinUDPSocket()
+Axon::Backends::Windows::WinUDPConnectionHandler::~WinUDPConnectionHandler()
 {
     closesocket(server_socket);
     WSACleanup();
 }
 
-bool Axon::Backends::Windows::WinUDPSocket::Startup()
+bool Axon::Backends::Windows::WinUDPConnectionHandler::Startup()
 {
     if (WSAStartup(MAKEWORD(2, 2), &ws) != 0) {
         throw Axon::AxonError(Axon::Error::AxonErrorCode::INTERNAL_ERROR);
@@ -40,7 +39,7 @@ bool Axon::Backends::Windows::WinUDPSocket::Startup()
     return true;
 }
 
-void Axon::Backends::Windows::WinUDPSocket::Listen()
+void Axon::Backends::Windows::WinUDPConnectionHandler::Listen()
 {
     char buffer[1024];
     SOCKADDR_IN client;
@@ -55,5 +54,4 @@ void Axon::Backends::Windows::WinUDPSocket::Listen()
         }
     }
 }
-
 #endif
