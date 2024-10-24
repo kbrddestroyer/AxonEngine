@@ -17,17 +17,16 @@ namespace Axon::Backends::Windows
 		uint32_t		sockfd = INVALID_SOCKET;
 		SOCKADDR_IN		server;
 		SOCKET			client_socket;
-		uint16_t		port;
 		WSADATA			ws;
 	private:
 		WinUDPClient() = default;
 	public:
-		explicit WinUDPClient(char* hostname, uint16_t port = 7777);
+		explicit WinUDPClient(char* hostname, Axon::Connection::AXON_PORT port = 7777);
 		~WinUDPClient();
 	
 	protected:
 		bool Initialize() override;
-		void SendUserMessage(Axon::Connection::UDPMessage message) override;
+		bool SendUserMessage(Axon::Connection::UDPMessage message) override;
 	};
 }
 #endif

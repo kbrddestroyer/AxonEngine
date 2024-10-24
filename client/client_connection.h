@@ -14,7 +14,7 @@ namespace Axon::Client {
         ~ClientConnectionHandler() = default;
     protected:
         virtual bool Initialize() = 0;
-        virtual void SendUserMessage(Axon::Connection::UDPMessage message) = 0;
+        virtual bool SendUserMessage(Axon::Connection::UDPMessage message) = 0;
     public:
         bool Startup();
     };

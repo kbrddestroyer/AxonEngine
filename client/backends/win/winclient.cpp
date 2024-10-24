@@ -3,7 +3,7 @@
 
 #if defined(_WIN32)
 
-Axon::Backends::Windows::WinUDPClient::WinUDPClient(char* hostname, uint16_t port) :
+Axon::Backends::Windows::WinUDPClient::WinUDPClient(char* hostname, Axon::Connection::AXON_PORT port) :
 	Axon::Client::ClientConnectionHandler(hostname, port) {}
 
 Axon::Backends::Windows::WinUDPClient::~WinUDPClient()
@@ -25,22 +25,21 @@ bool Axon::Backends::Windows::WinUDPClient::Initialize()
 
 	memset((char*)&server, 0, sizeof(server));
 	server.sin_family = AF_INET;
-	server.sin_port = htons(port);
-	server.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+	server.sin_port = htons(this->port);
+	server.sin_addr.S_un.S_addr = inet_addr(hostname);
 
 	const char* buffer = "Hello World!";
 
 	if (sendto(client_socket, buffer, strlen(buffer), 0, (sockaddr*)&server, sizeof(SOCKADDR_IN)) == SOCKET_ERROR) {
 		throw Axon::AxonError(Axon::Error::AxonErrorCode::INTERNAL_ERROR);
 	}
-	closesocket(client_socket);
-	WSACleanup();
 	return true;
 }
 
-void Axon::Backends::Windows::WinUDPClient::SendUserMessage(Axon::Connection::UDPMessage message)
+bool Axon::Backends::Windows::WinUDPClient::SendUserMessage(Axon::Connection::UDPMessage message)
 {
-
+	// return sendto(client_socket, , strlen(), 0, (sockaddr*)&server, sizeof(SOCKADDR_IN)) == SOCKET_ERROR;
+	return false;
 }
 
 #endif

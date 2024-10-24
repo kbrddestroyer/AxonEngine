@@ -11,7 +11,10 @@ include_directories("server")
 include_directories("client")
 include_directories("common")
 
-set(AXON_ENGINE "AxonEngine.h" "AxonEngine.cpp" "common/AxonError.h" "common/AxonError.cpp" "common/AxonTypes.h")
+set(AXON_ENGINE 
+    "AxonEngine.h" "AxonEngine.cpp" 
+    "common/AxonError.h" "common/AxonError.cpp" 
+    "common/AxonTypes.h" "common/AxonTypes.cpp")
 set(AXON_SERVER
         "server/server_connection.h" "server/server_connection.cpp"
         "server/AxonServer.h" "server/AxonServer.cpp"

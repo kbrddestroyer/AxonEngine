@@ -36,4 +36,9 @@ bool Axon::Backends::Unix::UnixUDPClient::Initialize() {
     close(sockfd);
     return true;
 }
+
+bool Axon::Backends::Unix::UnixUDPClient::SendUserMessage(Axon::Connection::UDPMessage message)
+{
+
+}
 #endif
