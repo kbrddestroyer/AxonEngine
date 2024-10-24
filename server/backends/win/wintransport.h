@@ -29,16 +29,16 @@ namespace Axon
 				SOCKADDR_IN		server;
 #pragma endregion
 #pragma region SERVER_CONFIGURATION
-				AXON_PORT		port;
+				Axon::Connection::AXON_PORT		port;
 				bool			isRunning;
 #pragma endregion
 			public:
-				explicit WinUDPConnectionHandler(AXON_PORT port = 7777);
+				explicit WinUDPConnectionHandler(Axon::Connection::AXON_PORT port = 7777);
 				~WinUDPConnectionHandler();
 
-				bool Initialize();
 				void SendMessage(Axon::Connection::ServerUDPMessage);
 			protected:
+				bool Initialize();
 				void Listen();
 			};
 		}

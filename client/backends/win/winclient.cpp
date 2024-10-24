@@ -1,6 +1,8 @@
 #include "winclient.h"
 #include <AxonEngine.h>
 
+#if defined(_WIN32)
+
 Axon::Backends::Windows::WinUDPClient::WinUDPClient(uint16_t port) : port(port) {}
 
 Axon::Backends::Windows::WinUDPClient::~WinUDPClient()
@@ -38,3 +40,5 @@ bool Axon::Backends::Windows::WinUDPClient::Startup()
 void Axon::Backends::Windows::WinUDPClient::SendTo()
 {
 }
+
+#endif

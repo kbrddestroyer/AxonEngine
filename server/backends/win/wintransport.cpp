@@ -5,11 +5,9 @@
 #include <iostream>
 
 #if defined(WIN32) || defined(_WIN32) || defined(_WIN64) || defined(__NT__)
-
-Axon::Backends::Windows::WinUDPConnectionHandler::WinUDPConnectionHandler(AXON_PORT port)
+Axon::Backends::Windows::WinUDPConnectionHandler::WinUDPConnectionHandler(Axon::Connection::AXON_PORT port)
 {
     this->port = port;
-    isRunning = true;
 }
 
 Axon::Backends::Windows::WinUDPConnectionHandler::~WinUDPConnectionHandler()

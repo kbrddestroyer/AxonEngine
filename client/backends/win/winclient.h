@@ -1,4 +1,5 @@
 #pragma once
+#if defined(_WIN32)
 #include <WinSock2.h>
 #include <cstdint>
 
@@ -30,3 +31,4 @@ namespace Axon
 		}
 	}
 }
+#endif

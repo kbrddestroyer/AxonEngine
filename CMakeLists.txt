@@ -12,8 +12,17 @@ include_directories("client")
 include_directories("common")
 
 set(AXON_ENGINE "AxonEngine.h" "AxonEngine.cpp" "common/AxonError.h" "common/AxonError.cpp" "common/AxonTypes.h")
-set(AXON_SERVER "server/server_connection.h" "server/server_connection.cpp" "server/AxonServer.h" "server/AxonServer.cpp" "server/backends/win/wintransport.h" "server/backends/win/wintransport.cpp")
-set(AXON_CLIENT "client/backends/win/winclient.h" "client/backends/win/winclient.cpp")
+set(AXON_SERVER
+        "server/server_connection.h" "server/server_connection.cpp"
+        "server/AxonServer.h" "server/AxonServer.cpp"
+        "server/backends/win/wintransport.h" "server/backends/win/wintransport.cpp"
+        "server/backends/unix/unixtransport.h" "server/backends/unix/unixtransport.cpp"
+)
+set(AXON_CLIENT
+        "client/backends/win/winclient.h" "client/backends/win/winclient.cpp"
+        "client/client_connection.h" "client/client_connection.cpp"
+        "client/backends/unix/unixclient.h" "client/backends/unix/unixclient.cpp"
+)
 
 set(MASTER_INCLUDE "Axon.h")
 
