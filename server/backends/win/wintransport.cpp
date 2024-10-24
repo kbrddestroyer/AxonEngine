@@ -55,6 +55,11 @@ void Axon::Backends::Windows::WinUDPConnectionHandler::Listen()
             buffer[size] = 0;
             std::cout << "Recfrom: " << buffer << " | " << inet_ntoa(client.sin_addr) << std::endl;
         }
+        else
+        {
+            std::cout << WSAGetLastError() << std::endl;
+            isRunning = false;
+        }
     }
 }
 #endif

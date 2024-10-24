@@ -3,6 +3,8 @@
 //
 
 #include "unixclient.h"
+
+#if defined(__unix__) || __APPLE__
 #include <string>
 #include <iostream>
 
@@ -34,3 +36,4 @@ bool Axon::Backends::Unix::UnixUDPClient::Initialize() {
     close(sockfd);
     return true;
 }
+#endif

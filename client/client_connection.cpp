@@ -1,11 +1,10 @@
-//
-// Created by Aleksey Grudko on 24.10.24.
-//
-
 #include "client_connection.h"
 
-namespace Axon {
-    bool Client::ClientConnectionHandler::Startup() {
-        return Initialize();
-    }
-} // Axon
+
+Axon::Client::ClientConnectionHandler::ClientConnectionHandler(char* hostname, Axon::Connection::AXON_PORT port) :
+    hostname(hostname), port(port)
+{}
+
+bool Axon::Client::ClientConnectionHandler::Startup() {
+    return Initialize();
+}

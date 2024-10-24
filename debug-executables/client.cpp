@@ -11,6 +11,7 @@ int main()
 {
     Client::ClientConnectionHandler* client;
 #if defined(_WIN32)
+	client = new Backends::Windows::WinUDPClient((char*) "127.0.0.1", 10243);
 #elif __APPLE__
     client = new Backends::Unix::UnixUDPClient("127.0.0.1", 10243);
 #endif

@@ -1,4 +1,6 @@
 #include "unixtransport.h"
+
+#if defined(__unix__) || __APPLE__
 #include <iostream>
 
 Axon::Backends::Unix::UnixUDPConnectionHandler::UnixUDPConnectionHandler(Axon::Connection::AXON_PORT port) {
@@ -49,3 +51,4 @@ void Axon::Backends::Unix::UnixUDPConnectionHandler::Listen()
 void Axon::Backends::Unix::UnixUDPConnectionHandler::SendMessage(Axon::Connection::ServerUDPMessage message) {
 
 }
+#endif
