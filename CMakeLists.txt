@@ -6,6 +6,7 @@ if (POLICY CMP0141)
 endif()
 
 project ("AxonEngine")
+include("CTest")
 
 include_directories("server")
 include_directories("client")
@@ -14,7 +15,9 @@ include_directories("common")
 set(AXON_ENGINE 
     "AxonEngine.h" "AxonEngine.cpp" 
     "common/AxonError.h" "common/AxonError.cpp" 
-    "common/AxonTypes.h" "common/AxonTypes.cpp")
+    "common/AxonTypes.h" "common/AxonTypes.cpp"
+    "common/serialization/serialization.h" "common/serialization/serialization.c"
+)
 set(AXON_SERVER
         "server/server_connection.h" "server/server_connection.cpp"
         "server/AxonServer.h" "server/AxonServer.cpp"
@@ -46,4 +49,19 @@ endif(WIN32)
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET AxonServer PROPERTY CXX_STANDARD 20)
   set_property(TARGET AxonClient PROPERTY CXX_STANDARD 20)
+endif()
+
+# Tests
+enable_testing()
+
+set(TEST_SERIALIZATION
+        "tests/test_serialization.cxx"
+)
+
+add_executable(TestSerialization ${TEST_SERIALIZATION} ${AXON_ENGINE})
+
+add_test(NAME TestSerialization COMMAND $<TARGET_FILE:TestSerialization>)
+
+if (CMAKE_VERSION VERSION_GREATER 3.12)
+  set_property(TARGET TestSerialization PROPERTY CXX_STANDARD 20)
 endif()

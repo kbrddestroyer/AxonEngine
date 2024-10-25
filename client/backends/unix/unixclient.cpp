@@ -9,10 +9,9 @@
 #include <iostream>
 
 
-Axon::Backends::Unix::UnixUDPClient::UnixUDPClient(char *hostname, Axon::Connection::AXON_PORT port) {
-    this->port = port;
-    this->hostname = hostname;
-}
+Axon::Backends::Unix::UnixUDPClient::UnixUDPClient(char *hostname, Axon::Connection::AXON_PORT port) :
+    Axon::Client::ClientConnectionHandler(hostname, port) {}
+
 
 bool Axon::Backends::Unix::UnixUDPClient::Initialize() {
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
@@ -39,6 +38,6 @@ bool Axon::Backends::Unix::UnixUDPClient::Initialize() {
 
 bool Axon::Backends::Unix::UnixUDPClient::SendUserMessage(Axon::Connection::UDPMessage message)
 {
-
+    return {};
 }
 #endif

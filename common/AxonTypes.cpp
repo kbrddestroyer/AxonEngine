@@ -1,24 +1,31 @@
+
 #include "AxonTypes.h"
 
-void Axon::Connection::UDPMessage::serialize(char* buffer, size_t& total_size)
-{
-    size_t offset = 0;
+Axon::Connection::UDPMessage::UDPMessage() {
+    this->contents = UserMessage();
 
-    std::memcpy(buffer, &tag, sizeof(UDPMessageTag));
-    offset += sizeof(UDPMessageTag);
-
-    std::memcpy(buffer + offset, &size, sizeof(size));
-    offset += sizeof(uint32_t);
-
-    if (size > 0 && data != nullptr) {
-        std::memcpy(buffer + offset, data, size);
-        offset += size;
-    }
-
-    total_size = offset;
+    this->contents.data = nullptr;
+    this->contents.size = 0;
+    this->contents.tag  = -1;
 }
 
-Axon::Connection::UDPMessage Axon::Connection::UDPMessage::deserialize(char* serialized)
+Axon::Connection::UDPMessage::UDPMessage(void* data, size_t size, uint64_t tag)
 {
-    return {};
+    this->contents = UserMessage();
+
+    this->contents.data = data;
+    this->contents.size = size;
+    this->contents.tag  = tag;
+}
+
+Axon::Connection::UDPMessage::~UDPMessage() {
+
+}
+
+std::shared_ptr<char[]> Axon::Connection::UDPMessage::getSerializedData(size_t & size) const {
+    return {serialize(contents, &size), std::default_delete<char[]>()};
+}
+
+void Axon::Connection::UDPMessage::setDeserialized(const std::shared_ptr<char[]>& serialized, size_t size) {
+    this->contents = deserialize(serialized.get(), size);
 }

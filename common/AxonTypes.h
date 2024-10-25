@@ -1,24 +1,30 @@
 #pragma once
 #include <cstdint>
-#include <iostream>
+#include <ostream>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include <serialization/serialization.h>
+#ifdef __cplusplus
+}
+#endif
 
 
-namespace Axon {
-    namespace Connection
+namespace Axon::Connection
+{
+    typedef uint16_t AXON_PORT;
+
+    struct UDPMessage
     {
-        typedef uint16_t AXON_PORT;
+        UserMessage contents{};
+    public:
+        UDPMessage();
+        explicit UDPMessage(void*, size_t, uint64_t);
 
-        typedef uint64_t UDPMessageTag;
+        ~UDPMessage();
 
-        struct UDPMessage
-        {
-            UDPMessageTag   tag;
-            void*           data;
-            uint32_t        size;
-
-        public:
-            void serialize(char*, size_t&);
-            static UDPMessage deserialize(char*);
-        };
-    }
+        std::shared_ptr<char[]> getSerializedData(size_t&) const;
+        void setDeserialized(const std::shared_ptr<char[]>&, size_t);
+    };
 }
