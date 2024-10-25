@@ -1,58 +1,63 @@
 #pragma once
+#include <AxonTypes.h>
+
 #include <cstdint>
 #include <vector>
 #include <map>
+
+#if defined(_WIN32)
 #include <WinSock2.h>
+#elif defined(__unix__) || __APPLE__
+#include <netinet/in.h>
+#endif
 
-namespace Axon {
-    namespace Connection
+
+namespace Axon::Connection
+{
+    enum class ServerUDPDefaultTags
     {
-        enum class ServerUDPDefaultTags
-        {
-            CONTROL = 0
-        };
+        CONTROL = 0
+    };
 
-        struct ServerUDPMessage
-        {
-            // Package struct:
-            // CLIENT_IP DATA_TAG [DATA] sizeof(DATA)
+    struct ServerUDPMessage
+    {
+        // Package struct:
+        // CLIENT_IP DATA_TAG [DATA] sizeof(DATA)
 
-            IN_ADDR                 inet_addr;
-            ServerUDPDefaultTags    tag;
-            void*                   buffer;
-            uint32_t                size;
-        };
+        char* inet_addr;
+        UDPMessage payload;
+    };
 
-        struct ServerConnection
-        {
-            // Should contain useful information about user
+    struct ServerConnection
+    {
+        // Should contain useful information about user
 
-            IN_ADDR ip_addr;
-        };
+        uint32_t ip_addr;
+    };
 
-        class ServerConnectionHandler {
-        private:
-            std::map<uint32_t, ServerConnection> mConnections;
-        protected:
+    class ServerConnectionHandler {
+    private:
+        std::map<uint32_t, ServerConnection> mConnections;
+    protected:
 #pragma region SERVER_CONFIGURATION
-            uint16_t port;
+        Axon::Connection::AXON_PORT port;
 
-            bool isRunning;
+        bool isRunning;
 #pragma endregion
-        public:
-            explicit ServerConnectionHandler(uint16_t = 7777);
+    public:
+        explicit ServerConnectionHandler(uint16_t = 7777);
 
-            virtual bool Initialize() = 0;
-            [[nodiscard]] bool Running() const;
+        virtual ~ServerConnectionHandler();
+        [[nodiscard]] bool Running() const;
 
-            void Start();
-        protected:
-            virtual void Listen() = 0;
-            virtual void SendMessage(ServerUDPMessage) = 0;
+        void Start();
+    protected:
+        virtual bool Initialize() = 0;
+        virtual void Listen() = 0;
+        virtual bool SendUserMessage(ServerUDPMessage) = 0;
 
-            void OnIncomingMessage(ServerUDPMessage);
-        public:
-            void OnIncomingConnection(ServerUDPMessage);
-        };
-    }
+        void OnIncomingMessage(ServerUDPMessage);
+    public:
+        void OnIncomingConnection(ServerUDPMessage);
+    };
 }
