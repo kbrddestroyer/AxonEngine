@@ -2,7 +2,9 @@
 #include <cstdint>
 #include <ostream>
 
+#if defined(__unix__) || __APPLE__
 #include <memory>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
