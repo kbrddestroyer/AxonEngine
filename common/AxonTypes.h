@@ -17,10 +17,12 @@ namespace Axon::Connection
 
     struct UDPMessage
     {
-        UserMessage contents{};
+        char* data;
+        size_t size;
+        uint32_t tag;
     public:
         UDPMessage();
-        explicit UDPMessage(void*, size_t, uint64_t);
+        explicit UDPMessage(char*, size_t, uint64_t);
 
         ~UDPMessage();
 

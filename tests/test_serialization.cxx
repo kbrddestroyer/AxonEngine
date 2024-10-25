@@ -6,7 +6,7 @@ int main()
 {
     const char* message_data = "Test message data to serialize";
 
-    Connection::UDPMessage message((void*) message_data, strlen(message_data) * sizeof(char), 1024);
+    Connection::UDPMessage message((char*) message_data, strlen(message_data) * sizeof(char), 1024);
 
     Connection::UDPMessage deserialized;
 
@@ -16,8 +16,8 @@ int main()
     deserialized.setDeserialized(serialized, serialized_size);
 
     if (
-            message.contents.tag != deserialized.contents.tag ||
-            strcmp((char*) deserialized.contents.data, message_data) != 0
+            message.tag != deserialized.tag ||
+            strcmp(deserialized.data, message_data) != 0
             )
         return 1;
 

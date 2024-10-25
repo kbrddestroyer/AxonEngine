@@ -5,15 +5,7 @@
 #include <string.h>
 #include <stdint.h>
 
-struct UserMessage
-{
-    uint32_t    size;
-    void*       data;
-    uint32_t    tag;
-};
+extern uint8_t serialize(char*, size_t, uint32_t, char**, size_t*);
+extern uint8_t deserialize(char*, size_t, char**, size_t*, uint32_t*);
 
-extern char* serialize(struct UserMessage, size_t*);
-extern struct UserMessage deserialize(char*, size_t);
-
-
-#endif //AXONENGINE_SERIALIZATION_H
+#endif
