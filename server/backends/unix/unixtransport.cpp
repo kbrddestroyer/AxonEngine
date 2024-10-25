@@ -31,24 +31,41 @@ bool Axon::Backends::Unix::UnixUDPConnectionHandler::Initialize()
 
 void Axon::Backends::Unix::UnixUDPConnectionHandler::Listen()
 {
-    char buffer[1024];
-    socklen_t len = sizeof(client);
+    char* buffer = new char[1024];
 
+    std::shared_ptr<char[]> serialized(buffer);
+
+    socklen_t len = sizeof(client);
     while (isRunning)
     {
         ssize_t size;
-        if ((size = recvfrom(sockfd, &buffer, 1024, MSG_WAITALL, (sockaddr*) &client, &len)) < 0)
+        if ((size = recvfrom(sockfd, buffer, 1024, MSG_WAITALL, (sockaddr*) &client, &len)) < 0)
         {
             std::cout << "Critical" << std::endl;
             isRunning = false;
         }
 
         buffer[size] = 0;
-        std::cout << buffer << std::endl;
+        Axon::Connection::UDPMessage deserialized;
+        deserialized.setDeserialized(serialized, size);
+
+        Axon::Connection::ServerUDPMessage message;
+        message.inet_addr = inet_ntoa(client.sin_addr);
+
+        std::cout << message.inet_addr << " " << deserialized.data << std::endl;
+
+        message.payload.data = "SERVER_RESPONDED";
+        message.payload.size = strlen(message.payload.data);
+        message.payload.tag = deserialized.tag;
+
+        SendMessage(message);
     }
 }
 
-void Axon::Backends::Unix::UnixUDPConnectionHandler::SendMessage(Axon::Connection::ServerUDPMessage message) {
+bool Axon::Backends::Unix::UnixUDPConnectionHandler::SendMessage(Axon::Connection::ServerUDPMessage message) {
+    size_t serialized_size;
+    std::shared_ptr<char[]> serialized = message.payload.getSerializedData(serialized_size);
 
+    return sendto(sockfd, serialized.get(), serialized_size, MSG_CTRUNC, (struct sockaddr*) &client, sizeof(client)) > 0;
 }
 #endif

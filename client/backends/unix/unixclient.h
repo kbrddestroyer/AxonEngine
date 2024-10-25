@@ -18,6 +18,8 @@ class UnixUDPClient : public Axon::Client::ClientConnectionHandler {
     public:
         explicit UnixUDPClient(char* hostname = "localhost", Axon::Connection::AXON_PORT port = 7777);
 
+        ~UnixUDPClient();
+
         bool Initialize() override;
         bool SendUserMessage(Axon::Connection::UDPMessage message) override;
     };

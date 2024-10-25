@@ -24,10 +24,8 @@ namespace Axon::Connection
         // Package struct:
         // CLIENT_IP DATA_TAG [DATA] sizeof(DATA)
 
-        uint32_t                inet_addr;
-        ServerUDPDefaultTags    tag;
-        void*                   buffer;
-        uint32_t                size;
+        char* inet_addr;
+        UDPMessage payload;
     };
 
     struct ServerConnection
@@ -56,7 +54,7 @@ namespace Axon::Connection
     protected:
         virtual bool Initialize() = 0;
         virtual void Listen() = 0;
-        virtual void SendMessage(ServerUDPMessage) = 0;
+        virtual bool SendMessage(ServerUDPMessage) = 0;
 
         void OnIncomingMessage(ServerUDPMessage);
     public:

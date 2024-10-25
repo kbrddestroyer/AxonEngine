@@ -26,5 +26,5 @@ void Axon::Connection::ServerConnectionHandler::OnIncomingMessage(ServerUDPMessa
 
 void Axon::Connection::ServerConnectionHandler::OnIncomingConnection(ServerUDPMessage message)
 {
-    mConnections[mConnections.size()] = {message.inet_addr};
+
 }

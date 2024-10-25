@@ -4,7 +4,8 @@
 
 #include <AxonEngine.h>
 #include <AxonServer.h>
-#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
 
 namespace Axon {
     namespace Backends {
@@ -21,7 +22,7 @@ namespace Axon {
             protected:
                 bool Initialize() override;
                 void Listen() override;
-                void SendMessage(Axon::Connection::ServerUDPMessage) override;
+                bool SendMessage(Axon::Connection::ServerUDPMessage) override;
             };
         }
     }
