@@ -2,6 +2,8 @@
 #include <cstdint>
 #include <ostream>
 
+#include <memory>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
