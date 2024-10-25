@@ -37,9 +37,9 @@ bool Axon::Backends::Windows::WinUDPConnectionHandler::Initialize()
     return true;
 }
 
-void Axon::Backends::Windows::WinUDPConnectionHandler::SendMessage(Axon::Connection::ServerUDPMessage)
+bool Axon::Backends::Windows::WinUDPConnectionHandler::SendUserMessage(Axon::Connection::ServerUDPMessage)
 {
-
+    return false;
 }
 
 void Axon::Backends::Windows::WinUDPConnectionHandler::Listen()

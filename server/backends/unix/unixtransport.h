@@ -22,7 +22,7 @@ namespace Axon {
             protected:
                 bool Initialize() override;
                 void Listen() override;
-                bool SendMessage(Axon::Connection::ServerUDPMessage) override;
+                bool SendUserMessage(Axon::Connection::ServerUDPMessage) override;
             };
         }
     }

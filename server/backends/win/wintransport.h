@@ -32,7 +32,7 @@ namespace Axon::Backends::Windows
 		explicit WinUDPConnectionHandler(Axon::Connection::AXON_PORT port = 7777);
 		~WinUDPConnectionHandler();
 
-		void SendMessage(Axon::Connection::ServerUDPMessage);
+		bool SendUserMessage(Axon::Connection::ServerUDPMessage);
 	protected:
 		bool Initialize();
 		void Listen();

@@ -58,11 +58,11 @@ void Axon::Backends::Unix::UnixUDPConnectionHandler::Listen()
         message.payload.size = strlen(message.payload.data);
         message.payload.tag = deserialized.tag;
 
-        SendMessage(message);
+        SendUserMessage(message);
     }
 }
 
-bool Axon::Backends::Unix::UnixUDPConnectionHandler::SendMessage(Axon::Connection::ServerUDPMessage message) {
+bool Axon::Backends::Unix::UnixUDPConnectionHandler::SendUserMessage(Axon::Connection::ServerUDPMessage message) {
     size_t serialized_size;
     std::shared_ptr<char[]> serialized = message.payload.getSerializedData(serialized_size);
 

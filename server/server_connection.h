@@ -54,7 +54,7 @@ namespace Axon::Connection
     protected:
         virtual bool Initialize() = 0;
         virtual void Listen() = 0;
-        virtual bool SendMessage(ServerUDPMessage) = 0;
+        virtual bool SendUserMessage(ServerUDPMessage) = 0;
 
         void OnIncomingMessage(ServerUDPMessage);
     public:
