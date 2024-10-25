@@ -1,4 +1,7 @@
 #pragma once
+#if defined(_WIN32)
+#include <AxonClient.h>
+
 #include <WinSock2.h>
 #include <cstdint>
 
@@ -6,27 +9,24 @@
 
 // In debug state
 
-namespace Axon
+namespace Axon::Backends::Windows
 {
-	namespace Backends
+	class WinUDPClient : public Axon::Client::ClientConnectionHandler
 	{
-		namespace Windows
-		{
-			class WinUDPClient
-			{
-			private:
-				uint32_t sockfd = INVALID_SOCKET;
-				SOCKADDR_IN server;
-				SOCKET client_socket;
-				uint16_t port;
-				WSADATA	ws;
-			public:
-				explicit WinUDPClient(uint16_t port = 7777);
-				~WinUDPClient();
-
-				bool Startup();
-				void SendTo();
-			};
-		}
-	}
+	private:
+		uint32_t		sockfd = INVALID_SOCKET;
+		SOCKADDR_IN		server;
+		SOCKET			client_socket;
+		WSADATA			ws;
+	private:
+		WinUDPClient() = default;
+	public:
+		explicit WinUDPClient(char* hostname, Axon::Connection::AXON_PORT port = 7777);
+		~WinUDPClient();
+	
+	protected:
+		bool Initialize() override;
+		bool SendUserMessage(Axon::Connection::UDPMessage message) override;
+	};
 }
+#endif

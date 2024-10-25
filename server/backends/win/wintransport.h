@@ -9,39 +9,33 @@
 
 #pragma comment(lib,"ws2_32.lib") 
 
-namespace Axon
+namespace Axon::Backends::Windows
 {
-	namespace Backends
+	/// <summary>
+	/// Windows server socket implementation
+	/// Uses UDP protocol
+	/// </summary>
+	class WinUDPConnectionHandler : public Axon::Connection::ServerConnectionHandler
 	{
-		namespace Windows
-		{
-			/// <summary>
-			/// Windows server socket implementation
-			/// Uses UDP protocol
-			/// </summary>
-			class WinUDPConnectionHandler : public Axon::Connection::ServerConnectionHandler
-			{
-			private:
+	private:
 #pragma region SERVER_DATA
-				WSADATA			ws;
-				SOCKET			server_socket;
-				SOCKET			client_socket;
-				SOCKADDR_IN		server;
+		WSADATA			ws;
+		SOCKET			server_socket;
+		SOCKET			client_socket;
+		SOCKADDR_IN		server;
 #pragma endregion
 #pragma region SERVER_CONFIGURATION
-				AXON_PORT		port;
-				bool			isRunning;
+		Axon::Connection::AXON_PORT		port;
+		bool			isRunning;
 #pragma endregion
-			public:
-				explicit WinUDPConnectionHandler(AXON_PORT port = 7777);
-				~WinUDPConnectionHandler();
+	public:
+		explicit WinUDPConnectionHandler(Axon::Connection::AXON_PORT port = 7777);
+		~WinUDPConnectionHandler();
 
-				bool Initialize();
-				void SendMessage(Axon::Connection::ServerUDPMessage);
-			protected:
-				void Listen();
-			};
-		}
-	}
+		bool SendUserMessage(Axon::Connection::ServerUDPMessage);
+	protected:
+		bool Initialize();
+		void Listen();
+	};
 }
 #endif

@@ -1,4 +1,6 @@
 #pragma once
+#include <cstdlib>
+#include <exception>
 
 namespace Axon {
     namespace Error
@@ -10,7 +12,7 @@ namespace Axon {
         };
     }
 
-    class AxonError
+    class AxonError : public std::exception
     {
     protected:
         Error::AxonErrorCode reason;
