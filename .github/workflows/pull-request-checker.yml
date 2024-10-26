@@ -11,5 +11,5 @@ jobs:
     uses: kbrddestroyer/CommonWorkflows/.github/workflows/pull-request-checker.yml@main
     with:
       project_name: "AxonEngine"
-      VALID_SECTIONS: "docs,offsets,server,client,global,backends,hotfix"
+      VALID_SECTIONS: "actions,docs,offsets,server,client,global,backends,hotfix"
   
