@@ -1,0 +1,22 @@
+name: Comments checker
+
+permissions:
+  issues: write
+  discussions: write
+  pull-requests: write
+  
+on:
+  issue_comment:
+    types: [created, edited]
+  pull_request_review_comment:
+    types: [created, edited]
+  discussion_comment:
+    types: [created, edited]
+
+jobs:
+  check-comments:
+    uses: kbrddestroyer/CommonWorkflows/.github/workflows/comments.yml@main
+    with:
+      project_name: "AxonEngine"
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
