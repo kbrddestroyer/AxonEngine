@@ -41,7 +41,9 @@ uint8_t deserialize(char* serialized, size_t size, char** deserialized, size_t* 
     }
 
     *deserialized = calloc(actual, sizeof(char));
-    memcpy(*deserialized, serialized + header_size, actual);
+    
+    memcpy(*deserialized, serialized + header_size, actual + 1);
+    
 
     size_t footer_size = size - actual - header_size;
     size_t crop = (sizeof(actual) - footer_size) * 8;
