@@ -1,0 +1,15 @@
+name: Pull-request branch name checker
+
+on:
+  pull_request:
+    branches:
+    - main
+    - feature/*
+  
+jobs:
+  check-pr:
+    uses: kbrddestroyer/CommonWorkflows/.github/workflows/pull-request-checker.yml@main
+    with:
+      project_name: "AxonEngine"
+      VALID_SECTIONS: "actions,docs,offsets,server,client,global,backends,hotfix"
+  
