@@ -6,6 +6,9 @@
 
 #include <WinSock2.h>
 #include <cstdint>
+#include <map>
+
+#include <server/server_constants.h>
 
 #pragma comment(lib,"ws2_32.lib") 
 
@@ -21,8 +24,9 @@ namespace Axon::Backends::Windows
 #pragma region SERVER_DATA
 		WSADATA			ws;
 		SOCKET			server_socket;
-		SOCKET			client_socket;
 		SOCKADDR_IN		server;
+
+		std::map<uint64_t, SOCKADDR_IN> connections;
 #pragma endregion
 #pragma region SERVER_CONFIGURATION
 		Axon::Connection::AXON_PORT		port;
@@ -36,6 +40,8 @@ namespace Axon::Backends::Windows
 	protected:
 		bool Initialize();
 		void Listen();
+	private:
+		void OnMessageRecieved(std::shared_ptr<char[]> , size_t, SOCKADDR_IN);
 	};
 }
 #endif
