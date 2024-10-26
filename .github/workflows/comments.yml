@@ -19,4 +19,4 @@ jobs:
     with:
       project_name: "AxonEngine"
     secrets:
-      GH_TOKEN: ${{ github.token }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
