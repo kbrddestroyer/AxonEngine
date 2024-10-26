@@ -6,7 +6,7 @@ int main()
 {
     const char* message_data = "Test message data to serialize";
 
-    Connection::UDPMessage message((char*) message_data, strlen(message_data) * sizeof(char), 1024);
+    Connection::UDPMessage message((char*) message_data, strlen(message_data) * sizeof(char), 1025);
 
     Connection::UDPMessage deserialized;
 
