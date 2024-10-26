@@ -1,6 +1,6 @@
 # AxonEngine
 
-Advanced Exchange Over Network
+Advanced eXchange Over Network
 
 Work in progress, there's no stable version yet
 
