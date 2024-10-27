@@ -1,7 +1,7 @@
 #include "serialization.h"
 
 
-uint8_t serialize(char* data, size_t size, uint32_t tag, char** serialized, size_t* total_size)
+char* serialize(char* data, size_t size, uint32_t tag, size_t* total_size)
 {
     *total_size = 0;
     size_t header_size = 0;
@@ -22,9 +22,7 @@ uint8_t serialize(char* data, size_t size, uint32_t tag, char** serialized, size
     memcpy(buffer + header_size, data, size);
     memcpy(buffer + header_size + size, &tag, footer_size);
 
-    *serialized = buffer;
-
-    return 0;
+    return buffer;
 }
 
 uint8_t deserialize(char* serialized, size_t size, char** deserialized, size_t* actualSize, uint32_t* tag)

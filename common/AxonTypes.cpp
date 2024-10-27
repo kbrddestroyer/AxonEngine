@@ -7,29 +7,37 @@ Axon::Connection::UDPMessage::UDPMessage() {
     this->tag  = -1;
 }
 
-Axon::Connection::UDPMessage::UDPMessage(char* data, size_t size, uint64_t tag)
-{
-    this->data = data;
-    this->size = size;
-    this->tag  = tag;
+Axon::Connection::UDPMessage::UDPMessage(Axon::Connection::UDPMessage& other) {
+    this->size = other.size;
+    this->tag = other.tag;
+
+    this->data = new char[size];
+    memcpy(data, other.data, size);
 }
 
 Axon::Connection::UDPMessage::~UDPMessage() {
-
+    delete[] data;
 }
 
-std::shared_ptr<char[]> Axon::Connection::UDPMessage::getSerializedData(size_t& datasize) const {
-    char* serialized;
-    if (serialize(data, size, tag, &serialized, &datasize) == 0)
-    {
-        return std::shared_ptr<char[]> (serialized);
-    }
-    return { nullptr };
+void Axon::Connection::UDPMessage::createUDPMessage(Axon::Connection::UDPMessage& message, void* data, size_t size, uint32_t tag)
+{
+    message.size = size;
+    message.data = new char[message.size];
+
+    memcpy(message.data, data, message.size);
+    
+    message.tag = tag;
 }
 
-void Axon::Connection::UDPMessage::setDeserialized(const std::shared_ptr<char[]>& serialized, size_t datasize) {
-    if (deserialize(serialized.get(), datasize, &data, &size, &tag) != 0)
-    {
-        throw 1;
+Axon::Connection::UDPMessage& Axon::Connection::UDPMessage::operator=(const Axon::Connection::UDPMessage& other) {
+    if (this != &other) {
+        delete[] data; // Освобождаем старую память
+
+        size = other.size;
+        tag = other.tag;
+
+        data = new char[size];
+        memcpy(data, other.data, size);
     }
+    return *this;
 }

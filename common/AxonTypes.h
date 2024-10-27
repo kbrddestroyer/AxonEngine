@@ -26,11 +26,11 @@ namespace Axon::Connection
         uint32_t tag;
     public:
         UDPMessage();
-        explicit UDPMessage(char*, size_t, uint64_t);
+        explicit UDPMessage(UDPMessage&);
 
         ~UDPMessage();
 
-        std::shared_ptr<char[]> getSerializedData(size_t&) const;
-        void setDeserialized(const std::shared_ptr<char[]>&, size_t);
+        static void createUDPMessage(UDPMessage&, void*, size_t, uint32_t);
+        UDPMessage& operator=(const Axon::Connection::UDPMessage& other);
     };
 }

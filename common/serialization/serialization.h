@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdint.h>
 
-extern uint8_t serialize(char*, size_t, uint32_t, char**, size_t*);
+extern char* serialize(char*, size_t, uint32_t, size_t*);
 extern uint8_t deserialize(char*, size_t, char**, size_t*, uint32_t*);
 
 #endif
