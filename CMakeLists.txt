@@ -23,6 +23,7 @@ set(AXON_SERVER
         "server/AxonServer.h" "server/AxonServer.cpp"
         "server/backends/win/wintransport.h" "server/backends/win/wintransport.cpp"
         "server/backends/unix/unixtransport.h" "server/backends/unix/unixtransport.cpp"
+        "server/server_constants.h"
 )
 set(AXON_CLIENT
         "client/backends/win/winclient.h" "client/backends/win/winclient.cpp"

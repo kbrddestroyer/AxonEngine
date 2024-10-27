@@ -24,7 +24,7 @@ namespace Axon::Connection
         // Package struct:
         // CLIENT_IP DATA_TAG [DATA] sizeof(DATA)
 
-        char* inet_addr;
+        uint64_t connectionID;
         UDPMessage payload;
     };
 

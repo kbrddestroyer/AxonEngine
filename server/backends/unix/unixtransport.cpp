@@ -50,9 +50,7 @@ void Axon::Backends::Unix::UnixUDPConnectionHandler::Listen()
         deserialized.setDeserialized(serialized, size);
 
         Axon::Connection::ServerUDPMessage message;
-        message.inet_addr = inet_ntoa(client.sin_addr);
-
-        std::cout << message.inet_addr << " " << deserialized.data << std::endl;
+        std::cout << " " << deserialized.data << std::endl;
 
         message.payload.data = "SERVER_RESPONDED";
         message.payload.size = strlen(message.payload.data);

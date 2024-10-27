@@ -27,19 +27,36 @@ bool Axon::Backends::Windows::WinUDPClient::Initialize()
 	server.sin_family = AF_INET;
 	server.sin_port = htons(this->port);
 	server.sin_addr.S_un.S_addr = inet_addr(hostname);
+	int32_t len = sizeof(server);
 
-	const char* buffer = "Hello World!";
+	Axon::Connection::UDPMessage message;
+	message.data = new char[sizeof(uint32_t)];
+	
+	uint32_t* data = (uint32_t*)message.data;
+	*data = 1;
 
-	if (sendto(client_socket, buffer, strlen(buffer), 0, (sockaddr*)&server, sizeof(SOCKADDR_IN)) == SOCKET_ERROR) {
-		throw Axon::AxonError(Axon::Error::AxonErrorCode::INTERNAL_ERROR);
+	message.size = sizeof(uint32_t);
+	message.tag = 1000;
+
+	SendUserMessage(message);
+	
+	delete[] message.data;
+	std::shared_ptr<char[]> buffer(new char[1024]);
+	size_t size;
+
+	if ((size = recvfrom(client_socket, buffer.get(), 1024, 0, (SOCKADDR*)&server, &len)) != SOCKET_ERROR)
+	{
+		printf("Got message");
+		return true;
 	}
 	return true;
 }
 
 bool Axon::Backends::Windows::WinUDPClient::SendUserMessage(Axon::Connection::UDPMessage message)
 {
-	// return sendto(client_socket, , strlen(), 0, (sockaddr*)&server, sizeof(SOCKADDR_IN)) == SOCKET_ERROR;
-	return false;
+	size_t size;
+	std::shared_ptr<char[]> serialized = message.getSerializedData(size);
+	return sendto(client_socket, serialized.get(), size, 0, (sockaddr*)&server, sizeof(SOCKADDR_IN)) != SOCKET_ERROR;
 }
 
 #endif
