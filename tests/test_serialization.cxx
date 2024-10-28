@@ -17,5 +17,5 @@ int main()
 
     free(serialized);
 
-    return strcmp(message.data, deserialized.data) != -1;
+    return strcmp(message.data, deserialized.data) == 0 ? 0 : 1;
 }
