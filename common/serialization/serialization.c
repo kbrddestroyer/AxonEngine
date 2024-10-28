@@ -16,7 +16,7 @@ char* serialize(char* data, size_t size, uint32_t tag, size_t* total_size)
     char* buffer = calloc(*total_size, sizeof(char));
     
     if (buffer == NULL)
-        return 1;   // ERR_COULD_NOT_ALLOC
+        return NULL;   // ERR_COULD_NOT_ALLOC
 
     memcpy(buffer, &size, header_size);
     memcpy(buffer + header_size, data, size);

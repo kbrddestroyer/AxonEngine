@@ -44,26 +44,10 @@ void Axon::Backends::Unix::UnixUDPConnectionHandler::Listen()
             std::cout << "Critical" << std::endl;
             isRunning = false;
         }
-
-        buffer[size] = 0;
-        Axon::Connection::UDPMessage deserialized;
-        deserialized.setDeserialized(serialized, size);
-
-        Axon::Connection::ServerUDPMessage message;
-        std::cout << " " << deserialized.data << std::endl;
-
-        message.payload.data = "SERVER_RESPONDED";
-        message.payload.size = strlen(message.payload.data);
-        message.payload.tag = deserialized.tag;
-
-        SendUserMessage(message);
     }
 }
 
-bool Axon::Backends::Unix::UnixUDPConnectionHandler::SendUserMessage(Axon::Connection::ServerUDPMessage message) {
-    size_t serialized_size;
-    std::shared_ptr<char[]> serialized = message.payload.getSerializedData(serialized_size);
-
-    return sendto(sockfd, serialized.get(), serialized_size, MSG_CTRUNC, (struct sockaddr*) &client, sizeof(client)) > 0;
+bool Axon::Backends::Unix::UnixUDPConnectionHandler::SendUserMessage(char* serialized, size_t size, uint64_t connectionID) {
+    return sendto(sockfd, serialized, size, MSG_CTRUNC, (struct sockaddr*) &client, sizeof(client)) > 0;
 }
 #endif

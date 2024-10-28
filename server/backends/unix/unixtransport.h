@@ -1,7 +1,6 @@
 #pragma once
 
 #if defined(__unix__) || __APPLE__ || __APPLE_CC__
-
 #include <AxonEngine.h>
 #include <AxonServer.h>
 #include <arpa/inet.h>
@@ -22,7 +21,7 @@ namespace Axon {
             protected:
                 bool Initialize() override;
                 void Listen() override;
-                bool SendUserMessage(Axon::Connection::ServerUDPMessage) override;
+                bool SendUserMessage(char*, size_t, uint64_t) override;
             };
         }
     }
