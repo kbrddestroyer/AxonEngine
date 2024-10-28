@@ -50,11 +50,11 @@ set_target_properties(AxonServerLib PROPERTIES
 )
 
 if(WIN32)
-  target_link_libraries(AxonServer ws2_32)
+  target_link_libraries(AxonServer ws2_32 AxonServerLib)
   target_link_libraries(AxonClient ws2_32)
+else()
+  target_link_libraries(AxonServer PRIVATE AxonServerLib)
 endif(WIN32)
-
-target_link_libraries(AxonServer PRIVATE AxonServerLib)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET AxonServer PROPERTY CXX_STANDARD 20)
