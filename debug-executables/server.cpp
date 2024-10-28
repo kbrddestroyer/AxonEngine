@@ -3,8 +3,6 @@
 #endif
 
 #include <Axon.h>
-#include <AxonServer.h>
-
 #include <iostream>
 
 using namespace Axon;
