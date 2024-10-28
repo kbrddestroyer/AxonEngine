@@ -36,12 +36,10 @@ namespace Axon::Backends::Windows
 		explicit WinUDPConnectionHandler(Axon::Connection::AXON_PORT port = 7777);
 		~WinUDPConnectionHandler();
 
-		bool SendUserMessage(Axon::Connection::ServerUDPMessage);
+		bool SendUserMessage(char*, size_t, uint64_t);
 	protected:
 		bool Initialize();
 		void Listen();
-	private:
-		void OnMessageRecieved(std::shared_ptr<char[]> , size_t, SOCKADDR_IN);
 	};
 }
 #endif

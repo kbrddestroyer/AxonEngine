@@ -6,20 +6,16 @@ int main()
 {
     const char* message_data = "Test message data to serialize";
 
-    Connection::UDPMessage message((char*) message_data, strlen(message_data) * sizeof(char), 1025);
+    Connection::UDPMessage message;
+    Connection::UDPMessage::createUDPMessage(message, (void*)message_data, strlen(message_data) + 1, 19);
 
     Connection::UDPMessage deserialized;
-
-    std::shared_ptr<char[]> serialized;
     size_t serialized_size;
-    serialized = message.getSerializedData(serialized_size);
-    deserialized.setDeserialized(serialized, serialized_size);
+    
+    char* serialized = serialize(message.data, message.size, message.tag, &serialized_size);
+    deserialize(serialized, serialized_size, &deserialized.data, &deserialized.size, &deserialized.tag);
 
-    if (
-            message.tag != deserialized.tag ||
-            strcmp(deserialized.data, message_data) != 0
-            )
-        return 1;
+    free(serialized);
 
-    return 0;
+    return strcmp(message.data, deserialized.data) == 0 ? 0 : 1;
 }

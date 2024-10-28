@@ -54,10 +54,11 @@ namespace Axon::Connection
     protected:
         virtual bool Initialize() = 0;
         virtual void Listen() = 0;
-        virtual bool SendUserMessage(ServerUDPMessage) = 0;
+        virtual bool SendUserMessage(char*, size_t, uint64_t) = 0;
 
-        void OnIncomingMessage(ServerUDPMessage);
+        constexpr void OnIncomingMessage(const ServerUDPMessage&);
+        constexpr void OnIncomingConnection(const ServerUDPMessage&);
     public:
-        void OnIncomingConnection(ServerUDPMessage);
+        bool SendUDPMessage(const ServerUDPMessage&);
     };
 }

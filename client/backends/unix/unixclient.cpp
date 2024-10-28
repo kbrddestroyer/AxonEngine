@@ -24,13 +24,6 @@ bool Axon::Backends::Unix::UnixUDPClient::Initialize() {
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = inet_addr(hostname);
 
-    Axon::Connection::UDPMessage message;
-    message.data = "Hello World!";
-    message.size = strlen(message.data);
-    message.tag = 1;
-
-    SendUserMessage(message);
-
     char* buffer = new char[1024];
     size_t size;
     socklen_t len = sizeof(server);
@@ -41,22 +34,13 @@ bool Axon::Backends::Unix::UnixUDPClient::Initialize() {
         return false;
     }
 
-    buffer[size] = 0;
-
-    std::shared_ptr<char[]> serialized (buffer);
-
-    message.setDeserialized(serialized, size);
-    std::cout << message.data << " " << message.tag << std::endl;
 
     return true;
 }
 
-bool Axon::Backends::Unix::UnixUDPClient::SendUserMessage(Axon::Connection::UDPMessage message)
+void Axon::Backends::Unix::UnixUDPClient::SendUDPMessage(char* serialized, size_t size)
 {
-    size_t serialized_size;
-    std::shared_ptr<char[]> serialized = message.getSerializedData(serialized_size);
-
-    return sendto(sockfd, serialized.get(), serialized_size, MSG_CTRUNC, (struct sockaddr*) &server, sizeof(server)) < 0;
+    sendto(sockfd, serialized, size, MSG_CTRUNC, (struct sockaddr*) &server, sizeof(server)) < 0;
 }
 
 Axon::Backends::Unix::UnixUDPClient::~UnixUDPClient() {

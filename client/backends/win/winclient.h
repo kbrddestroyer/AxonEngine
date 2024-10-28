@@ -26,7 +26,7 @@ namespace Axon::Backends::Windows
 	
 	protected:
 		bool Initialize() override;
-		bool SendUserMessage(Axon::Connection::UDPMessage message) override;
+		void SendUDPMessage(char*, size_t) override;
 	};
 }
 #endif
