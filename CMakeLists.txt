@@ -19,44 +19,51 @@ set(AXON_ENGINE
     "common/serialization/serialization.h" "common/serialization/serialization.c"
 )
 set(AXON_SERVER
-        "server/server_connection.h" "server/server_connection.cpp"
-        "server/AxonServer.h" "server/AxonServer.cpp"
-        "server/backends/win/wintransport.h" "server/backends/win/wintransport.cpp"
-        "server/backends/unix/unixtransport.h" "server/backends/unix/unixtransport.cpp"
-        "server/server_constants.h"
+    "server/server_connection.h" "server/server_connection.cpp"
+    "server/AxonServer.h" "server/AxonServer.cpp"
+    "server/backends/win/wintransport.h" "server/backends/win/wintransport.cpp"
+    "server/backends/unix/unixtransport.h" "server/backends/unix/unixtransport.cpp"
+    "server/server_constants.h"
 )
 set(AXON_CLIENT
-        "client/backends/win/winclient.h" "client/backends/win/winclient.cpp"
-        "client/client_connection.h" "client/client_connection.cpp"
-        "client/backends/unix/unixclient.h" "client/backends/unix/unixclient.cpp"
+    "client/backends/win/winclient.h" "client/backends/win/winclient.cpp"
+    "client/client_connection.h" "client/client_connection.cpp"
+    "client/backends/unix/unixclient.h" "client/backends/unix/unixclient.cpp"
 )
 
 set(MASTER_INCLUDE "Axon.h")
 
-add_executable(AxonServer "debug-executables/server.cpp" ${AXON_ENGINE} ${AXON_SERVER} ${MASTER_INCLUDE})
+add_executable(AxonServer "debug-executables/server.cpp" "AxonEngine.h")
 add_executable(AxonClient "debug-executables/client.cpp" ${AXON_ENGINE} ${AXON_CLIENT} ${MASTER_INCLUDE})
+
+add_library(AxonServerLib STATIC ${AXON_ENGINE} ${AXON_SERVER} ${MASTER_INCLUDE})
 
 target_compile_definitions(AxonServer PUBLIC AXON_SERVER)
 target_compile_definitions(AxonClient PUBLIC AXON_CLIENT)
 
 target_include_directories(AxonServer PUBLIC .)
 target_include_directories(AxonClient PUBLIC .)
+target_include_directories(AxonServerLib PUBLIC .)
 
 if(WIN32)
   target_link_libraries(AxonServer ws2_32)
+  target_link_libraries(AxonServer AxonServerLib)
   target_link_libraries(AxonClient ws2_32)
+else()
+  target_link_libraries(AxonServer PRIVATE AxonServerLib)
 endif(WIN32)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET AxonServer PROPERTY CXX_STANDARD 20)
   set_property(TARGET AxonClient PROPERTY CXX_STANDARD 20)
+  set_property(TARGET AxonServerLib PROPERTY CXX_STANDARD 20)
 endif()
 
 # Tests
 enable_testing()
 
 set(TEST_SERIALIZATION
-        "tests/test_serialization.cxx"
+    "tests/test_serialization.cxx"
 )
 
 add_executable(TestSerialization ${TEST_SERIALIZATION} ${AXON_ENGINE})
