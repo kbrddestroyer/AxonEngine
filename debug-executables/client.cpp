@@ -21,11 +21,17 @@ int main()
 	if (!client->Startup())
 	{
 		std::cout << "Could not start" << std::endl;
+		return 1;
 	}
-	else
-	{
-		std::cout << "Success!" << std::endl;
-	}
+	
+	const char* message_data = "Hello World";
+
+	Axon::Connection::UDPMessage message;
+	Axon::Connection::UDPMessage::createUDPMessage(message, (void*) message_data, sizeof(message_data), 1);
+
+	client->SendUserMessage(message);
+
+	std::cout << "Test passed: message dispatched" << std::endl;
 	std::cin.get();
 	return 0;
 }

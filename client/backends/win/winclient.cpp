@@ -28,12 +28,6 @@ bool Axon::Backends::Windows::WinUDPClient::Initialize()
 	server.sin_port = htons(this->port);
 	server.sin_addr.S_un.S_addr = inet_addr(hostname);
 
-	const char* payload = "Hello from client";
-	Axon::Connection::UDPMessage message;
-	Axon::Connection::UDPMessage::createUDPMessage(message, (void*)payload, strlen(payload), 1);
-
-	SendUserMessage(message);
-
 	return true;
 }
 
