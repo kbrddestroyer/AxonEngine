@@ -9,10 +9,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: docker/setup-buildx-action@v1
+    - uses: docker/setup-buildx-action@v3
     
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/cmake-build-debug -DCMAKE_BUILD_TYPE=Debug
+
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
 
     - name: Docker Compose
       working-directory: ./tests/docker-test/
