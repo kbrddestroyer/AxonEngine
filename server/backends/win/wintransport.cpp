@@ -58,7 +58,11 @@ void Axon::Backends::Windows::WinUDPConnectionHandler::Listen()
         if ((size = recvfrom(server_socket, buffer, SERVER_PACKAGE_MAXSIZE, 0, (SOCKADDR*)&client, &len)) != SOCKET_ERROR)
         {
             buffer[size] = 0;
-            std::cout << "Recfrom: " << buffer << " | " << inet_ntoa(client.sin_addr) << std::endl;
+            
+            Axon::Connection::ServerUDPMessage message;
+            deserialize(buffer, size, &message.payload.data, &message.payload.size, &message.payload.tag);
+
+            std::cout << "Recfrom: " << message.payload.data << " | TAG::" << message.payload.tag << " | " << inet_ntoa(client.sin_addr) << std::endl;
         }
         else
         {
