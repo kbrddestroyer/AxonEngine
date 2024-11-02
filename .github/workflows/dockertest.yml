@@ -29,6 +29,7 @@ jobs:
       run: docker-compose up --build -d
       
     - name: Docker Compose - Kill containers
+      working-directory: ./tests/docker-test/
       run: |
         sleep 10
         docker-compose down
