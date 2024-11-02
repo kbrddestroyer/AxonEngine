@@ -1,3 +1,5 @@
+#include <Axon.h>
+
 #include "wintransport.h"
 #include "wintransport.h"
 #include <iostream>
@@ -5,7 +7,7 @@
 
 #include <iostream>
 
-#if defined(WIN32) || defined(_WIN32) || defined(_WIN64) || defined(__NT__)
+#if defined(WINDOWS_PLATFORM)
 Axon::Backends::Windows::WinUDPConnectionHandler::WinUDPConnectionHandler(Axon::Connection::AXON_PORT port)
 {
     this->port = port;

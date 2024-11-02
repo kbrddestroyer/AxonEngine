@@ -31,7 +31,7 @@ void Axon::Connection::UDPMessage::createUDPMessage(Axon::Connection::UDPMessage
 
 Axon::Connection::UDPMessage& Axon::Connection::UDPMessage::operator=(const Axon::Connection::UDPMessage& other) {
     if (this != &other) {
-        delete[] data; // Освобождаем старую память
+        delete[] data;
 
         size = other.size;
         tag = other.tag;

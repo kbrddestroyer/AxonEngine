@@ -2,9 +2,6 @@ FROM ubuntu:latest
 
 # Todo: replace local binary file w/ path to build target
 COPY cmake-build /home/ubuntu
-COPY libAxonServerLib.so /usr/local/lib
 
-RUN ldconfig
-
-ENTRYPOINT [ "./home/ubuntu/AxonServer" ]
+ENTRYPOINT ["sh", "-c", "sleep 5 && ./home/ubuntu/AxonClient"]
 CMD ["run"]

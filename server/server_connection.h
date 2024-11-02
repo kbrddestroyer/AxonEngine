@@ -1,5 +1,5 @@
 #pragma once
-#include <AxonTypes.h>
+#include <AxonEngine.h>
 
 #include <cstdint>
 #include <vector>
@@ -10,7 +10,6 @@
 #elif defined(__unix__) || __APPLE__
 #include <netinet/in.h>
 #endif
-
 
 namespace Axon::Connection
 {
@@ -35,7 +34,7 @@ namespace Axon::Connection
         uint32_t ip_addr;
     };
 
-    class ServerConnectionHandler {
+    class AXON_EXPORT ServerConnectionHandler {
     private:
         std::map<uint32_t, ServerConnection> mConnections;
     protected:

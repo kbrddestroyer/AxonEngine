@@ -16,7 +16,7 @@ int main()
     connection = new Axon::Backends::Unix::UnixUDPConnectionHandler(10243);
 #endif
 
-    std::cout << "Started!" << std::endl;
+    std::cout << "Server Started!" << std::endl;
     connection->Start();
 
     delete connection;

@@ -1,7 +1,8 @@
 #pragma once
+#include <Axon.h>
 
-#if defined(WIN32) || defined(_WIN32) || defined(_WIN64) || defined(__NT__)
-#include <AxonTypes.h>
+#if defined(WINDOWS_PLATFORM)
+#include <AxonEngine.h>
 #include <AxonServer.h>
 
 #include <WinSock2.h>
@@ -18,7 +19,7 @@ namespace Axon::Backends::Windows
 	/// Windows server socket implementation
 	/// Uses UDP protocol
 	/// </summary>
-	class WinUDPConnectionHandler : public Axon::Connection::ServerConnectionHandler
+	class AXON_EXPORT WinUDPConnectionHandler : public Axon::Connection::ServerConnectionHandler
 	{
 	private:
 #pragma region SERVER_DATA

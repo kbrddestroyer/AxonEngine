@@ -18,11 +18,15 @@ bool Axon::Backends::Unix::UnixUDPConnectionHandler::Initialize()
     memset(&client, 0, sizeof(client));
 
     server.sin_family = AF_INET;
-    server.sin_addr.s_addr = INADDR_ANY;
+    server.sin_addr.s_addr = htonl(INADDR_ANY);
     server.sin_port = htons(port);
 
-    if (bind(sockfd, (sockaddr*) &server, sizeof(server)) < 0)
+    socklen_t server_len = sizeof(server);
+
+    if (bind(sockfd, (const sockaddr*) &server, server_len) < 0)
     {
+        std::cout << "Can't bind socket" << std::endl;
+
         return false;
     }
 
@@ -34,16 +38,19 @@ void Axon::Backends::Unix::UnixUDPConnectionHandler::Listen()
     char* buffer = new char[1024];
 
     std::shared_ptr<char[]> serialized(buffer);
-
     socklen_t len = sizeof(client);
     while (isRunning)
     {
+        std::cout << "Listening..." << std::endl;
         ssize_t size;
         if ((size = recvfrom(sockfd, buffer, 1024, MSG_WAITALL, (sockaddr*) &client, &len)) < 0)
         {
             std::cout << "Critical" << std::endl;
             isRunning = false;
+            break;
         }
+        buffer[size] = 0;
+        std::cout << "Recfrom: " << buffer << " | " << inet_ntoa(client.sin_addr) << std::endl;
     }
 }
 
