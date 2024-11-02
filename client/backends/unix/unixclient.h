@@ -5,6 +5,7 @@
 #include <AxonClient.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <netdb.h>
 #include <unistd.h>
 
 #include <cstdint>
@@ -16,7 +17,7 @@ class UnixUDPClient : public Axon::Client::ClientConnectionHandler {
         int32_t sockfd;
         sockaddr_in server;
     public:
-        explicit UnixUDPClient(char* hostname = "localhost", Axon::Connection::AXON_PORT port = 7777);
+        UnixUDPClient(char* hostname = "localhost", Axon::Connection::AXON_PORT port = 7777);
 
         ~UnixUDPClient();
 

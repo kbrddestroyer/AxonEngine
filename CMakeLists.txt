@@ -33,10 +33,11 @@ set(AXON_CLIENT
 
 set(MASTER_INCLUDE "Axon.h")
 
-add_executable(AxonServer "debug-executables/server.cpp" "AxonEngine.h")
+add_executable(AxonServer "debug-executables/server.cpp" "Axon.h")
 add_executable(AxonClient "debug-executables/client.cpp" ${AXON_ENGINE} ${AXON_CLIENT} ${MASTER_INCLUDE})
 
-add_library(AxonServerLib STATIC ${AXON_ENGINE} ${AXON_SERVER} ${MASTER_INCLUDE})
+add_library(AxonServerLib SHARED ${AXON_ENGINE} ${AXON_SERVER} ${MASTER_INCLUDE})
+target_link_libraries(AxonServer PRIVATE AxonServerLib)
 
 target_compile_definitions(AxonServer PUBLIC AXON_SERVER)
 target_compile_definitions(AxonClient PUBLIC AXON_CLIENT)
@@ -46,11 +47,8 @@ target_include_directories(AxonClient PUBLIC .)
 target_include_directories(AxonServerLib PUBLIC .)
 
 if(WIN32)
-  target_link_libraries(AxonServer ws2_32)
-  target_link_libraries(AxonServer AxonServerLib)
+  target_link_libraries(AxonServer PRIVATE ws2_32)
   target_link_libraries(AxonClient ws2_32)
-else()
-  target_link_libraries(AxonServer PRIVATE AxonServerLib)
 endif(WIN32)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

@@ -1,3 +1,13 @@
+/*
+* Just a test executable
+* I'll use it in dockertest process
+* 
+* Falls in infinite loop and sends UDP packages every second
+* Can be stopped by keyboard interrupt (Ctrl+C)
+* 
+* By: KbrdDestroyer
+*/
+
 #define AXON_CLIENT
 
 #include <Axon.h>
@@ -9,23 +19,38 @@ using namespace Axon;
 
 int main()
 {
+	const char* hostname = "localhost";
+	const uint16_t port = 10243;
+
     Client::ClientConnectionHandler* client;
 #if defined(_WIN32)
-	client = new Backends::Windows::WinUDPClient((char*) "127.0.0.1", 10243);
-#elif __APPLE__
-    client = new Backends::Unix::UnixUDPClient("127.0.0.1", 10243);
+	client = new Backends::Windows::WinUDPClient((char*) hostname, port);
+#elif __APPLE__ || defined(__unix__)
+    client = new Backends::Unix::UnixUDPClient((char*) hostname, port);
 #endif
-
-	const char* message_test = "Hello, I'm serialized";
-
+	std::cout << "[WARNING] This file should be used by docker-test" << std::endl;
+	
 	if (!client->Startup())
 	{
-		std::cout << "Could not start" << std::endl;
+		std::cerr << "Could not start client. Check your backend code" << std::endl;
+		return 1;
 	}
-	else
+	
+	const char* message_data = "Hello World";
+
+	for (uint16_t tag = 0; tag < 10; tag++)
 	{
-		std::cout << "Success!" << std::endl;
+		Axon::Connection::UDPMessage message;
+		Axon::Connection::UDPMessage::createUDPMessage(message, (void*)message_data, strlen(message_data), tag);
+
+		client->SendUserMessage(message);
+		std::cout << "[axon-client -> axon-server] Message dispatched " << std::endl;
+
+#if defined(_WIN32)
+		Sleep(1000);
+#else
+		sleep(1);
+#endif
 	}
-	std::cin.get();
 	return 0;
 }

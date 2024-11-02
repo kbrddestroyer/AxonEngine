@@ -1,9 +1,8 @@
 #include "unixclient.h"
 
 #if defined(__unix__) || __APPLE__
-#include <string>
-#include <iostream>
 
+#include <string>
 
 Axon::Backends::Unix::UnixUDPClient::UnixUDPClient(char *hostname, Axon::Connection::AXON_PORT port) :
     Axon::Client::ClientConnectionHandler(hostname, port) {
@@ -18,29 +17,32 @@ bool Axon::Backends::Unix::UnixUDPClient::Initialize() {
         throw AxonError(Error::AxonErrorCode::INTERNAL_ERROR);
     }
 
-    memset(&server, 0, sizeof(server));
+	addrinfo hints;
 
-    server.sin_port = htons(port);
-    server.sin_family = AF_INET;
-    server.sin_addr.s_addr = inet_addr(hostname);
+	memset(&hints, 0, sizeof(hints));
 
-    char* buffer = new char[1024];
-    size_t size;
-    socklen_t len = sizeof(server);
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_DGRAM;
+	hints.ai_protocol = IPPROTO_UDP;
 
-    if ((size = recvfrom(sockfd, buffer, 1024, MSG_WAITALL, (sockaddr*) &server, &len)) < 0)
-    {
-        std::cout << "Critical" << std::endl;
-        return false;
-    }
+	addrinfo* res;
 
+	if (getaddrinfo(hostname, std::to_string(port).c_str(), &hints, &res) != 0)
+	{
+		return false;
+	}
+
+	memcpy(&server, (struct sockaddr_in* ) res->ai_addr, res->ai_addrlen);
+	freeaddrinfo(res);
+
+	printf("%s\n", inet_ntoa(server.sin_addr));
 
     return true;
 }
 
 void Axon::Backends::Unix::UnixUDPClient::SendUDPMessage(char* serialized, size_t size)
 {
-    sendto(sockfd, serialized, size, MSG_CTRUNC, (struct sockaddr*) &server, sizeof(server)) < 0;
+    sendto(sockfd, serialized, size, MSG_CTRUNC, (struct sockaddr*) &server, sizeof(server));
 }
 
 Axon::Backends::Unix::UnixUDPClient::~UnixUDPClient() {
