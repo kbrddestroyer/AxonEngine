@@ -29,6 +29,5 @@ jobs:
       run: |
         docker-compose up --build -d
         sleep 10
-        docker-compose down
         docker-compose logs > ~/dockertest.log
   
