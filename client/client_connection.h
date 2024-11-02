@@ -1,3 +1,8 @@
+/*
+* WARNING: Dynamic ip resolving algorythm is delegated to backend
+* Please, implement getaddrinfo() usage
+*/
+
 #pragma once
 #include <AxonEngine.h>
 

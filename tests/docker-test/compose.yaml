@@ -1,12 +1,15 @@
-version: "3"
+version: '3.7'
 
 services:
-    server:
-        build: ./server
-        ports:
-            - 10243:10243
-    client:
-        build: ./client
-        network_mode: host
+    axon-server:
+        build: 
+            context: ../../
+            dockerfile: ./tests/docker-test/server/Dockerfile
+        container_name: server
+    axon-client:
+        build:
+            context: ../../
+            dockerfile: ./tests/docker-test/client/Dockerfile
         depends_on:
-            - server
+            - axon-server
+        container_name: client

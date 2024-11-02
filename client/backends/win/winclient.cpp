@@ -4,7 +4,11 @@
 #if defined(_WIN32)
 
 Axon::Backends::Windows::WinUDPClient::WinUDPClient(char* hostname, Axon::Connection::AXON_PORT port) :
-	Axon::Client::ClientConnectionHandler(hostname, port) {}
+	Axon::Client::ClientConnectionHandler(hostname, port) {
+	memset(&client_socket, 0, sizeof(client_socket));
+	memset(&server, 0, sizeof(server));
+	memset(&ws, 0, sizeof(ws));
+}
 
 Axon::Backends::Windows::WinUDPClient::~WinUDPClient()
 {
@@ -23,11 +27,25 @@ bool Axon::Backends::Windows::WinUDPClient::Initialize()
 		return false;
 	}
 
-	memset((char*)&server, 0, sizeof(server));
-	server.sin_family = AF_INET;
-	server.sin_port = htons(this->port);
-	server.sin_addr.S_un.S_addr = inet_addr(hostname);
+	addrinfo hints;
 
+	memset(&hints, 0, sizeof(hints));
+
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_DGRAM;
+	hints.ai_protocol = IPPROTO_UDP;
+
+	addrinfo* res;
+	char port_s[16] = { 0 };
+	_itoa_s((uint32_t) port, port_s, 10);
+	
+	if (getaddrinfo(hostname, port_s, &hints, &res) != 0)
+	{
+		return false;
+	}
+
+	memcpy(&server, (PSOCKADDR_IN) res->ai_addr, res->ai_addrlen);
+	freeaddrinfo(res);
 	return true;
 }
 
