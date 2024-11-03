@@ -9,13 +9,32 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/cmake-build-debug -DCMAKE_BUILD_TYPE=Debug
-    - name: Docker Compose
-      working-directory: ./tests/docker-test/
-      run: docker-compose up --build -d
-    - name: Docker Compose - Kill containers
+    - uses: docker/setup-buildx-action@v3
+    
+    - name: Configure and build with CMake
       run: |
-        sleep 10
-        docker-compose down
+        mkdir -p cmake-build-debug
+        cmake -B ${{github.workspace}}/cmake-build-debug -DCMAKE_BUILD_TYPE=Debug
+        cd cmake-build-debug
+        cmake ..
+        cmake --build .
+        
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
+    - name: Docker Compose
+      working-directory: ${{ github.workspace }}/tests/docker-test/
+      run: |
+        docker-compose up --build -d
+        sleep 60
+        ls
+        pwd
+        docker-compose logs > ~/dockertest.log
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: DockertestOutput${{ github.run_number }}
+        path: ~/dockertest.log
   
