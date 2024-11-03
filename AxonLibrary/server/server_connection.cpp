@@ -1,5 +1,8 @@
 #include "server_connection.h"
-#include "server_connection.h"
+
+#ifndef AXON_SERVER
+#define AXON_SERVER
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -8,6 +11,9 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#include <AxonBackend.h>
+#include <iostream>
 
 Axon::Connection::ServerConnectionHandler::ServerConnectionHandler(uint16_t port) : port(port)
 {
@@ -21,21 +27,34 @@ bool Axon::Connection::ServerConnectionHandler::Running() const
     return isRunning;
 }
 
-void Axon::Connection::ServerConnectionHandler::Start()
+void Axon::Connection::ServerConnectionHandler::Startup() noexcept
 {
-    isRunning = Initialize();
+    try 
+    {
+        isRunning = Initialize();
+    }
+    catch (AxonError error)
+    {
+        isRunning = false;
+        return;
+    }
+
     Listen();
 }
 
 
-constexpr void Axon::Connection::ServerConnectionHandler::OnIncomingMessage(const ServerUDPMessage& message)
+void Axon::Connection::ServerConnectionHandler::NotifyOnIncomingMessage(char* buffer, size_t size)
 {
+    buffer[size] = 0;
 
+    Axon::Connection::ServerUDPMessage message;
+    deserialize(buffer, size, &message.payload.data, &message.payload.size, &message.payload.tag);
+    this->OnIncomingMessage(message);
 }
 
-constexpr void Axon::Connection::ServerConnectionHandler::OnIncomingConnection(const ServerUDPMessage& message)
+void Axon::Connection::ServerConnectionHandler::OnIncomingMessage(const ServerUDPMessage& message)
 {
-
+    std::cout << "Recfrom: " << message.payload.data << " | TAG::" << message.payload.tag << " | " << std::endl;
 }
 
 bool Axon::Connection::ServerConnectionHandler::SendUDPMessage(const ServerUDPMessage& message)
@@ -46,4 +65,14 @@ bool Axon::Connection::ServerConnectionHandler::SendUDPMessage(const ServerUDPMe
     free(serialized);
 
     return true;
+}
+
+Axon::Connection::ServerConnectionHandler* Axon::Connection::ServerConnectionHandler::createServerHandler(Axon::Connection::AXON_PORT port)
+{
+#if defined(WINDOWS_PLATFORM)
+    return new Axon::Backends::Windows::WinUDPConnectionHandler(port);
+#elif defined(UNIX_PLATFORM)
+    return new Axon::Backends::Unix::UnixUDPConnectionHandler(port);
+#else
+#endif
 }

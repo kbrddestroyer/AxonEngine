@@ -1,4 +1,4 @@
-#include "unixtransport.h"
+#include "unixserver.h"
 
 #if defined(__unix__) || __APPLE__
 #include <iostream>
@@ -41,16 +41,14 @@ void Axon::Backends::Unix::UnixUDPConnectionHandler::Listen()
     socklen_t len = sizeof(client);
     while (isRunning)
     {
-        std::cout << "Listening..." << std::endl;
         ssize_t size;
         if ((size = recvfrom(sockfd, buffer, 1024, MSG_WAITALL, (sockaddr*) &client, &len)) < 0)
         {
-            std::cout << "Critical" << std::endl;
+            std::cerr << "Critical" << std::endl;
             isRunning = false;
             break;
         }
-        buffer[size] = 0;
-        std::cout << "Recfrom: " << buffer << " | " << inet_ntoa(client.sin_addr) << std::endl;
+        NotifyOnIncomingMessage(buffer, size);
     }
 }
 
