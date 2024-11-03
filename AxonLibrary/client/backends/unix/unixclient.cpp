@@ -5,7 +5,7 @@
 #include <string>
 
 Axon::Backends::Unix::UnixUDPClient::UnixUDPClient(char *hostname, Axon::Connection::AXON_PORT port) :
-    Axon::Client::ClientConnectionHandler(hostname, port) {
+    Axon::Connection::ClientConnectionHandler(hostname, port) {
     sockfd = 0;
     server = {};
 }
