@@ -22,7 +22,7 @@ namespace Axon::Client {
         virtual bool Initialize() = 0;
         virtual void SendUDPMessage(char*, size_t) = 0;
     public:
-        bool SendUserMessage(const Axon::Connection::UDPMessage& message);
+        bool SendUserMessage(const Axon::Connection::UDPMessage&);
         bool Startup();
     };
 }

@@ -6,9 +6,9 @@
 #include <vector>
 #include <map>
 
-#if defined(_WIN32)
+#if defined(WINDOWS_PLATFORM)
 #include <WinSock2.h>
-#elif defined(__unix__) || __APPLE__
+#elif defined(UNIX_PLATFORM)
 #include <netinet/in.h>
 #endif
 
@@ -50,7 +50,7 @@ namespace Axon::Connection
         virtual ~ServerConnectionHandler();
         [[nodiscard]] bool Running() const;
 
-        void Start();
+        void Startup();
     protected:
         virtual bool Initialize() = 0;
         virtual void Listen() = 0;
@@ -59,6 +59,8 @@ namespace Axon::Connection
         constexpr void OnIncomingMessage(const ServerUDPMessage&);
         constexpr void OnIncomingConnection(const ServerUDPMessage&);
     public:
-        bool SendUDPMessage(const ServerUDPMessage&);
+        bool SendUDPMessage(const ServerUDPMessage& message);
+
+        static ServerConnectionHandler* createServerHandler(Axon::Connection::AXON_PORT);
     };
 }

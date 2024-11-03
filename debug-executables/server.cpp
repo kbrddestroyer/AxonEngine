@@ -5,8 +5,11 @@
 #include <iostream>
 #include <cstdint>
 
+#include <AxonEngine.h> 
+#include <AxonServer.h>
 
 int main()
 {
+	Axon::Server();
 	return 0;
 }

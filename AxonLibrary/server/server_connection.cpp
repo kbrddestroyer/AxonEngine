@@ -1,5 +1,8 @@
 #include "server_connection.h"
-#include "server_connection.h"
+
+#ifndef AXON_SERVER
+#define AXON_SERVER
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -8,6 +11,8 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#include <AxonBackend.h>
 
 Axon::Connection::ServerConnectionHandler::ServerConnectionHandler(uint16_t port) : port(port)
 {
@@ -21,7 +26,7 @@ bool Axon::Connection::ServerConnectionHandler::Running() const
     return isRunning;
 }
 
-void Axon::Connection::ServerConnectionHandler::Start()
+void Axon::Connection::ServerConnectionHandler::Startup()
 {
     isRunning = Initialize();
     Listen();
@@ -46,4 +51,14 @@ bool Axon::Connection::ServerConnectionHandler::SendUDPMessage(const ServerUDPMe
     free(serialized);
 
     return true;
+}
+
+Axon::Connection::ServerConnectionHandler* Axon::Connection::ServerConnectionHandler::createServerHandler(Axon::Connection::AXON_PORT port)
+{
+#if defined(WINDOWS_PLATFORM)
+    return new Axon::Backends::Windows::WinUDPConnectionHandler(port);
+#elif defined(UNIX_PLATFORM)
+    return new Axon::Backends::Unix::UnixUDPConnectionHandler(port);
+#else
+#endif
 }

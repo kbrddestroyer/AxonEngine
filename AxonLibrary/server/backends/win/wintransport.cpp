@@ -1,10 +1,6 @@
 #include <Axon.h>
 
 #include "wintransport.h"
-#include "wintransport.h"
-#include <iostream>
-#include <AxonEngine.h>
-
 #include <iostream>
 
 #if defined(WINDOWS_PLATFORM)

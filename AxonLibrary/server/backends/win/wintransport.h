@@ -2,7 +2,6 @@
 #include <Axon.h>
 
 #if defined(WINDOWS_PLATFORM)
-#include <AxonEngine.h>
 #include <AxonServer.h>
 
 #include <WinSock2.h>
@@ -11,7 +10,8 @@
 
 #include <server/server_constants.h>
 
-#pragma comment(lib,"ws2_32.lib") 
+#pragma comment(lib,"ws2_32.lib")
+
 
 namespace Axon::Backends::Windows
 {
