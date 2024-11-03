@@ -11,7 +11,7 @@
 
 namespace Axon::Backends::Windows
 {
-	class WinUDPClient : public Axon::Client::ClientConnectionHandler
+	class WinUDPClient : public Axon::Connection::ClientConnectionHandler
 	{
 	private:
 		uint32_t		sockfd = INVALID_SOCKET;

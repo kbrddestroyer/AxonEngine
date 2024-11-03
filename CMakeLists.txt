@@ -33,16 +33,19 @@ set(AXON_CLIENT
     "AxonLibrary/client/backends/win/winclient.h" "AxonLibrary/client/backends/win/winclient.cpp"
     "AxonLibrary/client/client_connection.h" "AxonLibrary/client/client_connection.cpp"
     "AxonLibrary/client/backends/unix/unixclient.h" "AxonLibrary/client/backends/unix/unixclient.cpp"
+    "AxonLibrary/client/AxonClient.h" "AxonLibrary/client/AxonClient.cpp"
 )
 set(MASTER_INCLUDE 
     "Include/Axon.h"
+    "Include/AxonEngine.h" "Include/AxonEngine.cpp"
 )
 
 add_executable(AxonServer "debug-executables/server.cpp" ${MASTER_INCLUDE})
-add_executable(AxonClient "debug-executables/client.cpp" ${AXON_ENGINE} ${AXON_CLIENT} ${MASTER_INCLUDE})
-add_library(AxonServerLib SHARED ${AXON_ENGINE} ${AXON_SERVER} ${MASTER_INCLUDE})
+add_executable(AxonClient "debug-executables/client.cpp" ${MASTER_INCLUDE})
+add_library(AxonServerLib SHARED ${AXON_ENGINE} ${AXON_SERVER} ${AXON_CLIENT} ${MASTER_INCLUDE})
 
 target_link_libraries(AxonServer AxonServerLib)
+target_link_libraries(AxonClient AxonServerLib)
 
 target_compile_definitions(AxonServer PUBLIC AXON_SERVER)
 target_compile_definitions(AxonServerLib PUBLIC AXON_SERVER_LIB)
