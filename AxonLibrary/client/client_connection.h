@@ -4,7 +4,8 @@
 */
 
 #pragma once
-#include <AxonEngine.h>
+#include <AxonMasterInclude.h>
+
 
 namespace Axon::Client {
     class ClientConnectionHandler {

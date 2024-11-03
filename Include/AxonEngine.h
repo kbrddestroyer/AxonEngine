@@ -7,9 +7,6 @@
 #define UNIX_PLATFORM
 #endif
 
-#include <AxonError.h>
-#include <AxonTypes.h>
-
 #if defined(WINDOWS_PLATFORM)
 #define AXON_EXPORT __declspec(dllexport)
 #elif defined(UNIX_PLATFORM)

@@ -8,15 +8,18 @@ endif()
 project ("AxonEngine")
 include("CTest")
 
+include_directories("Include")
 include_directories("AxonLibrary")
 include_directories("AxonLibrary/server")
 include_directories("AxonLibrary/client")
 include_directories("AxonLibrary/common")
 
 set(AXON_ENGINE 
-    "AxonEngine.h" "AxonEngine.cpp" 
-    "AxonLibrary/common/AxonError.h" "AxonLibrary/common/AxonError.cpp" 
-    "AxonLibrary/common/AxonTypes.h" "AxonLibrary/common/AxonTypes.cpp"
+    "Include/AxonConnectionHandler.h"
+    "Include/AxonEngine.h" "Include/AxonEngine.cpp" 
+    "AxonLibrary/AxonBackend.h" "AxonLibrary/AxonMasterInclude.h"
+    "Include/AxonError.h" "Include/AxonError.cpp" 
+    "Include/AxonTypes.h" "Include/AxonTypes.cpp"
     "AxonLibrary/common/serialization/serialization.h" "AxonLibrary/common/serialization/serialization.c"
 )
 set(AXON_SERVER
@@ -31,7 +34,9 @@ set(AXON_CLIENT
     "AxonLibrary/client/client_connection.h" "AxonLibrary/client/client_connection.cpp"
     "AxonLibrary/client/backends/unix/unixclient.h" "AxonLibrary/client/backends/unix/unixclient.cpp"
 )
-set(MASTER_INCLUDE "Axon.h")
+set(MASTER_INCLUDE 
+    "Include/Axon.h"
+)
 
 add_executable(AxonServer "debug-executables/server.cpp" ${MASTER_INCLUDE})
 add_executable(AxonClient "debug-executables/client.cpp" ${AXON_ENGINE} ${AXON_CLIENT} ${MASTER_INCLUDE})
@@ -65,7 +70,7 @@ set(TEST_SERIALIZATION
     "tests/test_serialization.cxx"
 )
 
-add_executable(TestSerialization ${TEST_SERIALIZATION} ${AXON_ENGINE})
+add_executable(TestSerialization ${TEST_SERIALIZATION} ${AXON_ENGINE} "AxonLibrary/AxonBackend.h" "AxonLibrary/AxonMasterInclude.h" "Include/AxonConnectionHandler.h")
 
 add_test(NAME TestSerialization COMMAND $<TARGET_FILE:TestSerialization>)
 
