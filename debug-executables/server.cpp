@@ -5,8 +5,7 @@
 #include <iostream>
 #include <cstdint>
 
-#include <AxonEngine.h> 
-#include <AxonServer.h>
+#include <AxonEngine.h>
 
 int main()
 {
