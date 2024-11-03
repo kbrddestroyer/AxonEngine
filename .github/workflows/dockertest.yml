@@ -32,4 +32,9 @@ jobs:
         ls
         pwd
         docker-compose logs > ~/dockertest.log
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: DockertestOutput
+        path: ~/dockertest.log
   
