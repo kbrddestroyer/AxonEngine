@@ -19,7 +19,7 @@ namespace Axon::Backends::Windows
 	/// Windows server socket implementation
 	/// Uses UDP protocol
 	/// </summary>
-	class AXON_EXPORT WinUDPConnectionHandler : public Axon::Connection::ServerConnectionHandler
+	class AXON_DECLSPEC WinUDPConnectionHandler : public Axon::Connection::ServerConnectionHandler
 	{
 	private:
 #pragma region SERVER_DATA

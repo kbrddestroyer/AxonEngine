@@ -15,12 +15,12 @@
 
 #if defined(WINDOWS_PLATFORM)
 #if defined(AXON_SERVER_LIB)
-#define AXON_EXPORT __declspec(dllexport)
+#define AXON_DECLSPEC __declspec(dllexport)
 #else
-#define AXON_EXPORT __declspec(dllimport)
+#define AXON_DECLSPEC __declspec(dllimport)
 #endif
 #elif defined(UNIX_PLATFORM)
-#define AXON_EXPORT
+#define AXON_DECLSPEC
 #else
-#define AXON_EXPORT
+#define AXON_DECLSPEC
 #endif

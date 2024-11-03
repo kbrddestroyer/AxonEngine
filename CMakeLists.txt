@@ -25,8 +25,8 @@ set(AXON_ENGINE
 set(AXON_SERVER
     "AxonLibrary/server/server_connection.h" "AxonLibrary/server/server_connection.cpp"
     "AxonLibrary/server/AxonServer.h" "AxonLibrary/server/AxonServer.cpp"
-    "AxonLibrary/server/backends/win/wintransport.h" "AxonLibrary/server/backends/win/wintransport.cpp"
-    "AxonLibrary/server/backends/unix/unixtransport.h" "AxonLibrary/server/backends/unix/unixtransport.cpp"
+    "AxonLibrary/server/backends/win/winserver.h" "AxonLibrary/server/backends/win/winserver.cpp"
+    "AxonLibrary/server/backends/unix/unixserver.h" "AxonLibrary/server/backends/unix/unixserver.cpp"
     "AxonLibrary/server/server_constants.h"
 )
 set(AXON_CLIENT

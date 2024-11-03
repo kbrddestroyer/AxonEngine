@@ -9,7 +9,7 @@
 
 namespace Axon
 {
-	class AXON_EXPORT Server
+	class AXON_DECLSPEC Server
 	{
 	private:
 		Axon::Connection::ServerConnectionHandler* handler;
