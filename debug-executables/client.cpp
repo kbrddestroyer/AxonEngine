@@ -25,8 +25,6 @@ int main()
 	for (uint16_t index = 0; index < 8; index++)
 	{
 		client.SendUserMessage(message);
-	
-		_sleep(100);
 	}
 	return 0;
 }
