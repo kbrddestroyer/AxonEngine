@@ -4,7 +4,7 @@
 #include <ws2tcpip.h>
 
 Axon::Backends::Windows::WinUDPClient::WinUDPClient(char* hostname, Axon::Connection::AXON_PORT port) :
-	Axon::Client::ClientConnectionHandler(hostname, port) {
+	Axon::Connection::ClientConnectionHandler(hostname, port) {
 	memset(&client_socket, 0, sizeof(client_socket));
 	memset(&server, 0, sizeof(server));
 	memset(&ws, 0, sizeof(ws));

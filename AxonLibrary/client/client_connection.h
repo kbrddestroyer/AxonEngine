@@ -7,7 +7,7 @@
 #include <AxonMasterInclude.h>
 
 
-namespace Axon::Client {
+namespace Axon::Connection {
     class ClientConnectionHandler {
     protected:
         Axon::Connection::AXON_PORT port;
@@ -24,5 +24,6 @@ namespace Axon::Client {
     public:
         bool SendUserMessage(const Axon::Connection::UDPMessage&);
         bool Startup();
+        static ClientConnectionHandler* createClientHandler(char*, Axon::Connection::AXON_PORT);
     };
 }
