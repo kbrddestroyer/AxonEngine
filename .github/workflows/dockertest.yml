@@ -27,7 +27,7 @@ jobs:
     - name: Docker Compose
       working-directory: ${{ github.workspace }}/tests/docker-test/
       run: |
-        docker-compose up --build
+        docker-compose up --build -d
         sleep 60
         ls
         pwd
