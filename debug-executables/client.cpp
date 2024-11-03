@@ -14,6 +14,19 @@ using namespace Axon;
 
 int main()
 {
-	Axon::Client((char*) "localhost", 10243);
+	Axon::Client client = Axon::Client((char*) "localhost", 10243);
+
+
+	const char* message_data = "Hello from Axon client";
+
+	Axon::Connection::UDPMessage message;
+	Axon::Connection::UDPMessage::createUDPMessage(message, (void*)message_data, strlen(message_data), 1);
+	
+	for (uint16_t index = 0; index < 8; index++)
+	{
+		client.SendUserMessage(message);
+	
+		_sleep(100);
+	}
 	return 0;
 }

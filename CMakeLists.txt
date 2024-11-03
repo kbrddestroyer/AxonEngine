@@ -37,7 +37,11 @@ set(AXON_CLIENT
 )
 set(MASTER_INCLUDE 
     "Include/Axon.h"
-    "Include/AxonEngine.h" "Include/AxonEngine.cpp"
+    "Include/AxonConnectionHandler.h"
+    "Include/AxonEngine.h" "Include/AxonEngine.cpp" 
+    "AxonLibrary/AxonBackend.h" "Include/AxonMasterInclude.h"
+    "Include/AxonError.h" "Include/AxonError.cpp" 
+    "Include/AxonTypes.h" "Include/AxonTypes.cpp"
 )
 
 add_executable(AxonServer "debug-executables/server.cpp" ${MASTER_INCLUDE})
