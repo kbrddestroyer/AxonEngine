@@ -3,6 +3,7 @@
 #if defined(__unix__) || __APPLE__
 
 #include <string>
+#include <AxonError.h>
 
 Axon::Backends::Unix::UnixUDPClient::UnixUDPClient(char *hostname, Axon::Connection::AXON_PORT port) :
     Axon::Connection::ClientConnectionHandler(hostname, port) {

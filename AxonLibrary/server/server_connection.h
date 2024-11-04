@@ -1,5 +1,5 @@
 #pragma once
-#include <AxonMasterInclude.h>
+#include <AxonTypes.h>
 #include <Axon.h>
 
 #include <cstdint>
