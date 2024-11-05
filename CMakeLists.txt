@@ -14,11 +14,10 @@ include_directories("AxonLibrary/server")
 include_directories("AxonLibrary/client")
 include_directories("AxonLibrary/common")
 
-set(AXON_ENGINE 
-    "Include/AxonConnectionHandler.h"
-    "Include/AxonEngine.h" "Include/AxonEngine.cpp" 
-    "AxonLibrary/AxonBackend.h" "Include/AxonMasterInclude.h"
-    "Include/AxonError.h" "Include/AxonError.cpp" 
+set(AXON_ENGINE
+        "Include/AxonEngine.h" "Include/AxonEngine.cpp"
+    "AxonLibrary/AxonBackend.h"
+        "Include/AxonError.h" "Include/AxonError.cpp"
     "Include/AxonTypes.h" "Include/AxonTypes.cpp"
     "AxonLibrary/common/serialization/serialization.h" "AxonLibrary/common/serialization/serialization.c"
 )
@@ -37,10 +36,9 @@ set(AXON_CLIENT
 )
 set(MASTER_INCLUDE 
     "Include/Axon.h"
-    "Include/AxonConnectionHandler.h"
-    "Include/AxonEngine.h" "Include/AxonEngine.cpp" 
-    "AxonLibrary/AxonBackend.h" "Include/AxonMasterInclude.h"
-    "Include/AxonError.h" "Include/AxonError.cpp" 
+        "Include/AxonEngine.h" "Include/AxonEngine.cpp"
+    "AxonLibrary/AxonBackend.h"
+        "Include/AxonError.h" "Include/AxonError.cpp"
     "Include/AxonTypes.h" "Include/AxonTypes.cpp"
 )
 
@@ -78,7 +76,7 @@ set(TEST_SERIALIZATION
     "tests/test_serialization.cxx"
 )
 
-add_executable(TestSerialization ${TEST_SERIALIZATION} ${AXON_ENGINE} "AxonLibrary/AxonBackend.h" "Include/AxonMasterInclude.h" "Include/AxonConnectionHandler.h")
+add_executable(TestSerialization ${TEST_SERIALIZATION} ${AXON_ENGINE} "AxonLibrary/AxonBackend.h")
 
 add_test(NAME TestSerialization COMMAND $<TARGET_FILE:TestSerialization>)
 
