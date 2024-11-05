@@ -13,6 +13,7 @@ extern "C" {
 #endif
 
 #include <AxonBackend.h>
+#include <AxonError.h>
 #include <iostream>
 
 Axon::Connection::ServerConnectionHandler::ServerConnectionHandler(uint16_t port) : port(port)
