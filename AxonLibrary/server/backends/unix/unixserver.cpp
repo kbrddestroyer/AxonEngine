@@ -1,7 +1,8 @@
 #include "unixserver.h"
 
-#if defined(__unix__) || __APPLE__
+#if defined(UNIX_PLATFORM)
 #include <iostream>
+
 
 Axon::Backends::Unix::UnixUDPConnectionHandler::UnixUDPConnectionHandler(Axon::Connection::AXON_PORT port) {
     this->port = port;

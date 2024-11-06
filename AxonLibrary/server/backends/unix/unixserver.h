@@ -1,6 +1,8 @@
 #pragma once
+#include <Axon.h>
 
-#if defined(__unix__) || __APPLE__ || __APPLE_CC__
+
+#if defined(UNIX_PLATFORM)
 #include <AxonEngine.h>
 #include <AxonServer.h>
 #include <arpa/inet.h>

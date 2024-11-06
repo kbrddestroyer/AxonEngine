@@ -1,9 +1,12 @@
 #pragma once
+#include <Axon.h>
+
 #include <cstdint>
 #include <ostream>
 
-#if defined(__unix__) || __APPLE__
+#if defined(UNIX_PLATFORM)
 #include <memory>
+#include <cstring>
 #endif
 
 #ifdef __cplusplus

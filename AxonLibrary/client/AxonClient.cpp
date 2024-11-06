@@ -1,5 +1,5 @@
 #include "AxonClient.h"
-#include "AxonClient.h"
+
 
 Axon::Client::Client(char* hostname, Axon::Connection::AXON_PORT port)
 {

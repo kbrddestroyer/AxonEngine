@@ -3,7 +3,6 @@
 #include <Axon.h>
 
 #include <cstdint>
-#include <vector>
 #include <map>
 
 #if defined(WINDOWS_PLATFORM)

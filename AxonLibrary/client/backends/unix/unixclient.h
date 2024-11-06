@@ -1,12 +1,12 @@
 #pragma once
-#if defined(__unix__) || __APPLE__
+#include <Axon.h>
+
+
+#if defined(UNIX_PLATFORM)
 
 #include <AxonClient.h>
 
 #include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <unistd.h>
 #include <cstdint>
 
 
