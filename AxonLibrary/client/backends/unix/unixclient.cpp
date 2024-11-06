@@ -2,8 +2,13 @@
 
 #if defined(__unix__) || __APPLE__
 
-#include <string>
 #include <AxonError.h>
+
+#include <string>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <unistd.h>
+
 
 Axon::Backends::Unix::UnixUDPClient::UnixUDPClient(char *hostname, Axon::Connection::AXON_PORT port) :
     Axon::Connection::ClientConnectionHandler(hostname, port) {
