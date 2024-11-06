@@ -1,13 +1,8 @@
-
 #include "AxonTypes.h"
 
-Axon::Connection::UDPMessage::UDPMessage() {
-    this->data = nullptr;
-    this->size = 0;
-    this->tag  = -1;
-}
 
-Axon::Connection::UDPMessage::UDPMessage(const Axon::Connection::UDPMessage& other) {
+Axon::Connection::UDPMessage::UDPMessage(const Axon::Connection::UDPMessage& other) noexcept
+{
     this->size = other.size;
     this->tag = other.tag;
 
@@ -15,11 +10,11 @@ Axon::Connection::UDPMessage::UDPMessage(const Axon::Connection::UDPMessage& oth
     memcpy(data, other.data, size);
 }
 
-Axon::Connection::UDPMessage::~UDPMessage() {
+Axon::Connection::UDPMessage::~UDPMessage() noexcept {
     delete[] data;
 }
 
-const Axon::Connection::UDPMessage& Axon::Connection::UDPMessage::createUDPMessage(void* data, size_t size, uint32_t tag)
+Axon::Connection::UDPMessage Axon::Connection::UDPMessage::createUDPMessage(void* data, size_t size, uint32_t tag)
 {
     UDPMessage message;
 

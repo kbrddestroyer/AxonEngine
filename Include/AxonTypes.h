@@ -25,11 +25,10 @@ namespace Axon::Connection
         size_t size;
         uint32_t tag;
     public:
-        UDPMessage();
-        UDPMessage(const UDPMessage&);
+        UDPMessage() = default;
+        UDPMessage(const UDPMessage&) noexcept;
+        ~UDPMessage() noexcept;
 
-        ~UDPMessage();
-
-        static const UDPMessage& createUDPMessage(void*, size_t, uint32_t);
+        static UDPMessage createUDPMessage(void*, size_t, uint32_t);
     };
 }
