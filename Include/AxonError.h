@@ -8,6 +8,8 @@ namespace Axon {
         enum AxonErrorCode
         {
             INTERNAL_ERROR,
+            SOCKET_BIND_ERROR,
+            HOSTNAME_NO_INFO,
             LISTEN_SOCKET_ERROR
         };
     }
@@ -19,6 +21,6 @@ namespace Axon {
     public:
         explicit AxonError(Error::AxonErrorCode = Error::AxonErrorCode::INTERNAL_ERROR);
 
-        [[nodiscard]] Error::AxonErrorCode err() const;
+        [[nodiscard]] constexpr Error::AxonErrorCode err() const;
     };
 }

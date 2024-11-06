@@ -5,7 +5,6 @@
 #if defined(WINDOWS_PLATFORM)
 #include <AxonError.h>
 
-
 Axon::Backends::Windows::WinUDPConnectionHandler::WinUDPConnectionHandler(Axon::Connection::AXON_PORT port)
 {
     this->port = port;
