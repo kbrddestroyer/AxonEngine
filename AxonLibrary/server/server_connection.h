@@ -1,18 +1,21 @@
 #pragma once
-#include <AxonEngine.h>
+#include <AxonTypes.h>
+#include <Axon.h>
 
 #include <cstdint>
-#include <vector>
 #include <map>
 
-#if defined(_WIN32)
+#if defined(WINDOWS_PLATFORM)
 #include <WinSock2.h>
-#elif defined(__unix__) || __APPLE__
+#elif defined(UNIX_PLATFORM)
 #include <netinet/in.h>
 #endif
 
 namespace Axon::Connection
 {
+    /// <summary>
+    /// Default control tags
+    /// </summary>
     enum class ServerUDPDefaultTags
     {
         CONTROL = 0
@@ -34,30 +37,30 @@ namespace Axon::Connection
         uint32_t ip_addr;
     };
 
-    class AXON_EXPORT ServerConnectionHandler {
+    class AXON_DECLSPEC ServerConnectionHandler {
     private:
         std::map<uint32_t, ServerConnection> mConnections;
     protected:
-#pragma region SERVER_CONFIGURATION
         Axon::Connection::AXON_PORT port;
 
         bool isRunning;
-#pragma endregion
     public:
         explicit ServerConnectionHandler(uint16_t = 7777);
 
         virtual ~ServerConnectionHandler();
         [[nodiscard]] bool Running() const;
 
-        void Start();
+        void Startup() noexcept;
     protected:
         virtual bool Initialize() = 0;
         virtual void Listen() = 0;
         virtual bool SendUserMessage(char*, size_t, uint64_t) = 0;
 
-        constexpr void OnIncomingMessage(const ServerUDPMessage&);
-        constexpr void OnIncomingConnection(const ServerUDPMessage&);
+        void NotifyOnIncomingMessage(char*, size_t);
+        void OnIncomingMessage(const ServerUDPMessage&);
     public:
-        bool SendUDPMessage(const ServerUDPMessage&);
+        bool SendUDPMessage(const ServerUDPMessage& message);
+
+        static ServerConnectionHandler* createServerHandler(Axon::Connection::AXON_PORT);
     };
 }

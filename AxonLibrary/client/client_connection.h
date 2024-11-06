@@ -4,9 +4,10 @@
 */
 
 #pragma once
-#include <AxonEngine.h>
+#include <AxonTypes.h>
 
-namespace Axon::Client {
+
+namespace Axon::Connection {
     class ClientConnectionHandler {
     protected:
         Axon::Connection::AXON_PORT port;
@@ -21,7 +22,8 @@ namespace Axon::Client {
         virtual bool Initialize() = 0;
         virtual void SendUDPMessage(char*, size_t) = 0;
     public:
-        bool SendUserMessage(const Axon::Connection::UDPMessage& message);
+        bool SendUserMessage(const Axon::Connection::UDPMessage&);
         bool Startup();
+        static ClientConnectionHandler* createClientHandler(char*, Axon::Connection::AXON_PORT);
     };
 }

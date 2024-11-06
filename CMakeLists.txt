@@ -8,38 +8,49 @@ endif()
 project ("AxonEngine")
 include("CTest")
 
+include_directories("Include")
 include_directories("AxonLibrary")
 include_directories("AxonLibrary/server")
 include_directories("AxonLibrary/client")
 include_directories("AxonLibrary/common")
 
 set(AXON_ENGINE 
-    "AxonEngine.h" "AxonEngine.cpp" 
-    "AxonLibrary/common/AxonError.h" "AxonLibrary/common/AxonError.cpp" 
-    "AxonLibrary/common/AxonTypes.h" "AxonLibrary/common/AxonTypes.cpp"
+    "Include/AxonEngine.h" "Include/AxonEngine.cpp" 
+    "AxonLibrary/AxonBackend.h" 
+    "Include/AxonError.h" "Include/AxonError.cpp" 
+    "Include/AxonTypes.h" "Include/AxonTypes.cpp"
     "AxonLibrary/common/serialization/serialization.h" "AxonLibrary/common/serialization/serialization.c"
 )
 set(AXON_SERVER
     "AxonLibrary/server/server_connection.h" "AxonLibrary/server/server_connection.cpp"
     "AxonLibrary/server/AxonServer.h" "AxonLibrary/server/AxonServer.cpp"
-    "AxonLibrary/server/backends/win/wintransport.h" "AxonLibrary/server/backends/win/wintransport.cpp"
-    "AxonLibrary/server/backends/unix/unixtransport.h" "AxonLibrary/server/backends/unix/unixtransport.cpp"
+    "AxonLibrary/server/backends/win/winserver.h" "AxonLibrary/server/backends/win/winserver.cpp"
+    "AxonLibrary/server/backends/unix/unixserver.h" "AxonLibrary/server/backends/unix/unixserver.cpp"
     "AxonLibrary/server/server_constants.h"
 )
 set(AXON_CLIENT
     "AxonLibrary/client/backends/win/winclient.h" "AxonLibrary/client/backends/win/winclient.cpp"
     "AxonLibrary/client/client_connection.h" "AxonLibrary/client/client_connection.cpp"
     "AxonLibrary/client/backends/unix/unixclient.h" "AxonLibrary/client/backends/unix/unixclient.cpp"
+    "AxonLibrary/client/AxonClient.h" "AxonLibrary/client/AxonClient.cpp"
 )
-set(MASTER_INCLUDE "Axon.h")
+set(MASTER_INCLUDE 
+    "Include/Axon.h"
+    "Include/AxonEngine.h" "Include/AxonEngine.cpp" 
+    "AxonLibrary/AxonBackend.h" 
+    "Include/AxonError.h" "Include/AxonError.cpp" 
+    "Include/AxonTypes.h" "Include/AxonTypes.cpp"
+)
 
 add_executable(AxonServer "debug-executables/server.cpp" ${MASTER_INCLUDE})
-add_executable(AxonClient "debug-executables/client.cpp" ${AXON_ENGINE} ${AXON_CLIENT} ${MASTER_INCLUDE})
-add_library(AxonServerLib SHARED ${AXON_ENGINE} ${AXON_SERVER} ${MASTER_INCLUDE})
+add_executable(AxonClient "debug-executables/client.cpp" ${MASTER_INCLUDE})
+add_library(AxonServerLib SHARED ${AXON_ENGINE} ${AXON_SERVER} ${AXON_CLIENT} ${MASTER_INCLUDE})
 
 target_link_libraries(AxonServer AxonServerLib)
+target_link_libraries(AxonClient AxonServerLib)
 
 target_compile_definitions(AxonServer PUBLIC AXON_SERVER)
+target_compile_definitions(AxonServerLib PUBLIC AXON_SERVER_LIB)
 target_compile_definitions(AxonClient PUBLIC AXON_CLIENT)
 
 target_include_directories(AxonServer PUBLIC .)

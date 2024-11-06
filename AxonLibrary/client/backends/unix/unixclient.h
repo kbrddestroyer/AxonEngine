@@ -1,18 +1,18 @@
 #pragma once
-#if defined(__unix__) || __APPLE__
+#include <Axon.h>
 
-#include <AxonEngine.h>
+
+#if defined(UNIX_PLATFORM)
+
 #include <AxonClient.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <unistd.h>
 
+#include <netinet/in.h>
 #include <cstdint>
+
 
 namespace Axon::Backends::Unix
 {
-class UnixUDPClient : public Axon::Client::ClientConnectionHandler {
+class UnixUDPClient : public Axon::Connection::ClientConnectionHandler {
     private:
         int32_t sockfd;
         sockaddr_in server;

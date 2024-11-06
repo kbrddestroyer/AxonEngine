@@ -1,11 +1,17 @@
 #include "unixclient.h"
 
-#if defined(__unix__) || __APPLE__
+#if defined(UNIX_PLATFORM)
+
+#include <AxonError.h>
 
 #include <string>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <unistd.h>
+
 
 Axon::Backends::Unix::UnixUDPClient::UnixUDPClient(char *hostname, Axon::Connection::AXON_PORT port) :
-    Axon::Client::ClientConnectionHandler(hostname, port) {
+    Axon::Connection::ClientConnectionHandler(hostname, port) {
     sockfd = 0;
     server = {};
 }

@@ -1,10 +1,12 @@
 #pragma once
-#if defined(_WIN32)
-#include <AxonClient.h>
+#include <Axon.h>
 
-#include <WinSock2.h>
-#include <ws2tcpip.h>
+
+#if defined(WINDOWS_PLATFORM)
+
+#include <AxonClient.h>
 #include <cstdint>
+#include <WinSock2.h>
 
 #pragma comment(lib,"ws2_32.lib")
 
@@ -12,7 +14,7 @@
 
 namespace Axon::Backends::Windows
 {
-	class WinUDPClient : public Axon::Client::ClientConnectionHandler
+	class WinUDPClient : public Axon::Connection::ClientConnectionHandler
 	{
 	private:
 		uint32_t		sockfd = INVALID_SOCKET;
@@ -22,7 +24,7 @@ namespace Axon::Backends::Windows
 	private:
 		WinUDPClient() = default;
 	public:
-		explicit WinUDPClient(char* hostname, Axon::Connection::AXON_PORT port = 7777);
+		WinUDPClient(char* hostname, Axon::Connection::AXON_PORT port = 7777);
 		~WinUDPClient();
 	
 	protected:
