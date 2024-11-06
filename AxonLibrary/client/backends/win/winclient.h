@@ -1,4 +1,5 @@
 #pragma once
+#include <Axon.h>
 
 
 #if defined(WINDOWS_PLATFORM)
@@ -23,7 +24,7 @@ namespace Axon::Backends::Windows
 	private:
 		WinUDPClient() = default;
 	public:
-		explicit WinUDPClient(char* hostname, Axon::Connection::AXON_PORT port = 7777);
+		WinUDPClient(char* hostname, Axon::Connection::AXON_PORT port = 7777);
 		~WinUDPClient();
 	
 	protected:

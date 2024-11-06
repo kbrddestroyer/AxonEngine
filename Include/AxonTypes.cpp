@@ -1,6 +1,7 @@
 #include "AxonTypes.h"
 
 
+
 Axon::Connection::UDPMessage::UDPMessage(const Axon::Connection::UDPMessage& other) noexcept
 {
     this->size = other.size;
