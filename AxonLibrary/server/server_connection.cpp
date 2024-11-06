@@ -12,6 +12,7 @@ extern "C" {
 }
 #endif
 
+#include <AxonError.h>
 #include <AxonBackend.h>
 #include <iostream>
 

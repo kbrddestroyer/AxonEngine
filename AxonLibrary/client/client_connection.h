@@ -4,7 +4,8 @@
 */
 
 #pragma once
-#include <AxonMasterInclude.h>
+#include <AxonEngine.h>
+#include <AxonTypes.h>
 
 
 namespace Axon::Connection {

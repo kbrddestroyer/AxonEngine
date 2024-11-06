@@ -31,6 +31,5 @@ namespace Axon::Connection
         ~UDPMessage();
 
         static void createUDPMessage(UDPMessage&, void*, size_t, uint32_t);
-        UDPMessage& operator=(const Axon::Connection::UDPMessage& other);
     };
 }
