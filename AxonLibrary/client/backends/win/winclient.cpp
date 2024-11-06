@@ -1,8 +1,11 @@
 #include "winclient.h"
+#include <Axon.h>
 
-#if defined(_WIN32)
+
+#if defined(WINDOWS_PLATFORM)
 #include <ws2tcpip.h>
 #include <AxonError.h>
+
 
 Axon::Backends::Windows::WinUDPClient::WinUDPClient(char* hostname, Axon::Connection::AXON_PORT port) :
 	Axon::Connection::ClientConnectionHandler(hostname, port) {

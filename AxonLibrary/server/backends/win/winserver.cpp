@@ -1,6 +1,6 @@
+#include "winserver.h"
 #include <Axon.h>
 
-#include "winserver.h"
 
 #if defined(WINDOWS_PLATFORM)
 #include <AxonError.h>
