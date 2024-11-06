@@ -26,10 +26,10 @@ namespace Axon::Connection
         uint32_t tag;
     public:
         UDPMessage();
-        explicit UDPMessage(UDPMessage&);
+        UDPMessage(const UDPMessage&);
 
         ~UDPMessage();
 
-        static void createUDPMessage(UDPMessage&, void*, size_t, uint32_t);
+        static const UDPMessage& createUDPMessage(void*, size_t, uint32_t);
     };
 }
