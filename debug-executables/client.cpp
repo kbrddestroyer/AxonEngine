@@ -14,7 +14,7 @@ using namespace Axon;
 
 int main()
 {
-	Axon::Client client = Axon::Client((char*) "localhost", 10243);
+	Axon::Client client = Axon::Client((char*) "axon-server", 10243);
 
 
 	const char* message_data = "Hello from Axon client";
