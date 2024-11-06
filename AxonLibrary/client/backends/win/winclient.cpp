@@ -1,6 +1,4 @@
 #include "winclient.h"
-#include <Axon.h>
-
 
 #if defined(WINDOWS_PLATFORM)
 #include <ws2tcpip.h>

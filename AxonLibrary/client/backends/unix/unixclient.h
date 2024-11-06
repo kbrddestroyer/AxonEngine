@@ -1,5 +1,8 @@
 #pragma once
-#if defined(__unix__) || __APPLE__
+#include <Axon.h>
+
+
+#if defined(UNIX_PLATFORM)
 
 #include <AxonClient.h>
 

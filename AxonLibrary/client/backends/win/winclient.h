@@ -1,5 +1,7 @@
 #pragma once
-#if defined(_WIN32)
+
+
+#if defined(WINDOWS_PLATFORM)
 
 #include <AxonClient.h>
 #include <cstdint>

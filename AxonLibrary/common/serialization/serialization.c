@@ -1,4 +1,5 @@
 #include "serialization.h"
+#include <string.h>
 
 
 char* serialize(char* data, size_t size, uint32_t tag, size_t* total_size)
