@@ -1,10 +1,10 @@
 FROM ubuntu:latest
 
-COPY cmake-build-debug/AxonClient /home/ubuntu
-COPY cmake-build-debug/libAxonServerLib.so /usr/local/lib
+COPY cmake-build-debug/AxonDockertestClient /home/ubuntu
+COPY cmake-build-debug/libAxonClientLib.so /usr/local/lib
 
 RUN ldconfig
 
-ENTRYPOINT ["sh", "-c", "./home/ubuntu/AxonClient"]
+ENTRYPOINT ["sh", "-c", "./home/ubuntu/AxonDockertestClient"]
 
 CMD ["run"]
