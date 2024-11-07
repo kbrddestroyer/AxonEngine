@@ -15,3 +15,18 @@ Work in progress, there's no stable version yet
 ## Before you start
 
 [Discord server](https://discord.gg/FQvZhSeHrr)
+
+## Overview
+
+## Requirements
+
+## Building
+
+## Usage
+
+## API and modding
+
+## Contributing
+
+---
+## Footer
