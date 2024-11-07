@@ -37,37 +37,39 @@ set(AXON_CLIENT
 set(MASTER_INCLUDE 
     "Include/Axon.h"
     "Include/AxonEngine.h" "Include/AxonEngine.cpp" 
-    "AxonLibrary/AxonBackend.h" 
     "Include/AxonError.h" "Include/AxonError.cpp" 
     "Include/AxonTypes.h" "Include/AxonTypes.cpp"
 )
 
-add_executable(AxonServer "debug-executables/server.cpp" ${MASTER_INCLUDE})
-add_executable(AxonClient "debug-executables/client.cpp" ${MASTER_INCLUDE})
-add_library(AxonServerLib SHARED ${AXON_ENGINE} ${AXON_SERVER} ${AXON_CLIENT} ${MASTER_INCLUDE})
+add_executable(AxonDockertestServer "tests/docker-test/entrypoint/server.cpp" ${MASTER_INCLUDE})
+add_executable(AxonDockertestClient "tests/docker-test/entrypoint/client.cpp" ${MASTER_INCLUDE})
+add_library(AxonServerLib SHARED ${AXON_ENGINE} ${AXON_SERVER} ${MASTER_INCLUDE})
+add_library(AxonClientLib SHARED ${AXON_ENGINE} ${AXON_CLIENT} ${MASTER_INCLUDE})
 
-target_link_libraries(AxonServer AxonServerLib)
-target_link_libraries(AxonClient AxonServerLib)
+target_link_libraries(AxonDockertestServer AxonServerLib)
+target_link_libraries(AxonDockertestClient AxonClientLib)
 
-target_compile_definitions(AxonServer PUBLIC AXON_SERVER)
+target_compile_definitions(AxonDockertestServer PUBLIC AXON_SERVER)
 target_compile_definitions(AxonServerLib PUBLIC AXON_SERVER_LIB)
-target_compile_definitions(AxonClient PUBLIC AXON_CLIENT)
+target_compile_definitions(AxonDockertestClient PUBLIC AXON_CLIENT)
 
-target_include_directories(AxonServer PUBLIC .)
-target_include_directories(AxonClient PUBLIC .)
+target_include_directories(AxonDockertestServer PUBLIC .)
+target_include_directories(AxonDockertestClient PUBLIC .)
 target_include_directories(AxonServerLib PUBLIC .)
+target_include_directories(AxonClientLib PUBLIC .)
 
-add_custom_command(TARGET AxonServer POST_BUILD COMMAND echo "Post build step")
+add_custom_command(TARGET AxonDockertestServer POST_BUILD COMMAND echo "Post build step")
 
 if(WIN32)
-  target_link_libraries(AxonServer ws2_32)
-  target_link_libraries(AxonClient ws2_32)
+  target_link_libraries(AxonDockertestServer ws2_32)
+  target_link_libraries(AxonDockertestClient ws2_32)
 endif(WIN32)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET AxonServer PROPERTY CXX_STANDARD 20)
-  set_property(TARGET AxonClient PROPERTY CXX_STANDARD 20)
+  set_property(TARGET AxonDockertestServer PROPERTY CXX_STANDARD 20)
+  set_property(TARGET AxonDockertestClient PROPERTY CXX_STANDARD 20)
   set_property(TARGET AxonServerLib PROPERTY CXX_STANDARD 20)
+  set_property(TARGET AxonClientLib PROPERTY CXX_STANDARD 20)
 endif()
 
 enable_testing()

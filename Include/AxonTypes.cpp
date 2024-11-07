@@ -2,7 +2,7 @@
 
 
 
-Axon::Connection::UDPMessage::UDPMessage(const Axon::Connection::UDPMessage& other) noexcept
+Axon::Connection::Message::Message(const Axon::Connection::Message& other) noexcept
 {
     this->size = other.size;
     this->tag = other.tag;
@@ -11,13 +11,13 @@ Axon::Connection::UDPMessage::UDPMessage(const Axon::Connection::UDPMessage& oth
     memcpy(data, other.data, size);
 }
 
-Axon::Connection::UDPMessage::~UDPMessage() noexcept {
+Axon::Connection::Message::~Message() noexcept {
     delete[] data;
 }
 
-Axon::Connection::UDPMessage Axon::Connection::UDPMessage::createUDPMessage(void* data, size_t size, uint32_t tag)
+Axon::Connection::Message Axon::Connection::Message::createUDPMessage(void* data, size_t size, uint32_t tag)
 {
-    UDPMessage message;
+    Message message;
 
     message.size = size;
     message.data = new char[message.size];

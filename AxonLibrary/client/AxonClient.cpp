@@ -13,7 +13,7 @@ Axon::Client::~Client()
 	delete handler;
 }
 
-void Axon::Client::SendUserMessage(Axon::Connection::UDPMessage& message)
+void Axon::Client::SendUserMessage(Axon::Connection::Message& message)
 {
 	handler->SendUserMessage(message);
 }

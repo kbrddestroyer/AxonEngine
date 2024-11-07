@@ -20,18 +20,26 @@ extern "C" {
 
 namespace Axon::Connection
 {
-    typedef uint16_t AXON_PORT;
+	typedef uint16_t AXON_PORT;
 
-    struct UDPMessage
-    {
-        char* data;
-        size_t size;
-        uint32_t tag;
-    public:
-        UDPMessage() = default;
-        UDPMessage(const UDPMessage&) noexcept;
-        ~UDPMessage() noexcept;
+	/** 
+	 * 	Basic class that contains data to share across the network
+	 * 
+	 *  @param data - payload bitsream
+	 *  @param size - size of initial data in bytes
+	 *  @param tag - control tags, that define how this package should be treated on the server 
+	*/ 
+	class Message
+	{
+	public:
+		char* data;
+		size_t size;
+		uint32_t tag;
+	public:
+		Message() = default;
+		Message(const Message&) noexcept;
+		~Message() noexcept;
 
-        static UDPMessage createUDPMessage(void*, size_t, uint32_t);
-    };
+		static Message createUDPMessage(void*, size_t, uint32_t);
+	};
 }

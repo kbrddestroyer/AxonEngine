@@ -13,12 +13,11 @@
 
 namespace Axon::Connection
 {
-    /// <summary>
-    /// Default control tags
-    /// </summary>
+    // Default control tags for Message class
     enum class ServerUDPDefaultTags
     {
-        CONTROL = 0
+        CONTROL = 0,
+
     };
 
     struct ServerUDPMessage
@@ -27,7 +26,7 @@ namespace Axon::Connection
         // CLIENT_IP DATA_TAG [DATA] sizeof(DATA)
 
         uint64_t connectionID;
-        UDPMessage payload;
+        Message payload;
     };
 
     struct ServerConnection
