@@ -14,7 +14,7 @@ Axon::Connection::ClientConnectionHandler::ClientConnectionHandler(char* hostnam
     this->hostname = hostname;
 }
 
-bool Axon::Connection::ClientConnectionHandler::SendUserMessage(const Axon::Connection::UDPMessage& message)
+bool Axon::Connection::ClientConnectionHandler::SendUserMessage(const Axon::Connection::Message& message)
 {
     size_t serializedSize;
     char* serialized = serialize(message.data, message.size, message.tag, &serializedSize);

@@ -19,7 +19,7 @@ int main()
 
 	const char* message_data = "Hello from Axon client";
 
-	Axon::Connection::UDPMessage message = Axon::Connection::UDPMessage::createUDPMessage((void*)message_data, strlen(message_data), 1);
+	Axon::Connection::Message message = Axon::Connection::Message::createUDPMessage((void*)message_data, strlen(message_data), 1);
 	
 	for (uint16_t index = 0; index < 8; index++)
 	{

@@ -16,6 +16,6 @@ namespace Axon
 		Client(char*, Axon::Connection::AXON_PORT);
 		~Client();
 
-		void SendUserMessage(Axon::Connection::UDPMessage& message);
+		void SendUserMessage(Axon::Connection::Message& message);
 	};
 }

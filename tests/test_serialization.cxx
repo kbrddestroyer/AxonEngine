@@ -6,9 +6,9 @@ int main()
 {
     const char* message_data = "Hello World";
 
-    Connection::UDPMessage message = Connection::UDPMessage::createUDPMessage((void*)message_data, strlen(message_data) + 1, 0);
+    Connection::Message message = Connection::Message::createUDPMessage((void*)message_data, strlen(message_data) + 1, 0);
 
-    Connection::UDPMessage deserialized;
+    Connection::Message deserialized;
     size_t serialized_size;
     
     char* serialized = serialize(message.data, message.size, message.tag, &serialized_size);
