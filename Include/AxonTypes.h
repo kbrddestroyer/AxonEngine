@@ -1,5 +1,3 @@
-// -*- lsst-c++ -*-
-
 #pragma once
 #include <Axon.h>
 
