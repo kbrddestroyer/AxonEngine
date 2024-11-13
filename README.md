@@ -22,6 +22,10 @@ Work in progress, there's no stable version yet
 
 ## Building
 
+- Create cmake-build directory
+- `cd cmake-build`
+- `cmake .. && cmake --build .`
+
 ## Usage
 
 ## API and modding
