@@ -53,11 +53,6 @@ target_compile_definitions(AxonDockertestServer PUBLIC AXON_SERVER)
 target_compile_definitions(AxonServerLib PUBLIC AXON_SERVER_LIB)
 target_compile_definitions(AxonDockertestClient PUBLIC AXON_CLIENT)
 
-target_include_directories(AxonDockertestServer PUBLIC .)
-target_include_directories(AxonDockertestClient PUBLIC .)
-target_include_directories(AxonServerLib PUBLIC .)
-target_include_directories(AxonClientLib PUBLIC .)
-
 add_custom_command(TARGET AxonDockertestServer POST_BUILD COMMAND echo "Post build step")
 
 if(WIN32)
