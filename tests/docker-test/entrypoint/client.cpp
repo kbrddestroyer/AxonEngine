@@ -16,7 +16,6 @@ int main()
 {
 	Axon::Client client = Axon::Client((char*) "axon-server", 10243);
 
-
 	const char* message_data = "Hello from Axon client";
 
 	Axon::Connection::Message message = Axon::Connection::Message::createUDPMessage((void*)message_data, strlen(message_data), 1);

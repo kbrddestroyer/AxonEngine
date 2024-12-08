@@ -7,17 +7,21 @@ endif()
 
 project ("AxonEngine Basic GUI Example")
 
-set(IMGUI_PATH, "../")  # Path to imgui folder, in my case it's in parallel directory
-set(ROOT "../../")
+get_filename_component(ROOT "../../" ABSOLUTE)
+set(ROOT ${ROOT}/)
 
 if(WIN32)
-	SET(AXON_LIBS_PATH "${ROOT}out/build/x64-release/")	# Axon output directory for Windows x64
-	SET(AXON_CLIENT_LIB "AxonClientLib.lib")
-	SET(AXON_SERVER_LIB "AxonServerLib.lib")
+	SET(AXON_LIBS_PATH "${ROOT}out/build/x64-debug/")	# Axon output directory for Windows x64
+	SET(AXON_CLIENT_LIB "AxonClientLib")
+	SET(AXON_SERVER_LIB "AxonServerLib")
+	set(AXON_DYNAMIC ".dll")
+	set(AXON_STATIC ".lib")
 else()
 	SET(AXON_LIBS_PATH "${ROOT}cmake-build-debug/")		# Axon output directory for Ubuntu
 	SET(AXON_CLIENT_LIB "libAxonClientLib")
 	SET(AXON_SERVER_LIB "libAxonServerLib")
+	set(AXON_DYNAMIC ".so")
+	set(AXON_STATIC ".a")
 endif()
 
 link_directories(${AXON_LIBS_PATH})
@@ -31,13 +35,10 @@ include_directories("${ROOT}AxonLibrary/common")
 set(MASTER_INCLUDE 
     "${ROOT}Include/Axon.h"
     "${ROOT}Include/AxonEngine.h" "${ROOT}Include/AxonEngine.cpp"
+    "${ROOT}Include/AxonEntity.h" "${ROOT}Include/AxonEntity.cpp"
     "${ROOT}Include/AxonError.h" "${ROOT}Include/AxonError.cpp" 
     "${ROOT}Include/AxonTypes.h" "${ROOT}Include/AxonTypes.cpp"
 )
-
-include_directories(IMGUI_PATH)
-
-set(IMGUI ${IMGUI_PATH}"imgui/imgui.h")
 
 add_executable(client "client.cpp" ${MASTER_INCLUDE})
 add_executable(server "server.cpp" ${MASTER_INCLUDE})
@@ -57,3 +58,6 @@ endif()
 
 target_link_libraries(client ${AXON_CLIENT_LIB})
 target_link_libraries(server ${AXON_SERVER_LIB})
+
+add_custom_command(TARGET client POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${AXON_LIBS_PATH}${AXON_CLIENT_LIB}${AXON_DYNAMIC} ${CMAKE_BUILD_RPATH}$<CONFIG>/${AXON_CLIENT_LIB}${AXON_DYNAMIC})
+add_custom_command(TARGET server POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${AXON_LIBS_PATH}${AXON_SERVER_LIB}${AXON_DYNAMIC} ${CMAKE_BUILD_RPATH}$<CONFIG>/${AXON_SERVER_LIB}${AXON_DYNAMIC})
