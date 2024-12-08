@@ -30,8 +30,10 @@ bool Axon::Connection::ServerConnectionHandler::Running() const
 	return isRunning;
 }
 
-void Axon::Connection::ServerConnectionHandler::Startup() noexcept
+void Axon::Connection::ServerConnectionHandler::Startup(SERVER_CALL callback, void* owner) noexcept
 {
+	this->callback = callback;
+	this->server_ptr = owner;
 	try
 	{
 		isRunning = Initialize();
@@ -58,6 +60,8 @@ void Axon::Connection::ServerConnectionHandler::NotifyOnIncomingMessage(char* bu
 void Axon::Connection::ServerConnectionHandler::OnIncomingMessage(const ServerUDPMessage& message)
 {
 	std::cout << "Recfrom: " << message.payload.data << " | TAG::" << message.payload.tag << " | " << std::endl;
+
+	callback(message, server_ptr);
 }
 
 bool Axon::Connection::ServerConnectionHandler::SendUDPMessage(const ServerUDPMessage& message)

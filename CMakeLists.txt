@@ -39,6 +39,8 @@ set(MASTER_INCLUDE
     "Include/AxonEngine.h" "Include/AxonEngine.cpp" 
     "Include/AxonError.h" "Include/AxonError.cpp" 
     "Include/AxonTypes.h" "Include/AxonTypes.cpp"
+    "Include/AxonPointers.h" "Include/AxonPointers.cpp"
+    "Include/AxonEntity.h" "Include/AxonEntity.cpp"
 )
 
 add_executable(AxonDockertestServer "tests/docker-test/entrypoint/server.cpp" ${MASTER_INCLUDE})
@@ -52,11 +54,6 @@ target_link_libraries(AxonDockertestClient AxonClientLib)
 target_compile_definitions(AxonDockertestServer PUBLIC AXON_SERVER)
 target_compile_definitions(AxonServerLib PUBLIC AXON_SERVER_LIB)
 target_compile_definitions(AxonDockertestClient PUBLIC AXON_CLIENT)
-
-target_include_directories(AxonDockertestServer PUBLIC .)
-target_include_directories(AxonDockertestClient PUBLIC .)
-target_include_directories(AxonServerLib PUBLIC .)
-target_include_directories(AxonClientLib PUBLIC .)
 
 add_custom_command(TARGET AxonDockertestServer POST_BUILD COMMAND echo "Post build step")
 
@@ -79,9 +76,12 @@ set(TEST_SERIALIZATION
 )
 
 add_executable(TestSerialization ${TEST_SERIALIZATION} ${AXON_ENGINE})
+add_executable(TestEntities "tests/test_entities.cxx" ${MASTER_INCLUDE})
 
 add_test(NAME TestSerialization COMMAND $<TARGET_FILE:TestSerialization>)
+add_test(NAME TestEntities COMMAND $<TARGET_FILE:TestEntities>)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET TestSerialization PROPERTY CXX_STANDARD 20)
+  set_property(TARGET TestEntities PROPERTY CXX_STANDARD 20)
 endif()

@@ -1,4 +1,4 @@
-﻿#ifndef AXON_SERVER
+#ifndef AXON_SERVER
 #define AXON_SERVER
 #endif
 
