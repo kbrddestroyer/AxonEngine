@@ -36,11 +36,15 @@ namespace Axon::Connection
         uint32_t ip_addr;
     };
 
+    typedef void (*SERVER_CALL)(Axon::Connection::ServerUDPMessage, void*);
+
     class AXON_DECLSPEC ServerConnectionHandler {
     private:
         std::map<uint32_t, ServerConnection> mConnections;
     protected:
         Axon::Connection::AXON_PORT port;
+        SERVER_CALL callback;
+        void* server_ptr;
 
         bool isRunning;
     public:
@@ -49,7 +53,7 @@ namespace Axon::Connection
         virtual ~ServerConnectionHandler();
         [[nodiscard]] bool Running() const;
 
-        void Startup() noexcept;
+        void Startup(SERVER_CALL, void*) noexcept;
     protected:
         virtual bool Initialize() = 0;
         virtual void Listen() = 0;
