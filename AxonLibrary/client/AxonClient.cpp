@@ -4,7 +4,6 @@
 Axon::Client::Client(char* hostname, Axon::Connection::AXON_PORT port)
 {
 	handler = Axon::Connection::ClientConnectionHandler::createClientHandler(hostname, port);
-
 	handler->Startup();
 }
 

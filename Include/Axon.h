@@ -19,6 +19,7 @@
 #else
 #define AXON_DECLSPEC __declspec(dllimport)
 #endif
+
 #elif defined(UNIX_PLATFORM)
 #define AXON_DECLSPEC
 #else
