@@ -2,17 +2,13 @@
 
 #include <stdint.h>
 
-uint8_t initialize(SOCKADDR_IN_T* server, const char* hostname, uint32_t port)
+uint8_t initializeClientConnection(SOCKADDR_IN_T* server, SOCKET_T* client, const char* hostname, uint32_t port)
 {
-#if defined(_WIN32)
-	WSADATA ws;
-	if (WSAStartup(MAKEWORD(2, 2), &ws) != 0) {
-		return ERR_WININIT_FAIL;
-	}
-#endif
-	SOCKET client_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	SOCKET_HEAD_INIT
 
-	if (!CHECK_VALID(client_socket))
+	*client = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+	if (!CHECK_VALID(*client))
 		return ERR_INVALID;
 
 	ADDRINFO hints;
@@ -38,3 +34,25 @@ uint8_t initialize(SOCKADDR_IN_T* server, const char* hostname, uint32_t port)
 	freeaddrinfo(res);
 	return SUCCESS;
 }
+
+
+uint8_t initializeServerSocket(SOCKADDR_IN_T* server, SOCKET_T* server_socket, uint32_t port)
+{
+	SOCKET_HEAD_INIT
+
+	if (!CHECK_VALID(server_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP))) {
+		return ERR_INVALID;
+	}
+
+	memset((char*)server, 0, sizeof(*server));
+	server->sin_family = AF_INET;
+	server->sin_port = htons(port);
+	server->sin_addr.s_addr = INADDR_ANY;
+
+	if (!CHECK_VALID(bind(server_socket, (SOCKADDR_T *)server, sizeof(*server)))) {
+		return ERR_COULD_NOT_BIND;
+	}
+
+	return SUCCESS;
+}
+

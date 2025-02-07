@@ -1,6 +1,15 @@
 #ifndef MASTER_INCLUDE_H
 #define MASTER_INCLUDE_H
 
+#pragma region ERROR_CODES
+	#define ERR_WININIT_FAIL		1
+	#define ERR_INVALID				2
+	#define ERR_GETADDRINFO_FAIL	3
+	#define ERR_COULD_NOT_BIND		4
+
+	#define SUCCESS					0
+#pragma endregion
+
 /* unix */
 
 #if defined(__unix__)
@@ -8,8 +17,11 @@
 #include <netdb.h>
 #include <ifaddrs.h>
 
+#define SOCKET_HEAD_INIT 
+
 #define SOCKET sockaddr
-#define SOCKADD_IN_T sockaddr_in
+#define SOCKADDR_T sockaddr
+#define SOCKADDR_IN_T sockaddr_in
 #define CHECK_VALID(s) ((s) >= 0)
 #define CLOSESOCKET(s) close(s)
 
@@ -24,10 +36,21 @@
 #include <iphlpapi.h>
 #pragma comment(lib, "ws2_32.lib")
 
+
+#define SOCKET_HEAD_INIT 								\
+{														\
+	WSADATA ws;											\
+	if (WSAStartup(MAKEWORD(2, 2), &ws) != 0) {			\
+														\
+			return ERR_WININIT_FAIL;					\
+	}													\
+}														\
+
 #define SOCKET_T SOCKET
+#define SOCKADDR_T SOCKADDR
 #define SOCKADDR_IN_T SOCKADDR_IN
 #define ADDRINFO_T ADDRINFO
-#define CHECK_VALID(s) ((s) != INVALID_SOCKET)
+#define CHECK_VALID(s) ((s) != SOCKET_ERROR)
 #define CLOSESOCKET(s) closesocket(s)
 
 #define GET_SOCKET_ERROR() (WSAGetLastError())
