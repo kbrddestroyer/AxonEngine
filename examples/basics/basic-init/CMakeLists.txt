@@ -7,12 +7,15 @@ endif()
 
 project ("AxonEngine.examples.basics.basic-init")
 
-add_executable(TestFile "main.cpp" ${BACKEND_SOURCES})
+add_executable(BasicClient "client.cpp" ${BACKEND_SOURCES})
+add_executable(BasicServer "server.cpp" ${BACKEND_SOURCES})
 
 if(WIN32)
-  target_link_libraries(TestFile ws2_32)
+  target_link_libraries(BasicClient ws2_32)
+  target_link_libraries(BasicServer ws2_32)
 endif(WIN32)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET TestFile PROPERTY CXX_STANDARD 17)
+  set_property(TARGET BasicClient PROPERTY CXX_STANDARD 17)
+  set_property(TARGET BasicServer PROPERTY CXX_STANDARD 17)
 endif()

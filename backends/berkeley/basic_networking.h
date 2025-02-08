@@ -38,5 +38,10 @@ uint8_t initializeServerSocket(SOCKADDR_IN_T*, SOCKET_T*, uint32_t);
 
 #pragma endregion /* SERVER UTILITY FUNCTIONS */
 
+int32_t send_message(const char*, size_t, SOCKET_T*, SOCKADDR_IN_T*);
+int32_t recv_message(char**, size_t, SOCKET_T, SOCKADDR_IN*);
+
+void finalize(SOCKET_T*);
+
 #endif
 /* basic_networking.h */

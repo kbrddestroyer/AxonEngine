@@ -4,14 +4,14 @@
 
 #include <iostream>
 #include <backends/backend.h>
-
+#include <string>
 
 int main()
 {
 	SOCKADDR_IN_T socket;
 	SOCKET_T client;
 	const char* hostname = "localhost";
-	uint32_t port = 8022;
+	uint32_t port = 10423;
 
 	std::cout << "Starting client socket initialization..." << std::endl;
 	std::cout << "HOSTNAME: " << hostname << std::endl;
@@ -28,24 +28,16 @@ int main()
 	std::cout << "SUCCESS!" << std::endl;
 
 	std::cout << "Press any key...";
-	std::getchar();		// Wait for input
 
-	SOCKADDR_IN_T server;
-	SOCKET_T server_socket;
+	const char* message = "Hello World!";
 
-	std::cout << "Starting server socket initialization..." << std::endl;
-	std::cout << "PORT:		" << port << std::endl;
-
-	std::cout << "Initializing...";
-
-	if (int code = initializeServerSocket(&server, &server_socket, port) != SUCCESS)
+	int code = send_message(message, strlen(message), &client, &socket);
+	if (code < 0)
 	{
-		std::cout << "Initialization failed with code " << code << std::endl;
-		return code;
+		
+		return WSAGetLastError();
 	}
 
-	std::cout << "SUCCESS!" << std::endl;
-	std::getchar();
-
+	std::cin.get();
 	return 0;
 }

@@ -1,6 +1,7 @@
 #include "basic_networking.h"
 
 #include <stdint.h>
+#include <stdio.h>
 
 uint8_t initializeClientConnection(SOCKADDR_IN_T* server, SOCKET_T* client, const char* hostname, uint32_t port)
 {
@@ -29,7 +30,7 @@ uint8_t initializeClientConnection(SOCKADDR_IN_T* server, SOCKET_T* client, cons
 		return ERR_GETADDRINFO_FAIL;
 	}
 
-	memcpy(server, (PSOCKADDR_IN)res->ai_addr, res->ai_addrlen);
+	memcpy(server, (struct SOCKADDR_IN_T*) res->ai_addr, res->ai_addrlen);
 
 	freeaddrinfo(res);
 	return SUCCESS;
@@ -40,19 +41,39 @@ uint8_t initializeServerSocket(SOCKADDR_IN_T* server, SOCKET_T* server_socket, u
 {
 	SOCKET_HEAD_INIT
 
-	if (!CHECK_VALID(server_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP))) {
+	if (!CHECK_VALID(*server_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP))) {
 		return ERR_INVALID;
 	}
 
-	memset((char*)server, 0, sizeof(*server));
 	server->sin_family = AF_INET;
 	server->sin_port = htons(port);
 	server->sin_addr.s_addr = INADDR_ANY;
 
-	if (!CHECK_VALID(bind(server_socket, (SOCKADDR_T *)server, sizeof(*server)))) {
+	int code = bind(*server_socket, (struct SOCKADDR_T*)server, sizeof(*server));
+
+	if (!CHECK_VALID(code)) {
 		return ERR_COULD_NOT_BIND;
 	}
 
 	return SUCCESS;
 }
 
+
+int32_t send_message(const char* message, size_t size, SOCKET_T* from, SOCKADDR_IN_T* to)
+{
+	return sendto(*from, message, size, 0, (struct SOCKADDR_T*) to, sizeof(*to));
+}
+
+int32_t recv_message(char** message, size_t max_size, SOCKET_T to, SOCKADDR_IN* from)
+{
+	size_t len = sizeof(*from);
+	return recvfrom(to, message, max_size, 0, (struct SOCKADDR_T*) from, &len);
+}
+
+void finalize(SOCKET_T* socket)
+{
+#if defined(WIN32)
+	CLOSESOCKET(socket);
+	WSACleanup();
+#endif
+}
