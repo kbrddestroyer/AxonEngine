@@ -5,7 +5,7 @@
 
 #pragma region UDP_UTILS
 
-uint8_t initializeClientConnection(SOCKADDR_IN_T* server, SOCKET_T* client, const char* hostname, PORT_T port)
+uint32_t initializeClientConnection(SOCKADDR_IN_T* server, SOCKET_T* client, const char* hostname, uint32_t port)
 {
 	SOCKET_HEAD_INIT
 
@@ -39,7 +39,7 @@ uint8_t initializeClientConnection(SOCKADDR_IN_T* server, SOCKET_T* client, cons
 }
 
 
-uint8_t initializeServerSocket(SOCKADDR_IN_T* server, SOCKET_T* server_socket, PORT_T port)
+uint32_t initializeServerSocket(SOCKADDR_IN_T* server, SOCKET_T* server_socket, uint32_t port)
 {
 	SOCKET_HEAD_INIT
 

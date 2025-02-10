@@ -13,7 +13,7 @@ uint8_t Networking::AxonNetworkingInternalError::code()
 }
 
 
-Networking::Synaps::Synaps(PORT_T port)
+Networking::Synaps::Synaps(uint32_t port)
 {
 	isServer = true;
 	info.port = port;

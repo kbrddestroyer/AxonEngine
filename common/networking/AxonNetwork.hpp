@@ -13,7 +13,7 @@ namespace Networking
 	struct ConnectionInfo
 	{
 		std::string		hostname;
-		PORT_T			port;
+		uint32_t			port;
 	};
 
 	class AxonNetworkingInternalError
@@ -43,7 +43,7 @@ namespace Networking
 		Synaps() = default;
 	public:
 		/** Initializes Synaps in server mode */
-		Synaps(PORT_T);
+		Synaps(uint32_t);
 		/** Initialize Synaps in client mode */
 		Synaps(const ConnectionInfo&);
 
