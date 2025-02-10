@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#pragma region UDP_UTILS
+
 uint8_t initializeClientConnection(SOCKADDR_IN_T* server, SOCKET_T* client, const char* hostname, uint32_t port)
 {
 	SOCKET_HEAD_INIT
@@ -59,9 +61,9 @@ uint8_t initializeServerSocket(SOCKADDR_IN_T* server, SOCKET_T* server_socket, u
 }
 
 
-int32_t send_message(const char* message, size_t size, SOCKET_T* from, SOCKADDR_IN_T* to)
+int32_t send_message(const char* message, size_t size, SOCKET_T from, SOCKADDR_IN_T* to)
 {
-	return sendto(*from, message, size, 0, (struct SOCKADDR_T*) to, sizeof(*to));
+	return sendto(from, message, size, 0, (struct SOCKADDR_T*) to, sizeof(*to));
 }
 
 int32_t recv_message(char** message, size_t max_size, SOCKET_T to, SOCKADDR_IN* from)
@@ -77,3 +79,11 @@ void finalize(SOCKET_T* socket)
 	WSACleanup();
 #endif
 }
+
+#pragma endregion
+
+#pragma region TCP_UTILS
+
+
+
+#pragma endregion
