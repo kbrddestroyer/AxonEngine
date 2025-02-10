@@ -47,13 +47,16 @@ namespace Networking
 		/** Initialize Synaps in client mode */
 		Synaps(const ConnectionInfo&);
 
-
 		void send(const AxonMessage&);
 		void listen();
 
 		void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*);
 	};
 
+	/**
+	* Networking core
+	* Handles synaps connections
+	*/
 	class AxonNetwork
 	{
 	public:

@@ -1,6 +1,7 @@
 #include "AxonNetwork.hpp"
 
 
+#pragma region AXON_NETWORKING_INTERNAL_ERROR
 Networking::AxonNetworkingInternalError::AxonNetworkingInternalError(uint8_t code)
 {
 	this->err = code;
@@ -11,8 +12,10 @@ uint8_t Networking::AxonNetworkingInternalError::code()
 {
 	return err;
 }
+#pragma endregion
 
 
+#pragma region SYNAPS
 Networking::Synaps::Synaps(uint32_t port)
 {
 	isServer = true;
@@ -20,7 +23,6 @@ Networking::Synaps::Synaps(uint32_t port)
 
 	
 }
-
 
 Networking::Synaps::Synaps(const ConnectionInfo& connection)
 {
@@ -53,6 +55,13 @@ void Networking::Synaps::listen()
 void Networking::Synaps::onMessageReceived(const AxonMessage& message, SOCKADDR_IN_T* from)
 {
 	// Notify
+}
+#pragma endregion
+
+
+
+Networking::AxonNetwork::AxonNetwork()
+{
 }
 
 
