@@ -4,7 +4,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 #if defined(USE_BERKELEY)
 #include "berkeley/basic_networking.h"
 #else
@@ -15,5 +14,4 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
 #endif

@@ -62,4 +62,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+typedef uint32_t PORT_T;
+
 #endif

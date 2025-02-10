@@ -22,7 +22,7 @@
 * @param uint32_t port
 * @return 0 or ERR_CODE (defined in basic_networking.h)
 */
-uint8_t initializeClientConnection(SOCKADDR_IN_T*, SOCKET_T*, const char*, uint32_t);
+uint8_t initializeClientConnection(SOCKADDR_IN_T*, SOCKET_T*, const char*, PORT_T);
 
 #pragma endregion /* CLIENT UTILITY FUNCTIONS */
 
@@ -35,7 +35,7 @@ uint8_t initializeClientConnection(SOCKADDR_IN_T*, SOCKET_T*, const char*, uint3
 * @param uint32_t port
 * @return 0 or ERR_CODE (defined in basic_networking.h)
 */
-uint8_t initializeServerSocket(SOCKADDR_IN_T*, SOCKET_T*, uint32_t);
+uint8_t initializeServerSocket(SOCKADDR_IN_T*, SOCKET_T*, PORT_T);
 
 #pragma endregion /* SERVER UTILITY FUNCTIONS */
 
