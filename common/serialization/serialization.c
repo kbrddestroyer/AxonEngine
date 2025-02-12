@@ -27,10 +27,10 @@ char* serialize(char* data, size_t size, uint32_t tag, size_t* total_size)
     return buffer;
 }
 
-uint8_t deserialize(char* serialized, size_t size, char** deserialized, size_t* actualSize, uint32_t* tag)
+uint8_t deserialize(char* serialized, size_t size, char* deserialized, size_t* actualSize, uint32_t* tag)
 {
     if (deserialized == NULL)
-        return 2;   // ERR_NO_BUFFER
+        return 2;
 
     size_t actual;
     actual = size;
@@ -47,27 +47,14 @@ uint8_t deserialize(char* serialized, size_t size, char** deserialized, size_t* 
         return 1;
     }
 
-    *deserialized = calloc(actual + 1, sizeof(char));
-    
-    if (*deserialized == NULL)
-        return 1;   // ERR_COULD_NOT_ALLOC
-
-    memcpy(*deserialized, serialized + header_size, actual);
-    (*deserialized)[actual] = 0;
+    memcpy(deserialized, serialized + header_size, actual);
+    (deserialized)[actual] = 0;
 
     size_t footer_size = size - actual - header_size;
     size_t crop = (sizeof(actual) - footer_size) * 8;
-
-    /*
-    *   Here we need to crop N higher bits of TAG variable
-    * 
-    * e.g. footer_size = 2
-    * (1ULL << 2 * 8) ,b	    0b0000000000000000000000000000000000000000000000010000000000000000	unsigned __int64
-    * (1ULL << 2 * 8) - 1 ,b	0b0000000000000000000000000000000000000000000000001111111111111111	unsigned __int64
-    */
-
+    
     *tag = (*(uint64_t*) (serialized + actual + header_size)) & ((1ULL << footer_size * 8) - 1);
-    // *tag = *tag << crop >> crop; 
     *actualSize = actual;
+
     return 0;
 }

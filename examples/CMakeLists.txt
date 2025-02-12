@@ -6,7 +6,6 @@ if (POLICY CMP0141)
 endif()
 
 project ("AxonEngine.examples")
-include("CTest")
 
 include_directories(.)
 

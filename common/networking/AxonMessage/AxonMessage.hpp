@@ -7,6 +7,11 @@
 
 namespace Networking
 {
+	enum FLAGS
+	{
+		F_VALIDATE		= 0b0001
+	};
+
 	class AxonMessage
 	{
 	private:

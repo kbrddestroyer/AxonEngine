@@ -12,6 +12,8 @@ include_directories(.)
 
 # Common backends
 
+add_subdirectory(common)
+
 set (BACKEND_SOURCES
 	${CMAKE_HOME_DIRECTORY}/backends/berkeley/basic_networking.h
 	${CMAKE_HOME_DIRECTORY}/backends/berkeley/basic_networking.c
@@ -21,3 +23,6 @@ set (BACKEND_SOURCES
 
 # Examples
 add_subdirectory(examples)
+
+# Unit tests
+add_subdirectory(tests)
