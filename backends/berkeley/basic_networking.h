@@ -54,7 +54,7 @@ int32_t send_message(const char*, size_t, SOCKET_T, SOCKADDR_IN_T*);
 * @param char** buffer - data buffer
 * @param size_t max_size - max size of bytes that can be written in buffer
 */
-int32_t recv_message(char**, size_t, SOCKET_T, SOCKADDR_IN*);
+int32_t recv_message(char**, size_t, SOCKET_T, SOCKADDR_IN_T*);
 
 /**
 * Closes socket

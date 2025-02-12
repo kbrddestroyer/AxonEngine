@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <backends/backend.h>
+#include <thread>
 
 
 int main()
@@ -36,14 +37,14 @@ int main()
 			std::cout << message_buffer << std::endl;
 		}
 
-		int lastError = WSAGetLastError();
+		int lastError = GET_SOCKET_ERROR();
 
 		if (lastError > 0)
 		{
 			std::cout << lastError << std::endl;
 		}
 
-		Sleep(100);
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 	return 0;
 }

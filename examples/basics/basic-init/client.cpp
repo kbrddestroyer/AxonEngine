@@ -4,7 +4,8 @@
 
 #include <iostream>
 #include <backends/backend.h>
-#include <string>
+#include <string.h>
+
 
 int main()
 {
@@ -31,11 +32,11 @@ int main()
 
 	const char* message = "Hello World!";
 
-	int code = send_message(message, strlen(message), &client, &socket);
+	int code = send_message(message, strlen(message), client, &socket);
 	if (code < 0)
 	{
 		
-		return WSAGetLastError();
+		return GET_SOCKET_ERROR();
 	}
 
 	std::cin.get();

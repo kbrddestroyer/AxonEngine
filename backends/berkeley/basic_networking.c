@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 
 #pragma region UDP_UTILS
 
@@ -14,7 +15,7 @@ uint32_t initializeClientConnection(SOCKADDR_IN_T* server, SOCKET_T* client, con
 	if (!CHECK_VALID(*client))
 		return ERR_INVALID;
 
-	ADDRINFO hints;
+	ADDRINFO_T hints;
 
 	memset(&hints, 0, sizeof(hints));
 
@@ -22,17 +23,17 @@ uint32_t initializeClientConnection(SOCKADDR_IN_T* server, SOCKET_T* client, con
 	hints.ai_socktype	= SOCK_DGRAM;
 	hints.ai_protocol	= IPPROTO_UDP;
 
-	ADDRINFO* res;
+	ADDRINFO_T* res;
+	
 	char port_s[16] = { 0 };
-
-	_itoa_s((uint32_t) port, port_s, sizeof(port_s), 10);
+	snprintf(port_s, sizeof(port_s), "%d", port);
 
 	if (getaddrinfo(hostname, port_s, &hints, &res) != 0)
 	{
 		return ERR_GETADDRINFO_FAIL;
 	}
 
-	memcpy(server, (struct SOCKADDR_IN_T*) res->ai_addr, res->ai_addrlen);
+	memcpy(server, (SOCKADDR_IN_T*) res->ai_addr, res->ai_addrlen);
 
 	freeaddrinfo(res);
 	return SUCCESS;
@@ -51,7 +52,7 @@ uint32_t initializeServerSocket(SOCKADDR_IN_T* server, SOCKET_T* server_socket, 
 	server->sin_port = htons(port);
 	server->sin_addr.s_addr = INADDR_ANY;
 
-	int code = bind(*server_socket, (struct SOCKADDR_T*)server, sizeof(*server));
+	int code = bind(*server_socket, (SOCKADDR_T*)server, sizeof(*server));
 
 	if (!CHECK_VALID(code)) {
 		return ERR_COULD_NOT_BIND;
@@ -63,13 +64,13 @@ uint32_t initializeServerSocket(SOCKADDR_IN_T* server, SOCKET_T* server_socket, 
 
 int32_t send_message(const char* message, size_t size, SOCKET_T from, SOCKADDR_IN_T* to)
 {
-	return sendto(from, message, size, 0, (struct SOCKADDR_T*) to, sizeof(*to));
+	return sendto(from, message, size, 0, (SOCKADDR_T*) to, sizeof(*to));
 }
 
-int32_t recv_message(char** message, size_t max_size, SOCKET_T to, SOCKADDR_IN* from)
+int32_t recv_message(char** message, size_t max_size, SOCKET_T to, SOCKADDR_IN_T* from)
 {
 	size_t len = sizeof(*from);
-	return recvfrom(to, message, max_size, 0, (struct SOCKADDR_T*) from, &len);
+	return recvfrom(to, message, max_size, 0, (SOCKADDR_T*) from, &len);
 }
 
 void finalize(SOCKET_T* socket)

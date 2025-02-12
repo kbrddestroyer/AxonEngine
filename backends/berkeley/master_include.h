@@ -19,9 +19,10 @@
 
 #define SOCKET_HEAD_INIT 
 
-#define SOCKET sockaddr
-#define SOCKADDR_T sockaddr
-#define SOCKADDR_IN_T sockaddr_in
+#define ADDRINFO_T struct addrinfo
+#define SOCKET_T int32_t
+#define SOCKADDR_T struct sockaddr
+#define SOCKADDR_IN_T struct sockaddr_in
 #define CHECK_VALID(s) ((s) >= 0)
 #define CLOSESOCKET(s) close(s)
 
