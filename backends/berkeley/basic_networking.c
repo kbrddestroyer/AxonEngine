@@ -1,18 +1,15 @@
 #include "basic_networking.h"
 
-#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
 #pragma region UDP_UTILS
 
-uint32_t initializeClientConnection(SOCKADDR_IN_T* server, SOCKET_T* client, const char* hostname, uint32_t port)
+uint8_t connect_udp_client(SOCKADDR_IN_T* server, SOCKET_T* client, const char* hostname, uint32_t port)
 {
 	SOCKET_HEAD_INIT
 
-	*client = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-
-	if (!CHECK_VALID(*client))
+	if (!CHECK_VALID(*client = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)))
 		return ERR_INVALID;
 
 	ADDRINFO_T hints;
@@ -40,51 +37,50 @@ uint32_t initializeClientConnection(SOCKADDR_IN_T* server, SOCKET_T* client, con
 }
 
 
-uint32_t initializeServerSocket(SOCKADDR_IN_T* server, SOCKET_T* server_socket, uint32_t port)
+uint8_t create_udp_server(SOCKADDR_IN_T* server, SOCKET_T* server_socket, uint32_t port)
 {
 	SOCKET_HEAD_INIT
 
 	if (!CHECK_VALID(*server_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP))) {
 		return ERR_INVALID;
 	}
-
+	
 	server->sin_family = AF_INET;
 	server->sin_port = htons(port);
 	server->sin_addr.s_addr = INADDR_ANY;
 
-	int code = bind(*server_socket, (SOCKADDR_T*)server, sizeof(*server));
-
-	if (!CHECK_VALID(code)) {
+	if (!CHECK_VALID(bind(*server_socket, (SOCKADDR_T*)server, sizeof(*server)))) {
 		return ERR_COULD_NOT_BIND;
 	}
 
 	return SUCCESS;
 }
 
-
-int32_t send_message(const char* message, size_t size, SOCKET_T from, SOCKADDR_IN_T* to)
+int32_t send_udp_message(const char* message, size_t size, SOCKET_T from, SOCKADDR_IN_T* to)
 {
 	return sendto(from, message, size, 0, (SOCKADDR_T*) to, sizeof(*to));
 }
 
-int32_t recv_message(char** message, size_t max_size, SOCKET_T to, SOCKADDR_IN_T* from)
+int32_t recv_udp_message(char** message, size_t max_size, SOCKET_T to, SOCKADDR_IN_T* from)
 {
 	size_t len = sizeof(*from);
 	return recvfrom(to, message, max_size, 0, (SOCKADDR_T*) from, &len);
 }
 
-void finalize(SOCKET_T* socket)
+void finalize_udp(SOCKET_T* socket)
 {
-#if defined(WIN32)
 	CLOSESOCKET(socket);
+#if defined(WIN32)
 	WSACleanup();
 #endif
 }
 
-#pragma endregion
+#pragma endregion /* UDP UTILS */
+
+
 
 #pragma region TCP_UTILS
 
 
 
-#pragma endregion
+#pragma endregion /* TCP UTILS */

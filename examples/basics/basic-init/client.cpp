@@ -20,7 +20,7 @@ int main()
 
 	std::cout << "Initializing...";
 
-	if (int code = initializeClientConnection(&socket, &client, hostname, port) != SUCCESS)
+	if (int code = connect_udp_client(&socket, &client, hostname, port) != SUCCESS)
 	{
 		std::cout << "Initialization failed with code " << code << std::endl;
 		return code;
@@ -28,17 +28,21 @@ int main()
 
 	std::cout << "SUCCESS!" << std::endl;
 
-	std::cout << "Press any key...";
+	const uint8_t messagesCount = 2;
 
-	const char* message = "Hello World!";
+	const char* messages[messagesCount] = {
+		"Hello from client example!",
+		"q!"
+	};
 
-	int code = send_message(message, strlen(message), client, &socket);
-	if (code < 0)
-	{
-		
-		return GET_SOCKET_ERROR();
-	}
+	for (uint8_t i = 0; i < messagesCount; i++)
+		if (int code = send_udp_message(messages[i], strlen(messages[i]), client, &socket) < 0)
+		{
+			return GET_SOCKET_ERROR();
+		}
 
 	std::cin.get();
+
+	finalize_udp(&client);
 	return 0;
 }

@@ -15,27 +15,27 @@
 #pragma region CLIENT_UTILS
 
 /**
-* Initializes client connection to remote host. Uses getaddrinfo.
+* Connects to the remote host via UDP. Uses getaddrinfo.
 * @param SOCKADDR_IN_T* server
 * @param SOCKET* client
 * @param const char* hostname
 * @param uint32_t port
 * @return 0 or ERR_CODE (defined in basic_networking.h)
 */
-uint32_t initializeClientConnection(SOCKADDR_IN_T*, SOCKET_T*, const char*, uint32_t);
+uint8_t connect_udp_client(SOCKADDR_IN_T*, SOCKET_T*, const char*, uint32_t);
 
 #pragma endregion /* CLIENT UTILITY FUNCTIONS */
 
 #pragma region SERVER_UTILS
 
 /**
-* Initializes server socket.
+* Initializes server socket with UDP protocol.
 * @param SOCKADDR_IN_T* server
 * @param SOCKET* server_socket
 * @param uint32_t port
 * @return 0 or ERR_CODE (defined in basic_networking.h)
 */
-uint32_t initializeServerSocket(SOCKADDR_IN_T*, SOCKET_T*, uint32_t);
+uint8_t create_udp_server(SOCKADDR_IN_T*, SOCKET_T*, uint32_t);
 
 #pragma endregion /* SERVER UTILITY FUNCTIONS */
 
@@ -47,24 +47,27 @@ uint32_t initializeServerSocket(SOCKADDR_IN_T*, SOCKET_T*, uint32_t);
 * @param SOCKADDR_IN_T to - destination
 * @returns sendto result
 */
-int32_t send_message(const char*, size_t, SOCKET_T, SOCKADDR_IN_T*);
+int32_t send_udp_message(const char*, size_t, SOCKET_T, SOCKADDR_IN_T*);
 
 /**
 * Handles message receiving over UDP
 * @param char** buffer - data buffer
 * @param size_t max_size - max size of bytes that can be written in buffer
+* @returns recvfrom result
 */
-int32_t recv_message(char**, size_t, SOCKET_T, SOCKADDR_IN_T*);
+int32_t recv_udp_message(char**, size_t, SOCKET_T, SOCKADDR_IN_T*);
 
 /**
 * Closes socket
 * @param SOCKET_T* socket
 */
-void finalize(SOCKET_T*);
+void finalize_udp(SOCKET_T*);
 
 #pragma endregion /* UDP UTILS */
 
 #pragma region TCP_UTILS
+
+
 
 #pragma endregion /* TCP UTILS */
 #endif

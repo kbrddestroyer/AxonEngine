@@ -6,7 +6,6 @@
 #include <backends/backend.h>
 #include <thread>
 
-
 int main()
 {
 	SOCKADDR_IN_T server;
@@ -18,7 +17,7 @@ int main()
 
 	std::cout << "Initializing...";
 
-	if (int code = initializeServerSocket(&server, &server_socket, port) != SUCCESS)
+	if (int code = create_udp_server(&server, &server_socket, port) != SUCCESS)
 	{
 		std::cout << "Initialization failed with code " << code << std::endl;
 		return code;
@@ -26,25 +25,34 @@ int main()
 
 	std::cout << "SUCCESS!" << std::endl;
 
-	char message_buffer[256] = {};
+	char			message_buffer[256] = {};
+	uint8_t			packages = 0;
+	SOCKADDR_IN_T	from;
 
-	SOCKADDR_IN_T from;
-	
 	while (true)
 	{
-		if (int code = recv_message((char**) message_buffer, 256, server_socket, &from) > 0)
+		if (int code = recv_udp_message((char**) message_buffer, 256, server_socket, &from) > 0)
 		{
 			std::cout << message_buffer << std::endl;
+			packages++;
+			if (strcmp(message_buffer, "q!"))
+				break;
 		}
-
-		int lastError = GET_SOCKET_ERROR();
-
-		if (lastError > 0)
+		else
 		{
-			std::cout << lastError << std::endl;
+			if (int lastError = GET_SOCKET_ERROR() > 0)
+			{
+				std::cout << lastError << std::endl;
+				break;
+			}
 		}
-
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
+
+	std::cout << "FINISH!" << std::endl;
+
+	finalize_udp(&server_socket);
+
+	std::cin.get();
 	return 0;
 }
