@@ -8,3 +8,4 @@ endif()
 project ("AxonEngine.examples.basics")
 
 add_subdirectory(basic-init)
+add_subdirectory(basic-axon-networking)

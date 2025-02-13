@@ -7,6 +7,4 @@ endif()
 
 project ("AxonEngine.examples")
 
-include_directories(.)
-
 add_subdirectory(basics)

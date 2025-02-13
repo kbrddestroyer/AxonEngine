@@ -5,28 +5,31 @@ if (POLICY CMP0141)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
+if(GTK2_${_var}_FOUND)
+   set(GTK2_LIBRARIES ${GTK2_LIBRARIES} ${GTK2_${_var}_LIBRARY})
+   set(GTK2_LIBRARIES ${GTK2_LIBRARIES} PARENT_SCOPE)
+endif()
+
 project ("AxonEngine")
 include("CTest")
-
-include_directories(.)
-
 # Common backends
-
-add_subdirectory(common)
 
 set (BACKEND_SOURCES
 	${CMAKE_HOME_DIRECTORY}/backends/berkeley/basic_networking.h
 	${CMAKE_HOME_DIRECTORY}/backends/berkeley/basic_networking.c
 	${CMAKE_HOME_DIRECTORY}/backends/berkeley/master_include.h
+	${CMAKE_HOME_DIRECTORY}/backends/backend.hpp
 	${CMAKE_HOME_DIRECTORY}/backends/backend.h
 )
 
-set (EVENT_SYSTEM
-	${CMAKE_HOME_DIRECTORY}/common/events/AxonEvent.cpp
-	${CMAKE_HOME_DIRECTORY}/common/events/AxonEvent.hpp
+add_subdirectory(common)
+
+set (AXON_MASTER
+	${NETWORKING}
 )
 
 # Examples
 add_subdirectory(examples)
+
 # Unit tests
 add_subdirectory(tests)
