@@ -6,7 +6,7 @@
 int main() { 
 	const char*		message		= "Some hella big data";
 	char			buffer[256] = { 0 };
-	uint32_t		tag			= 3;	// 3
+	uint32_t		tag			= 3;
 	size_t			total		= 0;
 
 	const char* serialized = const_cast<const char*>(serialize((char* ) message, strlen(message), tag, &total));

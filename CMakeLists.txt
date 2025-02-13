@@ -21,8 +21,12 @@ set (BACKEND_SOURCES
 	${CMAKE_HOME_DIRECTORY}/backends/backend.h
 )
 
+set (EVENT_SYSTEM
+	${CMAKE_HOME_DIRECTORY}/common/events/AxonEvent.cpp
+	${CMAKE_HOME_DIRECTORY}/common/events/AxonEvent.hpp
+)
+
 # Examples
 add_subdirectory(examples)
-
 # Unit tests
 add_subdirectory(tests)

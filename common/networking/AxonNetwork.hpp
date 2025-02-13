@@ -12,7 +12,7 @@ namespace Networking
 	*/
 	struct ConnectionInfo
 	{
-		std::string		hostname;
+		std::string			hostname;
 		uint32_t			port;
 	};
 
