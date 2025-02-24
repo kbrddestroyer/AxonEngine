@@ -50,7 +50,7 @@ Networking::Synaps::Synaps(const ConnectionInfo& connection)
 Networking::Synaps::~Synaps()
 {
 	isAlive = false;
-	CLOSESOCKET(socket);
+	finalize_udp(socket);
 }
 
 void Networking::Synaps::send(AxonMessage& message)
