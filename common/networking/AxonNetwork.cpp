@@ -22,7 +22,8 @@ Networking::Synaps::Synaps(uint32_t port)
 	isServer = true;
 	info.port = port;
 
-	
+	local = nullptr;
+	remote = nullptr;
 }
 
 Networking::Synaps::Synaps(const ConnectionInfo& connection)
@@ -58,12 +59,6 @@ void Networking::Synaps::onMessageReceived(const AxonMessage& message, SOCKADDR_
 	// Notify
 }
 #pragma endregion
-
-
-
-Networking::AxonNetwork::AxonNetwork()
-{
-}
 
 
 /* AxonNetwork.cpp */

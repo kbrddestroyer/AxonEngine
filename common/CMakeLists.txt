@@ -36,6 +36,7 @@ set (NETWORKING
 	${CMAKE_CURRENT_SOURCE_DIR}/networking/message/AxonMessage.cpp
 )
 
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 add_library(NetworkingLib SHARED ${NETWORKING})
 target_include_directories(NetworkingLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 

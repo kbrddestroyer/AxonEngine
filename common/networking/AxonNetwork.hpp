@@ -61,7 +61,7 @@ namespace Networking
 	class AxonNetwork
 	{
 	public:
-		AxonNetwork();
+		AxonNetwork() = default;
 
 
 	};

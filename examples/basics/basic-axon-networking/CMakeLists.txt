@@ -10,8 +10,8 @@ project ("AxonEngine.examples.basics.basic-axon-networking")
 add_executable(BasicAxonClient "client.cpp")
 add_executable(BasicAxonServer "server.cpp")
 
-target_include_directories(BasicAxonClient PUBLIC ${CMAKE_HOME_DIRECTORY}/common)
-target_include_directories(BasicAxonServer PUBLIC ${CMAKE_HOME_DIRECTORY}/common)
+target_link_libraries(BasicAxonClient NetworkingLib)
+target_link_libraries(BasicAxonServer NetworkingLib)
 
 if(WIN32)
   target_link_libraries(BasicAxonClient ws2_32)
