@@ -61,7 +61,7 @@ int32_t recv_udp_message(char**, size_t, SOCKET_T, SOCKADDR_IN_T*);
 * Closes socket
 * @param SOCKET_T* socket
 */
-void finalize_udp(SOCKET_T*);
+void finalize_udp(SOCKET_T);
 
 #pragma endregion /* UDP UTILS */
 
