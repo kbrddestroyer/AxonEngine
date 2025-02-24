@@ -2,7 +2,7 @@
 #define AXON_UTILITY_H
 
 #if defined(WIN32)
-#if defined(AXON_SERVER_LIB)
+#if defined(AXON_LIB)
 #define AXON_DECLSPEC __declspec(dllexport)
 #else
 #define AXON_DECLSPEC __declspec(dllimport)

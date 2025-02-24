@@ -52,7 +52,7 @@ int main()
 
 	std::cout << "FINISH!" << std::endl;
 
-	finalize_udp(&server_socket);
+	finalize_udp(server_socket);
 
 	std::cin.get();
 	return 0;

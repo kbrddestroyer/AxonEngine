@@ -38,7 +38,9 @@ set (NETWORKING
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 add_library(NetworkingLib SHARED ${NETWORKING})
+
 target_include_directories(NetworkingLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_definitions(NetworkingLib PUBLIC AXON_LIB)
 
 set (EVENT_SYSTEM ${EVENT_SYSTEM} PARENT_SCOPE)
 set (SERIALIZATION ${SERIALIZATION} PARENT_SCOPE)
