@@ -1,4 +1,5 @@
 #include "AxonNetwork.hpp"
+#include <backends/backend.hpp>
 
 
 #pragma region AXON_NETWORKING_INTERNAL_ERROR
@@ -30,9 +31,9 @@ Networking::Synaps::Synaps(const ConnectionInfo& connection)
 	info.hostname = connection.hostname;
 	info.port = connection.port;
 
-	if (int code = initializeClientConnection(
-		&remote,
-		&local,
+	if (int code = connect_udp_client(
+		remote,
+		local,
 		info.hostname.c_str(),
 		info.port
 	))
@@ -41,9 +42,9 @@ Networking::Synaps::Synaps(const ConnectionInfo& connection)
 	}
 }
 
-void Networking::Synaps::send(const AxonMessage& message)
+void Networking::Synaps::send(AxonMessage& message)
 {
-	send_message(message.getMessage(), message.getSize(), *local, remote);
+	send_udp_message(message.getMessage(), message.getSize(), *local, remote);
 }
 
 void Networking::Synaps::listen()

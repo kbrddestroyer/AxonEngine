@@ -14,14 +14,6 @@ project ("AxonEngine")
 include("CTest")
 # Common backends
 
-set (BACKEND_SOURCES
-	${CMAKE_HOME_DIRECTORY}/backends/berkeley/basic_networking.h
-	${CMAKE_HOME_DIRECTORY}/backends/berkeley/basic_networking.c
-	${CMAKE_HOME_DIRECTORY}/backends/berkeley/master_include.h
-	${CMAKE_HOME_DIRECTORY}/backends/backend.hpp
-	${CMAKE_HOME_DIRECTORY}/backends/backend.h
-)
-
 add_subdirectory(common)
 
 set (AXON_MASTER

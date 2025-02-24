@@ -1,8 +1,7 @@
 /* AxonMessage.hpp */
 
 #pragma once
-
-#include "serialization/serialization.h"
+#include <serialization/serialization.hpp>
 #include <string>
 
 namespace Networking
@@ -15,11 +14,16 @@ namespace Networking
 	class AxonMessage
 	{
 	private:
+		size_t		size;
 		const char* serialized;
 	
+	protected:
+		AxonMessage() = default;
 	public:
+		AxonMessage(const char*, size_t);
+
 		const char* getMessage() { return serialized; }
-		size_t getSize() { strlen(serialized); }
+		size_t getSize() { return size; }
 	}; 
 }
 

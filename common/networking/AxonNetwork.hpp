@@ -48,7 +48,7 @@ namespace Networking
 		/** Initialize Synaps in client mode */
 		Synaps(const ConnectionInfo&);
 
-		void send(const AxonMessage&);
+		void send(AxonMessage&);
 		void listen();
 
 		void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*);
