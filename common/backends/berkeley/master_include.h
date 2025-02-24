@@ -16,6 +16,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <ifaddrs.h>
+#include <unistd.h>
 
 #define SOCKET_HEAD_INIT 
 
