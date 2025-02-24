@@ -10,8 +10,8 @@ project ("AxonEngine.examples.basics.basic-init")
 add_executable(BasicClient "client.cpp" ${BACKEND_SOURCES})
 add_executable(BasicServer "server.cpp" ${BACKEND_SOURCES})
 
-target_include_directories(BasicClient PUBLIC ${CMAKE_HOME_DIRECTORY}/common/backends)
-target_include_directories(BasicServer PUBLIC ${CMAKE_HOME_DIRECTORY}/common/backends)
+target_include_directories(BasicClient ${CMAKE_HOME_DIRECTORY}/backends)
+target_include_directories(BasicServer ${CMAKE_HOME_DIRECTORY}/backends)
 
 if(WIN32)
   target_link_libraries(BasicClient ws2_32)
