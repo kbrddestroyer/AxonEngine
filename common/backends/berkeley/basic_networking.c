@@ -67,7 +67,7 @@ int32_t recv_udp_message(char** message, size_t max_size, SOCKET_T to, SOCKADDR_
 	return recvfrom(to, message, max_size, 0, (SOCKADDR_T*) from, &len);
 }
 
-void finalize_udp(SOCKET_T* socket)
+void finalize_udp(SOCKET_T socket)
 {
 	CLOSESOCKET(socket);
 #if defined(WIN32)
