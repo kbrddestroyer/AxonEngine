@@ -25,7 +25,7 @@
 #define SOCKADDR_T struct sockaddr
 #define SOCKADDR_IN_T struct sockaddr_in
 #define CHECK_VALID(s) ((s) >= 0)
-#define CLOSESOCKET(s) close(*s)
+#define CLOSESOCKET(s) close(s)
 
 #define GET_SOCKET_ERROR() (errno)
 #endif

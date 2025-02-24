@@ -7,6 +7,8 @@ endif()
 
 project ("AxonEngine.examples.basics.basic-axon-networking")
 
+add_compile_definitions(TEST_MODE)
+
 add_executable(BasicAxonClient "client.cpp")
 add_executable(BasicAxonServer "server.cpp")
 
