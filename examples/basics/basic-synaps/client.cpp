@@ -16,5 +16,6 @@ int main()
 	Networking::Synaps clientConnection = Networking::Synaps(connection);
 
 	const char* message = "Hello World!";
-	clientConnection.send(Networking::AxonMessage(message, strlen(message) + 1));
+	Networking::AxonMessage message_ = Networking::AxonMessage(message, strlen(message) + 1);
+	clientConnection.send(message_);
 }

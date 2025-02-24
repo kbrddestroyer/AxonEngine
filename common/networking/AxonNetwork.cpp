@@ -78,7 +78,8 @@ void Networking::Synaps::listen()
 void Networking::Synaps::onMessageReceived(AxonMessage& message, SOCKADDR_IN_T* from)
 {
 	// Notify
-	events.invoke(&SynapsMessageReceivedEvent(message, from));
+	SynapsMessageReceivedEvent event_ = SynapsMessageReceivedEvent(message, from)æ
+	events.invoke(&event_);
 }
 #pragma endregion
 
