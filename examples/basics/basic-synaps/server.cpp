@@ -1,5 +1,11 @@
-#include <networking/AxonNetwork.hpp>
+/*
+* This example shows basic connection, using Axon internal tools
+* Synaps provides connection between two points
+* 
+* This file defines basic server logic, with message handling using Synaps event system
+*/
 
+#include <networking/AxonNetwork.hpp>
 #include <iostream>
 
 void onMessageReceived(Networking::SynapsMessageReceivedEvent* event)
