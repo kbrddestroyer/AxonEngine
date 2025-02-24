@@ -70,7 +70,8 @@ void Networking::Synaps::listen()
 		if (size_t size = recv_udp_message(reinterpret_cast<char**> (&buffer), 1024, socket, &host) > 0)
 		{
 			const char* message = const_cast<char*>(reinterpret_cast<char*> (buffer));
-			onMessageReceived(AxonMessage(message, size), &host);
+			AxonMessage message_ = AxonMessage(message, size);
+			onMessageReceived(message_, &host);
 		}
 	}
 }
