@@ -5,6 +5,7 @@
 #include <iostream>
 #include <backends/backend.h>
 #include <thread>
+#include <string.h>
 
 int main()
 {
