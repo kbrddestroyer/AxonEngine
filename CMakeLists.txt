@@ -22,6 +22,5 @@ set (AXON_MASTER
 
 # Examples
 add_subdirectory(examples)
-
 # Unit tests
 add_subdirectory(tests)
