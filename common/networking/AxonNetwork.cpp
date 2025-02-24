@@ -82,5 +82,4 @@ void Networking::Synaps::onMessageReceived(AxonMessage& message, SOCKADDR_IN_T* 
 }
 #pragma endregion
 
-
 /* AxonNetwork.cpp */

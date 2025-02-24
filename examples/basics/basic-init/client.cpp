@@ -43,6 +43,6 @@ int main()
 
 	std::cin.get();
 
-	finalize_udp(&client);
+	finalize_udp(client);
 	return 0;
 }

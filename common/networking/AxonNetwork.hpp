@@ -1,9 +1,9 @@
 #pragma once
 #include "message/AxonMessage.hpp"
+
 #include <events/AxonEvent.hpp>
 #include <backends/backend.hpp>
 #include <AxonUtility.h>
-
 #include <string>
 
 
@@ -14,7 +14,7 @@ namespace Networking
 	*/
 	struct ConnectionInfo
 	{
-		std::string			hostname;
+		std::string			hostname = "";
 		uint32_t			port;
 	};
 
@@ -38,14 +38,14 @@ namespace Networking
 		SOCKADDR_IN_T*	from;
 	
 	public:
-		SynapsMessageReceivedEvent(AxonMessage& message, SOCKADDR_IN* from) : EventSystem::AxonEvent()
+		SynapsMessageReceivedEvent(AxonMessage& message, SOCKADDR_IN_T* from) : EventSystem::AxonEvent()
 		{
 			this->message = message;
 			this->from = from;
 		}
 
 		inline AxonMessage getMessage() { return message; }
-		inline SOCKADDR_IN* getFrom() { return from; }
+		inline SOCKADDR_IN_T* getFrom() { return from; }
 	};
 	
 

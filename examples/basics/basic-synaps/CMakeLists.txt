@@ -15,6 +15,17 @@ add_executable(BasicAxonServer "server.cpp")
 target_link_libraries(BasicAxonClient NetworkingLib)
 target_link_libraries(BasicAxonServer NetworkingLib)
 
+add_custom_command(TARGET BasicAxonClient POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:NetworkingLib>
+        $<TARGET_FILE_DIR:BasicAxonClient>
+)
+add_custom_command(TARGET BasicAxonServer POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:NetworkingLib>
+        $<TARGET_FILE_DIR:BasicAxonServer>
+)
+
 if(WIN32)
   target_link_libraries(BasicAxonClient ws2_32)
   target_link_libraries(BasicAxonServer ws2_32)
