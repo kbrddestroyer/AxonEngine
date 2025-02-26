@@ -25,21 +25,33 @@ set (BACKEND_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/backends/backend.h
 )
 
+set (NETWORKING_CORE
+	${CMAKE_CURRENT_SOURCE_DIR}/networking/networking-core/Synaps.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/networking/networking-core/Synaps.cpp
+)
+
+set (MESSAGES_API
+	${CMAKE_CURRENT_SOURCE_DIR}/networking/message/AxonMessage.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/networking/message/AxonMessage.cpp
+)
+
 set (NETWORKING
 	${EVENT_SYSTEM}
 	${BACKEND_SOURCES}
 	${SERIALIZATION}
 	${BACKEND_SOURCES}
+	${NETWORKING_CORE}
+	${MESSAGES_API}
 	${CMAKE_CURRENT_SOURCE_DIR}/networking/AxonNetwork.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/networking/AxonNetwork.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/networking/message/AxonMessage.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/networking/message/AxonMessage.cpp
 )
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 add_library(NetworkingLib SHARED ${NETWORKING})
 
 target_include_directories(NetworkingLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(NetworkingLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/networking)
+target_include_directories(NetworkingLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/networking/message)
 target_compile_definitions(NetworkingLib PUBLIC AXON_LIB)
 
 set (EVENT_SYSTEM ${EVENT_SYSTEM} PARENT_SCOPE)

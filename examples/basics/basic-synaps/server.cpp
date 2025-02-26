@@ -15,9 +15,11 @@ void onMessageReceived(Networking::SynapsMessageReceivedEvent* event)
 
 int main()
 {
-	Networking::Synaps serverConnection = Networking::Synaps(10423);
+	Networking::AsyncSynaps serverConnection = Networking::AsyncSynaps(10423);
 	serverConnection.getEventManager().subscribe<Networking::SynapsMessageReceivedEvent>(onMessageReceived);
 
 	std::cout << "Starting Synaps connection" << std::endl;
-	serverConnection.listen();
+	serverConnection.start();
+
+	while (serverConnection.alive()) {}
 }
