@@ -1,9 +1,6 @@
 #include "AxonEvent.hpp"
 #include <utility>
 
-EventSystem::AxonEventManager::AxonEventManager()
-{
-}
 
 EventSystem::AxonEventManager::~AxonEventManager()
 {

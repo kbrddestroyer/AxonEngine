@@ -16,11 +16,14 @@ namespace EventSystem
 	class AxonEventManager
 	{
 	public:
-		AxonEventManager();
+		AxonEventManager() = default;
 		~AxonEventManager();
 
 		template<typename T>
-		inline void subscribe(std::function<void(T*)>);
+		void subscribe(std::function<void(T*)>);
+
+		template<class C, typename T>
+		void subscribe(void (C::* method)(T*), C* instance);
 		
 		void invoke(AxonEvent*);
 	private:
