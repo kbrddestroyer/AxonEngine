@@ -92,6 +92,7 @@ namespace Networking
 		virtual void start();
 
 		void send(AxonMessage&);
+		void sendTo(AxonMessage&, SOCKADDR_IN_T*);
 		void listen();
 
 		void onMessageReceived(AxonMessage&, SOCKADDR_IN_T*);

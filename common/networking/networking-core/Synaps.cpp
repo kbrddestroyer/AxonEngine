@@ -1,4 +1,5 @@
 #include "Synaps.hpp"
+#include <cstdio>
 
 
 #pragma region SYNAPS
@@ -39,23 +40,28 @@ Networking::Synaps::~Synaps()
 void Networking::Synaps::start()
 {
 	isAlive = true;
+	listen();
 }
 
 void Networking::Synaps::send(AxonMessage& message)
 {
-	send_udp_message(message.getMessage(), message.getSize(), socket, &socket_info);
+	if (!isServer)
+		sendTo(message, &socket_info);
+}
+
+void Networking::Synaps::sendTo(AxonMessage& message, SOCKADDR_IN_T* info)
+{
+	send_udp_message(message.getMessage(), message.getSize(), socket, info);
 }
 
 void Networking::Synaps::listen()
 {
-	// Listen function impl
-	// Separate thread?
-
 	char* buffer[1024];
 	SOCKADDR_IN_T host;
 	while (isAlive)
 	{
-		if (size_t size = recv_udp_message(reinterpret_cast<char**> (&buffer), 1024, socket, &host) > 0)
+		int32_t size = recv_udp_message(reinterpret_cast<char**> (&buffer), 1024, socket, &host);
+		if (size > 0)
 		{
 			const char* message = const_cast<char*>(reinterpret_cast<char*> (buffer));
 			AxonMessage message_ = AxonMessage(message, size);
@@ -78,7 +84,6 @@ void Networking::Synaps::onMessageReceived(AxonMessage& message, SOCKADDR_IN_T* 
 Networking::AsyncSynaps::~AsyncSynaps()
 {
 	kill();
-	proc.join();	// Correctly kill Synaps in main thread
 }
 
 void Networking::AsyncSynaps::start()
@@ -90,6 +95,7 @@ void Networking::AsyncSynaps::start()
 void Networking::AsyncSynaps::kill()
 {
 	isAlive = false;
+	proc.join();
 }
 
 #pragma endregion

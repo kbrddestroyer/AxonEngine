@@ -7,3 +7,4 @@ endif()
 
 project ("AxonEngine.examples.axon-api")
 
+add_subdirectory(ping)
