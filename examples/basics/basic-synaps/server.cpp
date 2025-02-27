@@ -16,10 +16,18 @@ void onMessageReceived(Networking::SynapsMessageReceivedEvent* event)
 int main()
 {
 	Networking::AsyncSynaps serverConnection = Networking::AsyncSynaps(10423);
+	Networking::AsyncSynaps internalMessageTool = Networking::AsyncSynaps({ "localhost", 10423 });
 	serverConnection.getEventManager().subscribe<Networking::SynapsMessageReceivedEvent>(onMessageReceived);
 
 	std::cout << "Starting Synaps connection" << std::endl;
 	serverConnection.start();
+	internalMessageTool.start();
+
+
+	const char* message = "Hello World from internal!";
+	Networking::AxonMessage message_ = Networking::AxonMessage(message, strlen(message) + 1);
+
+	internalMessageTool.send(message_);
 
 	while (serverConnection.alive()) {}
 }
