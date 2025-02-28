@@ -21,8 +21,8 @@ namespace Networking
 		AxonMessage(const char*, size_t);
 		AxonMessage(const AxonMessage&);
 
-		const char* getMessage() { return serialized; }
-		size_t getSize() { return size; }
+		const char* getMessage() const { return serialized; }
+		size_t getSize() const { return size; }
 	}; 
 
 	class Message
@@ -34,7 +34,7 @@ namespace Networking
 	public:
 		Message() = default;
 		Message(const char*, size_t, uint32_t);
-		Message(AxonMessage&);
+		Message(const AxonMessage&);
 
 		~Message();
 
@@ -43,7 +43,7 @@ namespace Networking
 	public:
 		inline void* getBitstream() { return bitstream; }
 		inline size_t getSize() { return size; }
-		inline uint32_t getTag() { return tag; }
+		inline uint32_t getTag() { return tag;}
 	};
 }
 

@@ -10,15 +10,15 @@ class CentralSynaps : public Networking::Synaps
 public:
 	CentralSynaps(uint32_t port) : Networking::Synaps(port) {}
 
-	void onMessageReceived(Networking::SynapsMessageReceivedEvent* event)
+	void onMessageReceived(const Networking::SynapsMessageReceivedEvent& event)
 	{
-		Networking::AxonMessage serialized = event->getMessage();
+		Networking::AxonMessage serialized = event.getMessage();
 		Networking::Message message(serialized);
 
 		if (message.getTag() != 0)
 		{
-			this->sendTo(serialized, event->getFrom());
-			clients.push_back(*(event->getFrom()));
+			this->sendTo(serialized, event.getFrom());
+			clients.push_back(*(event.getFrom()));
 			return;
 		}
 

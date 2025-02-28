@@ -20,10 +20,10 @@ namespace EventSystem
 		~AxonEventManager();
 
 		template<typename T>
-		void subscribe(std::function<void(T*)>);
+		void subscribe(std::function<void(const T&)>);
 
 		template<class C, typename T>
-		void subscribe(void (C::* method)(T*), C* instance);
+		void subscribe(void (C::* method)(const T&), C* instance);
 		
 		void invoke(AxonEvent*);
 	private:

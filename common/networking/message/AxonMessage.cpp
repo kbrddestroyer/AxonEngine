@@ -29,7 +29,7 @@ Networking::Message::Message(const char* bitstream, size_t size, uint32_t tag)
 	this->tag = tag;
 }
 
-Networking::Message::Message(AxonMessage& message)
+Networking::Message::Message(const AxonMessage& message)
 {
 	this->bitstream = new char[message.getSize()];
 	deserialize(

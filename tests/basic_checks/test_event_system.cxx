@@ -16,21 +16,19 @@ public:
 	}
 
 	constexpr uint8_t get_data() const { return data; }
-
-	void check_this() { isChecked = true; }
-	bool IsChecked() const { return isChecked; }
 };
 
 
-void callback(TestEvent* event)
+void callback(const TestEvent& event)
 {
-	uint8_t data = event->get_data();
+	uint8_t data = event.get_data();
 	assert(data == 3);
 }
 
-void callback2(TestEvent* event)
+void callback2(const TestEvent& event)
 {
-	event->check_this();
+	uint8_t data = event.get_data();
+	assert(data == 3);
 }
 
 int main()
@@ -49,6 +47,4 @@ int main()
 	g_manager->subscribe<TestEvent>(callback2);
 
 	g_manager->invoke(&event);
-
-	assert(event.IsChecked());
 }

@@ -6,9 +6,9 @@
 
 #include "common.h"
 
-void onMessageRecieved(Networking::SynapsMessageReceivedEvent* event)
+void onMessageRecieved(const Networking::SynapsMessageReceivedEvent& event)
 {
-	const time_t serverTime = *(reinterpret_cast<const time_t*> (event->getMessage().getMessage()));
+	const time_t serverTime = *(reinterpret_cast<const time_t*> (event.getMessage().getMessage()));
 	std::cout << "Ping is " << serverTime << std::endl;
 }
 

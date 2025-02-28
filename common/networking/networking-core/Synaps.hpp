@@ -44,16 +44,15 @@ namespace Networking
 	class SynapsMessageReceivedEvent final : public EventSystem::AxonEvent
 	{
 	private:
-		AxonMessage		message;
+		const AxonMessage&		message;
 		SOCKADDR_IN_T* from;
 	public:
-		SynapsMessageReceivedEvent(AxonMessage& message, SOCKADDR_IN_T* from) : EventSystem::AxonEvent()
+		SynapsMessageReceivedEvent(const AxonMessage& message, SOCKADDR_IN_T* from) : EventSystem::AxonEvent(), message(message)
 		{
-			this->message = message;
 			this->from = from;
 		}
 
-		inline AxonMessage getMessage() const { return message; }
+		inline const AxonMessage& getMessage() const { return message; }
 		inline SOCKADDR_IN_T* getFrom() const { return from; }
 	};
 
@@ -90,14 +89,14 @@ namespace Networking
 		Synaps(const ConnectionInfo&);
 		~Synaps();
 
-		inline bool alive() { return isAlive.load(); }
+		inline bool alive() const { return isAlive.load(); }
 		virtual void start();
 
-		void send(AxonMessage&);
-		void sendTo(AxonMessage&, SOCKADDR_IN_T*);
+		void send(const AxonMessage&);
+		void sendTo(const AxonMessage&, SOCKADDR_IN_T*);
 		void listen();
 
-		void onMessageReceived(AxonMessage&, SOCKADDR_IN_T*);
+		void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*);
 
 		constexpr inline EventSystem::AxonEventManager& getEventManager() { return events; }
 	};

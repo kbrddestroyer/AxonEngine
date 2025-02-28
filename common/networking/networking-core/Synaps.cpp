@@ -43,13 +43,13 @@ void Networking::Synaps::start()
 	listen();
 }
 
-void Networking::Synaps::send(AxonMessage& message)
+void Networking::Synaps::send(const AxonMessage& message)
 {
 	if (!isServer)
 		sendTo(message, &socket_info);
 }
 
-void Networking::Synaps::sendTo(AxonMessage& message, SOCKADDR_IN_T* info)
+void Networking::Synaps::sendTo(const AxonMessage& message, SOCKADDR_IN_T* info)
 {
 	send_udp_message(message.getMessage(), message.getSize(), socket, info);
 }
@@ -70,7 +70,7 @@ void Networking::Synaps::listen()
 	}
 }
 
-void Networking::Synaps::onMessageReceived(AxonMessage& message, SOCKADDR_IN_T* from)
+void Networking::Synaps::onMessageReceived(const AxonMessage& message, SOCKADDR_IN_T* from)
 {
 	// Notify
 	SynapsMessageReceivedEvent event_ = SynapsMessageReceivedEvent(message, from);

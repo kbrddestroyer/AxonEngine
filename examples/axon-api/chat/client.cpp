@@ -11,9 +11,9 @@ void initConnection(Networking::AsyncSynaps& synaps)
 	synaps.send(message.toMessage());
 }
 
-void onMessageReceived(Networking::SynapsMessageReceivedEvent* event)
+void onMessageReceived(const Networking::SynapsMessageReceivedEvent& event)
 {
-	Networking::Message message(event->getMessage());
+	Networking::Message message(event.getMessage());
 
 	std::cout << reinterpret_cast<char*>(message.getBitstream()) << std::endl;
 }

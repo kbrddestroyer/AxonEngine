@@ -8,9 +8,9 @@
 #include <networking/AxonNetwork.hpp>
 #include <iostream>
 
-void onMessageReceived(Networking::SynapsMessageReceivedEvent* event)
+void onMessageReceived(const Networking::SynapsMessageReceivedEvent& event)
 {
-	std::cout << event->getMessage().getMessage() << std::endl;
+	std::cout << event.getMessage().getMessage() << std::endl;
 }
 
 int main()
@@ -22,10 +22,6 @@ int main()
 	std::cout << "Starting Synaps connection" << std::endl;
 	serverConnection.start();
 	internalMessageTool.start();
-
-
-	const char* message = "Hello World from internal!";
-	internalMessageTool.send(message_.toMessage());
 
 	while (serverConnection.alive()) {}
 }
