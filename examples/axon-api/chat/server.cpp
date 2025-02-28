@@ -24,8 +24,6 @@ public:
 
 		for (SOCKADDR_IN_T& to : clients)
 		{
-			if (to.sin_addr.S_un.S_addr == event->getFrom()->sin_addr.S_un.S_addr)
-				continue;
 			this->sendTo(serialized, &to);
 		}
 	}
