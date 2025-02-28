@@ -5,9 +5,6 @@
 #include "common.h"
 
 
-Networking::Synaps* g_synaps;	// Never do this pls
-
-
 struct SynapsHolder
 {
 	Networking::Synaps& synaps;
