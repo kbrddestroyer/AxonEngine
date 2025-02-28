@@ -65,11 +65,18 @@ uint8_t create_udp_server(SOCKADDR_IN_T* server, SOCKET_T* server_socket, uint32
 		return ERR_COULD_NOT_BIND;
 	}
 
+#if defined(WIN32)
+	DWORD read_timeout = 10;  // it is milliseconds!
+	setsockopt(*server_socket, SOL_SOCKET, SO_RCVTIMEO, (char const*)&read_timeout, sizeof read_timeout);
+#else
+
 	struct timeval read_timeout;
 	read_timeout.tv_sec = 0;
 	read_timeout.tv_usec = 10;
 
 	setsockopt(*server_socket, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout);
+
+#endif
 	return SUCCESS;
 }
 

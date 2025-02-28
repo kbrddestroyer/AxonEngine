@@ -56,11 +56,11 @@ void Networking::Synaps::sendTo(AxonMessage& message, SOCKADDR_IN_T* info)
 
 void Networking::Synaps::listen()
 {
-	char* buffer[1024];
+	char* buffer[SYNAPS_MESSAGE_MAX_SIZE];
 	SOCKADDR_IN_T host;
 	while (isAlive)
 	{
-		int32_t size = recv_udp_message(reinterpret_cast<char**> (&buffer), 1024, socket, &host);
+		int32_t size = recv_udp_message(reinterpret_cast<char**> (&buffer), SYNAPS_MESSAGE_MAX_SIZE, socket, &host);
 		if (size > 0)
 		{
 			const char* message = const_cast<char*>(reinterpret_cast<char*> (buffer));

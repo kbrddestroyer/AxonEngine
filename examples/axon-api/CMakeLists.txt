@@ -8,3 +8,4 @@ endif()
 project ("AxonEngine.examples.axon-api")
 
 add_subdirectory(ping)
+add_subdirectory(chat)

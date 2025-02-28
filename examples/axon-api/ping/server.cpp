@@ -33,6 +33,5 @@ int main()
 	SynapsHolder holder = { synaps };
 
 	synaps.getEventManager().subscribe<SynapsHolder, Networking::SynapsMessageReceivedEvent>(&SynapsHolder::onMessageReceived, &holder);
-
 	synaps.start();
 }

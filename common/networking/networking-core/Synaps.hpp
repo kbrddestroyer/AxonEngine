@@ -10,6 +10,8 @@
 
 namespace Networking
 {
+	const uint32_t SYNAPS_MESSAGE_MAX_SIZE = 1024;
+
 	/**
 	* Low-level connection info for convinient storage
 	* TODO:

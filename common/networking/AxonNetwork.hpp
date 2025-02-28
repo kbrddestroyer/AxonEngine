@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 #include "AxonUtility.h"
 #include "networking-core/Synaps.hpp"

@@ -25,9 +25,7 @@ int main()
 
 
 	const char* message = "Hello World from internal!";
-	Networking::AxonMessage message_ = Networking::AxonMessage(message, strlen(message) + 1);
-
-	internalMessageTool.send(message_);
+	internalMessageTool.send(message_.toMessage());
 
 	while (serverConnection.alive()) {}
 }
