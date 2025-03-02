@@ -28,6 +28,13 @@
 #define CLOSESOCKET(s) close(s)
 
 #define GET_SOCKET_ERROR() (errno)
+
+#define SET_ASYNC_SOCKET(delay, s)			\
+	struct timeval read_timeout;			\
+	read_timeout.tv_sec = 0;				\
+	read_timeout.tv_usec = delay;			\
+	setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout);
+
 #endif
 
 /* windows */
@@ -57,6 +64,15 @@
 
 #define GET_SOCKET_ERROR() (WSAGetLastError())
 
+#define SET_ASYNC_SOCKET(delay, s)		 \
+		DWORD read_timeout = delay;		 \
+		setsockopt(						 \
+			s,							 \
+			SOL_SOCKET,					 \
+			SO_RCVTIMEO,				 \
+			(char const*) &read_timeout, \
+			sizeof read_timeout			 \
+		);
 #endif
 
 /* common */

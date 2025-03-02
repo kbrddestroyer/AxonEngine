@@ -1,11 +1,12 @@
 #include <serialization/serialization.hpp>
 #include <assert.h>
 #include <string.h>
+#include <cstdio>
 
 
 int main() { 
 	const char*		message		= "Some hella big data";
-	char			buffer[256] = { 0 };
+	void* buffer;
 	uint32_t		tag			= 3;
 	size_t			total		= 0;
 
@@ -14,8 +15,21 @@ int main() {
 	assert(total > 0);
 	size_t deserialized_size = 0;
 
-	deserialize((char*)serialized, total, &buffer[0], &deserialized_size, &tag);
+	deserialize((char*)serialized, total, (void**) &buffer, &deserialized_size, &tag);
 
 	assert(tag == 3);
-	assert(strcmp(buffer, message) == 0);
+	((char*) buffer)[deserialized_size] = 0;
+	assert(strcmp((const char*) buffer, message) == 0);
+	
+	uint32_t data = 0;
+	serialized = const_cast<const char*>(serialize((char*) &data, sizeof(data), 0, &total));
+	assert(serialized);
+
+	deserialize((char*)serialized, total, (void**)&buffer, &deserialized_size, &tag);
+	uint32_t* dataptr = (uint32_t*) buffer;
+	
+	assert((*dataptr) == 0);
+
+	free(buffer);
+	free((void*) serialized);
 }
