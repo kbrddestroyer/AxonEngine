@@ -5,7 +5,15 @@
 
 class CentralSynaps : public Networking::Synaps
 {
-	std::vector<SOCKADDR_IN_T> clients;
+	inline static uint32_t ID = 0;
+
+	struct ClientConnection
+	{
+		uint32_t id;
+		SOCKADDR_IN_T connection;
+	};
+
+	std::vector<const ClientConnection> clients;
 
 public:
 	CentralSynaps(uint32_t port) : Networking::Synaps(port) {}
@@ -13,18 +21,17 @@ public:
 	void onMessageReceived(const Networking::SynapsMessageReceivedEvent& event)
 	{
 		Networking::AxonMessage serialized = event.getMessage();
-		Networking::Message message(serialized);
 
-		if (message.getTag() != 0)
+		if (serialized.getTag() != 0)
 		{
 			this->sendTo(serialized, event.getFrom());
-			clients.push_back(*(event.getFrom()));
+			clients.push_back({ ++CentralSynaps::ID, *(event.getFrom())} );
 			return;
 		}
 
-		for (SOCKADDR_IN_T& to : clients)
+		for (const ClientConnection& to : clients)
 		{
-			this->sendTo(serialized, &to);
+			this->sendTo(serialized, &to.connection);
 		}
 	}
 

@@ -19,7 +19,7 @@ char* serialize(char* data, size_t size, uint32_t tag, size_t* total_size)
     
     if (buffer == NULL)
         return NULL;   // ERR_COULD_NOT_ALLOC
-
+    
     memcpy(buffer, &size, header_size);
     memcpy(buffer + header_size, data, size);
     memcpy(buffer + header_size + size, &tag, footer_size);
@@ -27,11 +27,8 @@ char* serialize(char* data, size_t size, uint32_t tag, size_t* total_size)
     return buffer;
 }
 
-uint8_t deserialize(char* serialized, size_t size, char* deserialized, size_t* actualSize, uint32_t* tag)
+uint8_t deserialize(const char* serialized, size_t size, void** deserialized, size_t* actualSize, uint32_t* tag)
 {
-    if (deserialized == NULL)
-        return 2;
-
     size_t actual;
     actual = size;
     size_t header_size = sizeof(actual);
@@ -47,9 +44,12 @@ uint8_t deserialize(char* serialized, size_t size, char* deserialized, size_t* a
         return 1;
     }
 
-    memcpy(deserialized, serialized + header_size, actual);
-    (deserialized)[actual] = 0;
+    *deserialized = calloc(actual, sizeof(char));
 
+    if (*deserialized == NULL)
+        return 2;
+    
+    memcpy(*deserialized, serialized + header_size, actual);
     size_t footer_size = size - actual - header_size;
     size_t crop = (sizeof(actual) - footer_size) * 8;
     

@@ -16,11 +16,9 @@ void ping(Networking::AsyncSynaps& synaps)
 {
 	std::chrono::system_clock::duration currentTime = std::chrono::system_clock::now().time_since_epoch();
 	time_t timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime).count();
-
-	char* buffer = new char[sizeof(time_t)];
-	memcpy(buffer, &timestamp, sizeof(time_t));
-
-	Networking::AxonMessage message = Networking::AxonMessage(buffer, sizeof(time_t));
+	std::cout << "sent " << timestamp << std::endl;
+	
+	Networking::AxonMessage message = Networking::AxonMessage(&timestamp, sizeof(time_t));
 	synaps.send(message);
 }
 
