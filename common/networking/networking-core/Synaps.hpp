@@ -7,6 +7,8 @@
 #include <networking/message/AxonMessage.hpp>
 #include <backends/backend.hpp>
 
+#include <string>
+
 
 namespace Networking
 {

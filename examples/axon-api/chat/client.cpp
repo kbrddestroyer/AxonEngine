@@ -1,6 +1,6 @@
 #include <iostream>
 #include <AxonNetwork.hpp>
-#include <string>
+#include <string.h>
 
 
 void initConnection(Networking::AsyncSynaps& synaps)

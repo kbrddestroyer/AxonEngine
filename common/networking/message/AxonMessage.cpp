@@ -1,6 +1,7 @@
 #include "AxonMessage.hpp"
 #include <serialization/serialization.hpp>
 #include <assert.h>
+#include <memory.h>
 
 
 #pragma region AxonMessage
