@@ -31,19 +31,9 @@ uint8_t connect_udp_client(SOCKADDR_IN_T* server, SOCKET_T* client, const char* 
 	}
 
 	memcpy(server, (SOCKADDR_IN_T*) res->ai_addr, res->ai_addrlen);
+	
+	SET_ASYNC_SOCKET(10, *client);
 
-#if defined(WIN32)
-	DWORD read_timeout = 10;  // it is milliseconds!
-	setsockopt(*client, SOL_SOCKET, SO_RCVTIMEO, (char const*)&read_timeout, sizeof read_timeout);
-#else
-
-	struct timeval read_timeout;
-	read_timeout.tv_sec = 0;
-	read_timeout.tv_usec = 10;
-
-	setsockopt(*client, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout);
-
-#endif
 	freeaddrinfo(res);
 	return SUCCESS;
 }
@@ -64,19 +54,7 @@ uint8_t create_udp_server(SOCKADDR_IN_T* server, SOCKET_T* server_socket, uint32
 	if (!CHECK_VALID(bind(*server_socket, (SOCKADDR_T*)server, sizeof(*server)))) {
 		return ERR_COULD_NOT_BIND;
 	}
-
-#if defined(WIN32)
-	DWORD read_timeout = 10;  // it is milliseconds!
-	setsockopt(*server_socket, SOL_SOCKET, SO_RCVTIMEO, (char const*)&read_timeout, sizeof read_timeout);
-#else
-
-	struct timeval read_timeout;
-	read_timeout.tv_sec = 0;
-	read_timeout.tv_usec = 10;
-
-	setsockopt(*server_socket, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout);
-
-#endif
+	SET_ASYNC_SOCKET(10, *server_socket);
 	return SUCCESS;
 }
 

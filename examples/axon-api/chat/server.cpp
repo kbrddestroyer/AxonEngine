@@ -13,7 +13,7 @@ class CentralSynaps : public Networking::Synaps
 		SOCKADDR_IN_T connection;
 	};
 
-	std::vector<const ClientConnection> clients;
+	std::vector<ClientConnection> clients;
 
 public:
 	CentralSynaps(uint32_t port) : Networking::Synaps(port) {}
