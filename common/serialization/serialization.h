@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <AxonUtility.h>
 
+#define TAG_T uint16_t
+
 /**
 * Creates serialized string from data given
 * 
@@ -15,7 +17,7 @@
 * @param[out] size_t* total_size - will contain total serialized data size, bytes
 * @returns char* serialized message
 */
-AXON_DECLSPEC char* serialize(char*, size_t, uint32_t, size_t*);
+AXON_DECLSPEC char* serialize(char*, size_t, TAG_T, size_t*);
 
 /**
 * @param char* serialized - raw data
@@ -25,6 +27,6 @@ AXON_DECLSPEC char* serialize(char*, size_t, uint32_t, size_t*);
 * @param uint32_t* tag - will contain deserialized message footer
 * @returns 0 or error code
 */
-AXON_DECLSPEC uint8_t deserialize(const char*, size_t, void**, size_t*, uint32_t*);
+AXON_DECLSPEC uint8_t deserialize(const char*, size_t, void**, size_t*, TAG_T*);
 
 #endif	// AXONENGINE_SERIALIZATION_H

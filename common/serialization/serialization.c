@@ -3,7 +3,7 @@
 #include <string.h>
 
 
-char* serialize(char* data, size_t size, uint32_t tag, size_t* total_size)
+char* serialize(char* data, size_t size, TAG_T tag, size_t* total_size)
 {
     *total_size = 0;
     size_t header_size = 0;
@@ -27,7 +27,7 @@ char* serialize(char* data, size_t size, uint32_t tag, size_t* total_size)
     return buffer;
 }
 
-uint8_t deserialize(const char* serialized, size_t size, void** deserialized, size_t* actualSize, uint32_t* tag)
+uint8_t deserialize(const char* serialized, size_t size, void** deserialized, size_t* actualSize, TAG_T* tag)
 {
     size_t actual;
     actual = size;

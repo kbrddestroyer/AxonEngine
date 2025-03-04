@@ -8,19 +8,21 @@ namespace Networking
 {
 	enum FLAGS
 	{
-		F_VALIDATE		= 0b0001
+		UNDEFINED	= 0b0000000000000000,
+		VALIDATE	= 0b0000000000000001,
+		ACKNOWLEDGE = 0b0000000000000010,
 	};
 
 	/*
-	*	AxonMessage is a low-level interface for data storage, serialization and network sharing
+	AxonMessage is a low-level interface for data storage, serialization and network sharing
+	
 	*/
 	class AxonMessage
 	{
 	private:
 		size_t		size;
 		void*		message;
-		uint32_t	tag;
-
+		TAG_T	tag;
 
 		void*		serialized;
 		size_t		serializedSize;
@@ -42,7 +44,9 @@ namespace Networking
 		inline size_t getSerializedSize() const { return serializedSize; }
 		inline void* getMessage() const { return message; }
 		inline size_t getSize() const { return size; }
-		inline uint32_t getTag() const { return tag; }
+		inline TAG_T getTag() const { return tag; }
+
+		inline uint16_t getHeader() const { return tag; }
 	}; 
 }
 
