@@ -6,7 +6,7 @@
 	#define ERR_INVALID				2
 	#define ERR_GETADDRINFO_FAIL	3
 	#define ERR_COULD_NOT_BIND		4
-
+	#define ERR_CONNECTION_ABORTED	5 
 	#define SUCCESS					0
 #pragma endregion
 
