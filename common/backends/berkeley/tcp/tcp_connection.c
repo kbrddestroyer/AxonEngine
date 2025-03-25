@@ -1,4 +1,5 @@
 #include "tcp_connection.h"
+#include <string.h>
 
 uint8_t connect_tcp_client(SOCKADDR_IN_T* server, SOCKET_T* client, const char* hostname, uint32_t port)
 {

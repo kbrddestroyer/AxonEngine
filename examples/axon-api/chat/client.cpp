@@ -20,15 +20,15 @@ void onMessageReceived(const Networking::SynapseMessageReceivedEvent& event)
 
 int main()
 {
-	Networking::AsyncSynapse synaps({ "localhost", 10423 });
+	Networking::AsyncSynapse synapse({"localhost", 10423 });
 
-	initConnection(synaps);
-	synaps.start();
+	initConnection(synapse);
+	synapse.start();
 
-	synaps.getEventManager().subscribe<Networking::SynapseMessageReceivedEvent>(onMessageReceived);
+	synapse.getEventManager().subscribe<Networking::SynapseMessageReceivedEvent>(onMessageReceived);
 
 	char buffer[1024];
-	while (synaps.alive())
+	while (synapse.alive())
 	{
 		std::cin.getline(buffer, 1024, '\n');
 
@@ -37,6 +37,6 @@ int main()
 			strlen(buffer) + 1,
 			0
 		);
-		synaps.send(message);
+		synapse.send(message);
 	}
 }

@@ -25,9 +25,9 @@ struct SynapseHolder
 
 int main()
 {
-	Networking::Synapse synaps(10423);
-	SynapseHolder holder = { synaps };
+	Networking::Synapse synapse(10423, Networking::ConnectionMode::UDP);
+	SynapseHolder holder = {synapse };
 
-	synaps.getEventManager().subscribe<SynapseHolder, Networking::SynapseMessageReceivedEvent>(&SynapseHolder::onMessageReceived, &holder);
-	synaps.start();
+	synapse.getEventManager().subscribe<SynapseHolder, Networking::SynapseMessageReceivedEvent>(&SynapseHolder::onMessageReceived, &holder);
+	synapse.start();
 }

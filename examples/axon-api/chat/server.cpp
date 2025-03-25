@@ -16,7 +16,7 @@ class CentralSynapse : public Networking::Synapse
 	std::vector<ClientConnection> clients;
 
 public:
-	CentralSynapse(uint32_t port) : Networking::Synapse(port) {}
+	CentralSynapse(uint32_t port) : Networking::Synapse(port, Networking::ConnectionMode::UDP) {}
 
 	void onMessageReceived(const Networking::SynapseMessageReceivedEvent& event)
 	{
