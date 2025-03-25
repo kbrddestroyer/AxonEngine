@@ -34,7 +34,7 @@ int main()
 
 	while (true)
 	{
-		if (int code = recv_tcp_message((char**) message_buffer, 256, client, &from) > 0)
+		if (int code = recv_tcp_message((char**) message_buffer, 256, client) > 0)
 		{
 			std::cout << message_buffer << std::endl;
 			packages++;

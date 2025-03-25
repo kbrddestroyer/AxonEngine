@@ -43,7 +43,7 @@ int32_t send_tcp_message(const char*, size_t, SOCKET_T);
 * @param size_t max_size - max size of bytes that can be written in buffer
 * @returns recvfrom result
 */
-int32_t recv_tcp_message(char**, size_t, SOCKET_T, SOCKADDR_IN_T*);
+int32_t recv_tcp_message(char**, size_t, SOCKET_T);
 
 SOCKET_T accept_incoming(SOCKET_T, SOCKADDR_IN_T*);
 
