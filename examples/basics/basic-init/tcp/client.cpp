@@ -36,7 +36,7 @@ int main()
 	};
 
 	for (uint8_t i = 0; i < messagesCount; i++)
-		if (int code = send_tcp_message(messages[i], strlen(messages[i]), client, &socket) < 0)
+		if (int code = send_tcp_message(messages[i], strlen(messages[i]), client) < 0)
 		{
 			return GET_SOCKET_ERROR();
 		}

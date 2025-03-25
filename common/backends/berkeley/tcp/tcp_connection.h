@@ -35,7 +35,7 @@ uint8_t create_tcp_server(SOCKADDR_IN_T*, SOCKET_T*, uint32_t);
 * @param SOCKADDR_IN_T to - destination
 * @returns sendto result
 */
-int32_t send_tcp_message(const char*, size_t, SOCKET_T, const SOCKADDR_IN_T*);
+int32_t send_tcp_message(const char*, size_t, SOCKET_T);
 
 /**
 * Handles message receiving over UDP
