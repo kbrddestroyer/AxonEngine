@@ -3,7 +3,7 @@
 #include <AxonNetwork.hpp>
 
 
-class CentralSynaps : public Networking::Synaps
+class CentralSynapse : public Networking::Synapse
 {
 	inline static uint32_t ID = 0;
 
@@ -16,16 +16,16 @@ class CentralSynaps : public Networking::Synaps
 	std::vector<ClientConnection> clients;
 
 public:
-	CentralSynaps(uint32_t port) : Networking::Synaps(port) {}
+	CentralSynapse(uint32_t port) : Networking::Synapse(port, Networking::ConnectionMode::UDP) {}
 
-	void onMessageReceived(const Networking::SynapsMessageReceivedEvent& event)
+	void onMessageReceived(const Networking::SynapseMessageReceivedEvent& event)
 	{
 		Networking::AxonMessage serialized = event.getMessage();
 
 		if (serialized.getTag() != 0)
 		{
 			this->sendTo(serialized, event.getFrom());
-			clients.push_back({ ++CentralSynaps::ID, *(event.getFrom())} );
+			clients.push_back({ ++CentralSynapse::ID, *(event.getFrom())} );
 			return;
 		}
 
@@ -37,15 +37,15 @@ public:
 
 	void start() override
 	{
-		this->getEventManager().subscribe<CentralSynaps, Networking::SynapsMessageReceivedEvent>(&CentralSynaps::onMessageReceived, this);
-		Networking::Synaps::start();
+		this->getEventManager().subscribe<CentralSynapse, Networking::SynapseMessageReceivedEvent>(&CentralSynapse::onMessageReceived, this);
+		Networking::Synapse::start();
 	}
 };
 
 
 int main()
 {
-	CentralSynaps central(10423);
+	CentralSynapse central(10423);
 
 	central.start();
 }

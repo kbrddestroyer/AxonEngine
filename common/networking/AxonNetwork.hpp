@@ -3,14 +3,14 @@
 #include <vector>
 
 #include "AxonUtility.h"
-#include "networking-core/Synaps.hpp"
+#include "networking-core/Synapse.hpp"
 
 
 namespace Networking
 {
 	/**
 	* Networking core
-	* Handles multiple synaps connections
+	* Handles multiple synapse connections
 	*/
 	AXON_DECLSPEC class AxonNetwork
 	{

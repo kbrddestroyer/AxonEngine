@@ -5,11 +5,11 @@
 #include "common.h"
 
 
-struct SynapsHolder
+struct SynapseHolder
 {
-	Networking::Synaps& synaps;
+	Networking::Synapse& synapse;
 
-	void onMessageReceived(const Networking::SynapsMessageReceivedEvent& event)
+	void onMessageReceived(const Networking::SynapseMessageReceivedEvent& event)
 	{
 		std::chrono::system_clock::duration currentTime = std::chrono::system_clock::now().time_since_epoch();
 		time_t timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime).count();
@@ -19,15 +19,15 @@ struct SynapsHolder
 		time_t ping = timestamp - clientTime;
 		std::cout << "ping is " << ping << std::endl;
 		Networking::AxonMessage message = Networking::AxonMessage(&ping, sizeof(time_t));
-		synaps.sendTo(message, event.getFrom());
+		synapse.sendTo(message, event.getFrom());
 	}
 };
 
 int main()
 {
-	Networking::Synaps synaps(10423);
-	SynapsHolder holder = { synaps };
+	Networking::Synapse synapse(10423, Networking::ConnectionMode::UDP);
+	SynapseHolder holder = {synapse };
 
-	synaps.getEventManager().subscribe<SynapsHolder, Networking::SynapsMessageReceivedEvent>(&SynapsHolder::onMessageReceived, &holder);
-	synaps.start();
+	synapse.getEventManager().subscribe<SynapseHolder, Networking::SynapseMessageReceivedEvent>(&SynapseHolder::onMessageReceived, &holder);
+	synapse.start();
 }

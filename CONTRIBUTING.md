@@ -15,10 +15,10 @@ First of all, thank you for your interest in the project!
 
 ## Branch naming tutorial
 
-I have `pull-request-checker.yaml` setted up in GitHub Actions. This action checks branch naming for all pull-requests, targeted to `main` and `feature/*` branches. So, please foolow branch naming rules, otherwise your pull-request will be declined.
+I have `pull-request-checker.yaml` set up in GitHub Actions. This action checks branch naming for all pull-requests, targeted to `main` and `feature/*` branches. So, please follow branch naming rules, otherwise your pull-request will be declined.
 
 - Every work-in-progress branch should start with `wip/`
-- Central section should representate, which region of code you're currently changing. It can be `actions/`, `server/`, `client/`, `global/` if you're working on both server and client, `docs/`, etc.
+- Central section should represent, which region of code you're currently changing. It can be `actions/`, `server/`, `client/`, `global/` if you're working on both server and client, `docs/`, etc.
 - The last section is your brief message, e.g. `global-unix-backend`
 
 ## Building and testing

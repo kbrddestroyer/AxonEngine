@@ -23,11 +23,15 @@ set (BACKEND_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/backends/berkeley/master_include.h
 	${CMAKE_CURRENT_SOURCE_DIR}/backends/backend.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/backends/backend.h
+	${CMAKE_CURRENT_SOURCE_DIR}/backends/berkeley/udp/udp_connection.h
+	${CMAKE_CURRENT_SOURCE_DIR}/backends/berkeley/udp/udp_connection.c
+	${CMAKE_CURRENT_SOURCE_DIR}/backends/berkeley/tcp/tcp_connection.h
+	${CMAKE_CURRENT_SOURCE_DIR}/backends/berkeley/tcp/tcp_connection.c
 )
 
 set (NETWORKING_CORE
-	${CMAKE_CURRENT_SOURCE_DIR}/networking/networking-core/Synaps.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/networking/networking-core/Synaps.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/networking/networking-core/Synapse.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/networking/networking-core/Synapse.cpp
 )
 
 set (MESSAGES_API
