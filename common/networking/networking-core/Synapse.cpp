@@ -1,9 +1,9 @@
-#include "Synaps.hpp"
+#include "Synapse.hpp"
 #include <cstdio>
 
 
 #pragma region SYNAPS
-Networking::Synaps::Synaps(uint32_t port)
+Networking::Synapse::Synapse(uint32_t port)
 {
 	isServer = true;
 	info.port = port;
@@ -14,7 +14,7 @@ Networking::Synaps::Synaps(uint32_t port)
 	}
 }
 
-Networking::Synaps::Synaps(const ConnectionInfo& connection)
+Networking::Synapse::Synapse(const ConnectionInfo& connection)
 {
 	isServer = false;
 	info.hostname = connection.hostname;
@@ -31,25 +31,25 @@ Networking::Synaps::Synaps(const ConnectionInfo& connection)
 	}
 }
 
-Networking::Synaps::~Synaps()
+Networking::Synapse::~Synapse()
 {
 	isAlive = false;
 	finalize_udp(socket);
 }
 
-void Networking::Synaps::start()
+void Networking::Synapse::start()
 {
 	isAlive = true;
 	listen();
 }
 
-void Networking::Synaps::send(const AxonMessage& message)
+void Networking::Synapse::send(const AxonMessage& message)
 {
 	if (!isServer)
 		sendTo(message, &socket_info);
 }
 
-void Networking::Synaps::sendTo(const AxonMessage& message, const SOCKADDR_IN_T* info)
+void Networking::Synapse::sendTo(const AxonMessage& message, const SOCKADDR_IN_T* info)
 {
 	send_udp_message(
 		message.getSerializedBuffer(), 
@@ -59,13 +59,13 @@ void Networking::Synaps::sendTo(const AxonMessage& message, const SOCKADDR_IN_T*
 	);
 }
 
-void Networking::Synaps::listen()
+void Networking::Synapse::listen()
 {
-	char* buffer[SYNAPS_MESSAGE_MAX_SIZE];
+	char* buffer[SYNAPSE_MESSAGE_MAX_SIZE];
 	SOCKADDR_IN_T host;
 	while (isAlive)
 	{
-		int32_t size = recv_udp_message(reinterpret_cast<char**> (&buffer), SYNAPS_MESSAGE_MAX_SIZE, socket, &host);
+		int32_t size = recv_udp_message(reinterpret_cast<char**> (&buffer), SYNAPSE_MESSAGE_MAX_SIZE, socket, &host);
 		if (size > 0)
 		{
 			const char* message = const_cast<char*>(reinterpret_cast<char*> (buffer));
@@ -75,10 +75,10 @@ void Networking::Synaps::listen()
 	}
 }
 
-void Networking::Synaps::onMessageReceived(const AxonMessage& message, SOCKADDR_IN_T* from)
+void Networking::Synapse::onMessageReceived(const AxonMessage& message, SOCKADDR_IN_T* from)
 {
 	// Notify
-	SynapsMessageReceivedEvent event_ = SynapsMessageReceivedEvent(message, from);
+	SynapseMessageReceivedEvent event_ = SynapseMessageReceivedEvent(message, from);
 	events.invoke(&event_);
 }
 #pragma endregion
@@ -86,18 +86,18 @@ void Networking::Synaps::onMessageReceived(const AxonMessage& message, SOCKADDR_
 
 #pragma region ASYNC_SYNAPS
 
-Networking::AsyncSynaps::~AsyncSynaps()
+Networking::AsyncSynapse::~AsyncSynapse()
 {
 	kill();
 }
 
-void Networking::AsyncSynaps::start()
+void Networking::AsyncSynapse::start()
 {
 	isAlive = true;
-	proc = std::thread(&Networking::AsyncSynaps::listen, this);
+	proc = std::thread(&Networking::AsyncSynapse::listen, this);
 }
 
-void Networking::AsyncSynaps::kill()
+void Networking::AsyncSynapse::kill()
 {
 	isAlive = false;
 	proc.join();

@@ -3,15 +3,15 @@
 #include <string.h>
 
 
-void initConnection(Networking::AsyncSynaps& synaps)
+void initConnection(Networking::AsyncSynapse& synapse)
 {
 	char* QQ = "QQ";
 	Networking::AxonMessage message(reinterpret_cast<void*>(QQ), strlen(QQ) + 1, 1);
 
-	synaps.send(message);
+	synapse.send(message);
 }
 
-void onMessageReceived(const Networking::SynapsMessageReceivedEvent& event)
+void onMessageReceived(const Networking::SynapseMessageReceivedEvent& event)
 {
 	Networking::AxonMessage message(event.getMessage());
 
@@ -20,12 +20,12 @@ void onMessageReceived(const Networking::SynapsMessageReceivedEvent& event)
 
 int main()
 {
-	Networking::AsyncSynaps synaps({ "localhost", 10423 });
+	Networking::AsyncSynapse synaps({ "localhost", 10423 });
 
 	initConnection(synaps);
 	synaps.start();
 
-	synaps.getEventManager().subscribe<Networking::SynapsMessageReceivedEvent>(onMessageReceived);
+	synaps.getEventManager().subscribe<Networking::SynapseMessageReceivedEvent>(onMessageReceived);
 
 	char buffer[1024];
 	while (synaps.alive())

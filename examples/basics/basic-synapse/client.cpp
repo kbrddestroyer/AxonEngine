@@ -1,8 +1,8 @@
 /*
 * This example shows basic connection, using Axon internal tools
-* Synaps provides connection between two points
+* Synapse provides connection between two points
 * 
-* This file defined basic client logic, with AxonMessage forming and sending with Synaps tool
+* This file defined basic client logic, with AxonMessage forming and sending with Synapse tool
 */
 
 #include <networking/AxonNetwork.hpp>
@@ -13,7 +13,7 @@ int main()
 {
 	Networking::ConnectionInfo connection = { "localhost", 10423 };
 
-	Networking::Synaps clientConnection = Networking::Synaps(connection);
+	Networking::Synapse clientConnection = Networking::Synapse(connection);
 
 	const char* message = "Hello World!";
 	Networking::AxonMessage message_ = Networking::AxonMessage(message, strlen(message) + 1);

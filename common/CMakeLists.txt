@@ -30,8 +30,8 @@ set (BACKEND_SOURCES
 )
 
 set (NETWORKING_CORE
-	${CMAKE_CURRENT_SOURCE_DIR}/networking/networking-core/Synaps.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/networking/networking-core/Synaps.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/networking/networking-core/Synapse.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/networking/networking-core/Synapse.cpp
 )
 
 set (MESSAGES_API
