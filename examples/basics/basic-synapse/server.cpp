@@ -10,18 +10,16 @@
 
 void onMessageReceived(const Networking::SynapseMessageReceivedEvent& event)
 {
-	std::cout << event.getMessage().getMessage() << std::endl;
+	std::cout << reinterpret_cast<char*>(event.getMessage().getMessage()) << std::endl;
 }
 
 int main()
 {
-	Networking::AsyncSynapse serverConnection = Networking::AsyncSynapse(10423);
-	Networking::AsyncSynapse internalMessageTool = Networking::AsyncSynapse({ "localhost", 10423 });
+	Networking::AsyncSynapse serverConnection = Networking::AsyncSynapse(10423, Networking::ConnectionMode::TCP);
 	serverConnection.getEventManager().subscribe<Networking::SynapseMessageReceivedEvent>(onMessageReceived);
 
 	std::cout << "Starting Synapse connection" << std::endl;
 	serverConnection.start();
-	internalMessageTool.start();
 
 	while (serverConnection.alive()) {}
 }

@@ -14,6 +14,12 @@ namespace Networking
 {
 	const uint32_t SYNAPSE_MESSAGE_MAX_SIZE = 1024;
 
+    enum ConnectionMode
+    {
+        UDP,
+        TCP
+    };
+
 	/**
 	* Low-level connection info for convenient storage
 	* TODO:
@@ -23,16 +29,17 @@ namespace Networking
 	{
 		std::string			hostname = "";
 		uint32_t			port;
+        ConnectionMode      mode;
 	};
 
 	/**
 	* TODO: Documenting
 	*/
-	class AxonNetworkingInternalError
+class AxonNetworkingInternalError : public std::exception
 	{
 		uint8_t err;
 	public:
-		inline constexpr AxonNetworkingInternalError(uint8_t err = 0) : err(err) {}
+		inline explicit AxonNetworkingInternalError(uint8_t err = 0) : err(err) {}
 		inline constexpr uint8_t code() const { return err; }
 	};
 
@@ -75,7 +82,6 @@ namespace Networking
 		EventSystem::AxonEventManager events;
 
 		bool				isServer;
-
 		ConnectionInfo		info;
 		SOCKET_T socket;
 		SOCKADDR_IN_T socket_info;
@@ -86,19 +92,21 @@ namespace Networking
 		std::atomic<bool>	isAlive = false;
 	public:
 		/** Initializes Synapse in server mode */
-		Synapse(uint32_t);
+		Synapse(uint32_t, ConnectionMode);
 		/** Initialize Synapse in client mode */
 		Synapse(const ConnectionInfo&);
 		~Synapse();
-
+    private:
+        void initializeFromConnectionMode();
+    public:
 		inline bool alive() const { return isAlive.load(); }
 		virtual void start();
 
 		void send(const AxonMessage&);
-		void sendTo(const AxonMessage&, const SOCKADDR_IN_T*);
+		void sendTo(const AxonMessage&, const SOCKADDR_IN_T*) const;
 		void listen();
 
-		void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*);
+		virtual void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*);
 
 		constexpr inline EventSystem::AxonEventManager& getEventManager() { return events; }
 	};
@@ -109,7 +117,7 @@ namespace Networking
 		std::thread proc;
 	public:
 		/** Initializes Synapse in server mode */
-		inline AsyncSynapse(uint32_t port) : Synapse(port) {}
+		inline AsyncSynapse(uint32_t port, ConnectionMode mode) : Synapse(port, mode) {}
 		/** Initialize Synapse in client mode */
 		inline AsyncSynapse(const ConnectionInfo& info) : Synapse(info) {}
 		
