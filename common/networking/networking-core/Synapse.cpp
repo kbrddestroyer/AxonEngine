@@ -3,17 +3,19 @@
 
 
 #pragma region SYNAPS
-Networking::Synapse::Synapse(uint32_t port, ConnectionMode connectionMode)
+
+template <Networking::ConnectionMode mode>
+Networking::Synapse<mode>::Synapse(uint32_t port)
 {
 	isServer = true;
 
 	info.port = port;
-	info.mode = connectionMode;
-
 	initializeFromConnectionMode();
 }
 
-Networking::Synapse::Synapse(const ConnectionInfo& connection)
+
+template <Networking::ConnectionMode mode>
+Networking::Synapse<mode>::Synapse(const ConnectionInfo<mode>& connection)
 {
 	isServer = false;
 	info.hostname = connection.hostname;
@@ -23,46 +25,36 @@ Networking::Synapse::Synapse(const ConnectionInfo& connection)
 	initializeFromConnectionMode();
 }
 
-Networking::Synapse::~Synapse()
+
+template <Networking::ConnectionMode mode>
+Networking::Synapse<mode>::~Synapse()
 {
 	isAlive = false;
-	finalize_udp(socket);
+	finalize_udp(socket.socket);
 }
 
-void Networking::Synapse::start()
+template <Networking::ConnectionMode mode>
+void Networking::Synapse<mode>::start()
 {
 	isAlive = true;
 	listen();
 }
 
-void Networking::Synapse::send(const AxonMessage& message)
+template <Networking::ConnectionMode mode>
+void Networking::Synapse<mode>::send(const AxonMessage& message)
 {
 	if (!isServer)
-		sendTo(message, &socket_info);
+		sendTo(message, &socket.conn);
 }
 
-void Networking::Synapse::sendTo(const AxonMessage& message, const SOCKADDR_IN_T* dest) const
+template <Networking::ConnectionMode mode>
+void Networking::Synapse<mode>::sendTo(const AxonMessage& message, const SOCKADDR_IN_T* dest) const
 {
-	if (info.mode == ConnectionMode::UDP)
-	{
-		send_udp_message(
-				message.getSerializedBuffer(),
-				message.getSerializedSize(),
-				socket,
-				dest
-		);
-	}
-	else if (info.mode == ConnectionMode::TCP)
-	{
-		send_tcp_message(
-				message.getSerializedBuffer(),
-				message.getSerializedSize(),
-				socket
-				);
-	}
+	send_message<info.mode>(socket, message.getSerializedBuffer(), message.getSize());
 }
 
-void Networking::Synapse::listen()
+template <Networking::ConnectionMode mode>
+void Networking::Synapse<mode>::listen()
 {
 	char *buffer[SYNAPSE_MESSAGE_MAX_SIZE] = {};
 	SOCKADDR_IN_T host = {};
@@ -98,49 +90,19 @@ void Networking::Synapse::listen()
 	}
 }
 
-void Networking::Synapse::onMessageReceived(const AxonMessage& message, SOCKADDR_IN_T* from)
+template <Networking::ConnectionMode mode>
+void Networking::Synapse<mode>::onMessageReceived(const AxonMessage& message, SOCKADDR_IN_T* from)
 {
 	// Notify
 	SynapseMessageReceivedEvent event_ = SynapseMessageReceivedEvent(message, from);
 	events.invoke(&event_);
 }
 
-void Networking::Synapse::initializeFromConnectionMode() {
-	if (info.mode == ConnectionMode::TCP)
+template <Networking::ConnectionMode mode>
+void Networking::Synapse<mode>::initializeFromConnectionMode() {
+	if (isServer)
 	{
-		if (isServer)
-		{
-			create_tcp_server(&socket_info, &socket, info.port);
-		}
-		else
-		{
-			if (int code = connect_tcp_client(
-					&socket_info,
-					&socket,
-					info.hostname.c_str(),
-					info.port
-			) != SUCCESS)
-			{
-				throw AxonNetworkingInternalError(code);
-			}
-		}
-	}
-	else if (info.mode == ConnectionMode::UDP)
-	{
-		if (isServer)
-		{
-			create_udp_server(&socket_info, &socket, info.port);
-		}
-		else {
-			if (int code = connect_udp_client(
-					&socket_info,
-					&socket,
-					info.hostname.c_str(),
-					info.port
-			) != SUCCESS) {
-				throw AxonNetworkingInternalError(code);
-			}
-		}
+		uint8_t returnCode = initialize_server<info.mode>(socket, port);
 	}
 }
 
@@ -149,18 +111,21 @@ void Networking::Synapse::initializeFromConnectionMode() {
 
 #pragma region ASYNC_SYNAPS
 
-Networking::AsyncSynapse::~AsyncSynapse()
+template <Networking::ConnectionMode mode>
+Networking::AsyncSynapse<mode>::~AsyncSynapse()
 {
 	kill();
 }
 
-void Networking::AsyncSynapse::start()
+template <Networking::ConnectionMode mode>
+void Networking::AsyncSynapse<mode>::start()
 {
 	isAlive = true;
 	proc = std::thread(&Networking::AsyncSynapse::listen, this);
 }
 
-void Networking::AsyncSynapse::kill()
+template <Networking::ConnectionMode mode>
+void Networking::AsyncSynapse<mode>::kill()
 {
 	isAlive = false;
 	proc.join();

@@ -14,22 +14,22 @@ namespace Networking
 {
 	const uint32_t SYNAPSE_MESSAGE_MAX_SIZE = 1024;
 
-    enum ConnectionMode
-    {
-        UDP,
-        TCP
-    };
+	enum ConnectionMode
+	{
+		UDP = SOCK_DGRAM,
+		TCP = SOCK_STREAM
+	};
 
 	/**
 	* Low-level connection info for convenient storage
 	* TODO:
 	* - Research replacement
 	*/
+	template<ConnectionMode cmode>
 	struct ConnectionInfo
 	{
-		std::string			hostname = "";
-		uint32_t			port;
-        ConnectionMode      mode;
+		std::string				hostname = "";
+		uint32_t				port;
 	};
 
 	/**
@@ -74,36 +74,37 @@ class AxonNetworkingInternalError : public std::exception
 	*
 	* TODO:
 	*	- Documenting
-	*	- Make async
 	*/
-	AXON_DECLSPEC class Synapse
+	
+	template <ConnectionMode mode> class AXON_DECLSPEC Synapse
 	{
 	private:
 		EventSystem::AxonEventManager events;
 
 		bool				isServer;
 		ConnectionInfo		info;
-		SOCKET_T socket;
-		SOCKADDR_IN_T socket_info;
-
-		/** Default creation is restriced */
-		Synapse() = default;
+		Socket socket;
 	protected:
 		std::atomic<bool>	isAlive = false;
 	public:
+		/** Default creation is restriced */
+		Synapse() = delete;
+
 		/** Initializes Synapse in server mode */
-		Synapse(uint32_t, ConnectionMode);
+		Synapse(uint32_t);
 		/** Initialize Synapse in client mode */
-		Synapse(const ConnectionInfo&);
-		~Synapse();
+		Synapse(const ConnectionInfo<mode>&);
+		virtual ~Synapse();
     private:
         void initializeFromConnectionMode();
-    public:
-		inline bool alive() const { return isAlive.load(); }
+	public:
+		inline bool alive() const { return isAlive.load(); };
+
 		virtual void start();
 
 		void send(const AxonMessage&);
 		void sendTo(const AxonMessage&, const SOCKADDR_IN_T*) const;
+
 		void listen();
 
 		virtual void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*);
@@ -111,7 +112,8 @@ class AxonNetworkingInternalError : public std::exception
 		constexpr inline EventSystem::AxonEventManager& getEventManager() { return events; }
 	};
 
-	AXON_DECLSPEC class AsyncSynapse : public Synapse
+	template <ConnectionMode mode>
+	class AXON_DECLSPEC AsyncSynapse : public Synapse<mode>
 	{
 	private:
 		std::thread proc;

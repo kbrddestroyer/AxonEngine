@@ -19,10 +19,8 @@ set (SERIALIZATION
 
 set (BACKEND_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/backends/berkeley/basic_networking.h
-	${CMAKE_CURRENT_SOURCE_DIR}/backends/berkeley/basic_networking.c
 	${CMAKE_CURRENT_SOURCE_DIR}/backends/berkeley/master_include.h
 	${CMAKE_CURRENT_SOURCE_DIR}/backends/backend.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/backends/backend.h
 	${CMAKE_CURRENT_SOURCE_DIR}/backends/berkeley/udp/udp_connection.h
 	${CMAKE_CURRENT_SOURCE_DIR}/backends/berkeley/udp/udp_connection.c
 	${CMAKE_CURRENT_SOURCE_DIR}/backends/berkeley/tcp/tcp_connection.h
