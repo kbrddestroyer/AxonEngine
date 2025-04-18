@@ -10,19 +10,17 @@ if(GTK2_${_var}_FOUND)
    set(GTK2_LIBRARIES ${GTK2_LIBRARIES} PARENT_SCOPE)
 endif()
 
-set (BUILD_EXAMPLES 1)
-
 project ("AxonEngine")
 include("CTest")
 # Common backends
 
-add_subdirectory(common)
+add_subdirectory(libraries)
 
 set (AXON_MASTER
 	${NETWORKING}
 )
 
 # Examples
-add_subdirectory(examples)
+# add_subdirectory(examples)
 # Unit tests
 add_subdirectory(tests)

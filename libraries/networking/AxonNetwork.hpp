@@ -1,9 +1,9 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <backends/backend.hpp>
+#include <backend.hpp>
 
-#include "AxonUtility.h"
+#include "../AxonUtility.h"
 #include "networking-core/Synapse.hpp"
 
 

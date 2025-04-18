@@ -1,6 +1,6 @@
 #include <events/AxonEvent.hpp>
 
-#include <assert.h>
+#include <cassert>
 #include <cstdint>
 
 

@@ -1,0 +1,15 @@
+project ("AxonEngine.libraries")
+
+file(GLOB SOURCES "*.c" "*.h" "*.cpp" "*.hpp")
+set (LIBBACKEND "../backends/backend.hpp")
+set (LIBEVENT "../backends/backend.hpp")
+set (LIBSERIALIZATION "../serialization/serialization.hpp")
+add_library(networking SHARED ${SOURCES} ${LIBBACKEND} ${LIBEVENT} ${COMMON_SRC})
+
+target_link_libraries(networking backends)
+target_link_libraries(networking events)
+target_link_libraries(networking serialization)
+target_include_directories(networking PRIVATE ".")
+target_include_directories(networking PRIVATE "../backends")
+target_include_directories(networking PRIVATE "../events")
+target_include_directories(networking PRIVATE "../serialization")

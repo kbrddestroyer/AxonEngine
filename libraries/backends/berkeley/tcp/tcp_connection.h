@@ -2,7 +2,7 @@
 #define TCP_CONNECTION_H
 
 #include <stdint.h>
-#include "backends/berkeley/master_include.h"
+#include "berkeley/master_include.h"
 
 #pragma region TCP_CONNECTION
 
@@ -24,8 +24,6 @@ uint8_t connect_tcp_client(SOCKADDR_IN_T*, SOCKET_T*, const char*, uint32_t);
 * @return 0 or ERR_CODE (defined in basic_networking.h)
 */
 uint8_t create_tcp_server(SOCKADDR_IN_T*, SOCKET_T*, uint32_t);
-
-
 
 /**
 * Sends data over UDP

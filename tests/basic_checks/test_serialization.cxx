@@ -1,6 +1,6 @@
 #include <serialization/serialization.hpp>
-#include <assert.h>
-#include <string.h>
+#include <cassert>
+#include <cstring>
 #include <cstdio>
 
 

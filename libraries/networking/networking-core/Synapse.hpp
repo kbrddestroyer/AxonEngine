@@ -2,10 +2,10 @@
 #include <thread>
 #include <atomic>
 
-#include <AxonUtility.h>
-#include <events/AxonEvent.hpp>
-#include <networking/message/AxonMessage.hpp>
-#include <backends/backend.hpp>
+#include "../../AxonUtility.h"
+#include <AxonEvent.hpp>
+#include <message/AxonMessage.hpp>
+#include <backend.hpp>
 
 #include <string>
 
