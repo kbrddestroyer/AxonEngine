@@ -10,6 +10,8 @@ if(GTK2_${_var}_FOUND)
    set(GTK2_LIBRARIES ${GTK2_LIBRARIES} PARENT_SCOPE)
 endif()
 
+set (BUILD_EXAMPLES 1)
+
 project ("AxonEngine")
 include("CTest")
 # Common backends

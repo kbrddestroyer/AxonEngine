@@ -7,5 +7,7 @@ endif()
 
 project ("AxonEngine.examples")
 
-add_subdirectory(basics)
-add_subdirectory(axon-api)
+if (BUILD_EXAMPLES)
+  add_subdirectory(basics)
+  add_subdirectory(axon-api)
+endif()

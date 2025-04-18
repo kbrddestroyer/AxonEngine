@@ -25,7 +25,6 @@ namespace Networking
 	* TODO:
 	* - Research replacement
 	*/
-	template<ConnectionMode cmode>
 	struct ConnectionInfo
 	{
 		std::string				hostname = "";
@@ -83,7 +82,7 @@ class AxonNetworkingInternalError : public std::exception
 
 		bool				isServer;
 		ConnectionInfo		info;
-		Socket socket;
+		Socket              socket;
 	protected:
 		std::atomic<bool>	isAlive = false;
 	public:
@@ -93,7 +92,7 @@ class AxonNetworkingInternalError : public std::exception
 		/** Initializes Synapse in server mode */
 		Synapse(uint32_t);
 		/** Initialize Synapse in client mode */
-		Synapse(const ConnectionInfo<mode>&);
+		Synapse(const ConnectionInfo&);
 		virtual ~Synapse();
     private:
         void initializeFromConnectionMode();
@@ -117,11 +116,12 @@ class AxonNetworkingInternalError : public std::exception
 	{
 	private:
 		std::thread proc;
+        bool isAlive;
 	public:
 		/** Initializes Synapse in server mode */
-		inline AsyncSynapse(uint32_t port, ConnectionMode mode) : Synapse(port, mode) {}
+		inline AsyncSynapse(uint32_t port) : Synapse<mode>(port, mode) {}
 		/** Initialize Synapse in client mode */
-		inline AsyncSynapse(const ConnectionInfo& info) : Synapse(info) {}
+		inline AsyncSynapse(const ConnectionInfo& info) : Synapse<mode>(info) {}
 		
 		~AsyncSynapse();
 

@@ -32,7 +32,7 @@ int main()
 
 	while (true)
 	{
-		if (int code = recv_udp_message((char**) message_buffer, 256, server_socket, &from) > 0)
+		if (int code = recv_udp_message((char*) message_buffer, 256, server_socket, &from) > 0)
 		{
 			std::cout << message_buffer << std::endl;
 			packages++;

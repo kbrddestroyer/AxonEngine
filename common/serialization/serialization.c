@@ -32,9 +32,8 @@ uint8_t deserialize(const char* serialized, size_t size, void** deserialized, si
     size_t actual;
     actual = size;
     size_t header_size = sizeof(actual);
-    while (size <= actual && header_size > 0)
+    while (size <= actual && header_size-- > 0)
     {
-        size_t crop = (sizeof(actual) - --header_size) * 8;
         actual = (*(size_t*)(serialized));
         actual &= (1ULL << header_size * 8) - 1;
     }
@@ -60,7 +59,6 @@ uint8_t deserialize(const char* serialized, size_t size, void** deserialized, si
     
     memcpy(*deserialized, serialized + header_size, actual);
     size_t footer_size = size - actual - header_size;
-    size_t crop = (sizeof(actual) - footer_size) * 8;
     
     *tag = (*(uint64_t*) (serialized + actual + header_size)) & ((1ULL << footer_size * 8) - 1);
     *actualSize = actual;

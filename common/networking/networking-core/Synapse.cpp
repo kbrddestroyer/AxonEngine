@@ -15,12 +15,11 @@ Networking::Synapse<mode>::Synapse(uint32_t port)
 
 
 template <Networking::ConnectionMode mode>
-Networking::Synapse<mode>::Synapse(const ConnectionInfo<mode>& connection)
+Networking::Synapse<mode>::Synapse(const ConnectionInfo& connection)
 {
 	isServer = false;
 	info.hostname = connection.hostname;
 	info.port = connection.port;
-	info.mode = connection.mode;
 
 	initializeFromConnectionMode();
 }
@@ -50,7 +49,7 @@ void Networking::Synapse<mode>::send(const AxonMessage& message)
 template <Networking::ConnectionMode mode>
 void Networking::Synapse<mode>::sendTo(const AxonMessage& message, const SOCKADDR_IN_T* dest) const
 {
-	send_message<info.mode>(socket, message.getSerializedBuffer(), message.getSize());
+	send_message<mode>(socket, message.getSerializedBuffer(), message.getSize());
 }
 
 template <Networking::ConnectionMode mode>
@@ -59,9 +58,9 @@ void Networking::Synapse<mode>::listen()
 	char *buffer[SYNAPSE_MESSAGE_MAX_SIZE] = {};
 	SOCKADDR_IN_T host = {};
 
-	if (info.mode == ConnectionMode::UDP) {
+	if (mode == ConnectionMode::UDP) {
 		while (isAlive) {
-			int32_t size = recv_udp_message(reinterpret_cast<char **> (&buffer), SYNAPSE_MESSAGE_MAX_SIZE, socket,
+			int32_t size = recv_udp_message(reinterpret_cast<char *> (buffer), SYNAPSE_MESSAGE_MAX_SIZE, socket.socket,
 											&host);
 			if (size > 0) {
 				const char *message = const_cast<char *>(reinterpret_cast<char *> (buffer));
@@ -70,16 +69,16 @@ void Networking::Synapse<mode>::listen()
 			}
 		}
 	}
-	else if (info.mode == ConnectionMode::TCP)
+	else if (mode == ConnectionMode::TCP)
 	{
 		SOCKET_T client;
 		do {
-			client = accept_incoming(socket, &host);
+			client = accept_incoming(socket.socket, &host);
 		} while (!CHECK_VALID(client));
 
 		while (isAlive)
 		{
-			int size = recv_tcp_message((char**) buffer, 256, client);
+			int size = recv_tcp_message((char*) buffer, 256, client);
 			if (size > 0)
 			{
 				const char *message = const_cast<char *>(reinterpret_cast<char *> (buffer));
@@ -102,7 +101,7 @@ template <Networking::ConnectionMode mode>
 void Networking::Synapse<mode>::initializeFromConnectionMode() {
 	if (isServer)
 	{
-		uint8_t returnCode = initialize_server<info.mode>(socket, port);
+		uint8_t returnCode = initialize_server<mode>(socket.socket, info.port);
 	}
 }
 
@@ -121,7 +120,7 @@ template <Networking::ConnectionMode mode>
 void Networking::AsyncSynapse<mode>::start()
 {
 	isAlive = true;
-	proc = std::thread(&Networking::AsyncSynapse::listen, this);
+	proc = std::thread(&Networking::AsyncSynapse<mode>::listen, this);
 }
 
 template <Networking::ConnectionMode mode>
