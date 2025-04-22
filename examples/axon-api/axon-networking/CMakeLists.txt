@@ -12,8 +12,8 @@ add_compile_definitions(TEST_MODE)
 add_executable(AxonAPIClient "client.cpp")
 add_executable(AxonAPIServer "server.cpp")
 
-target_link_libraries(AxonAPIClient NetworkingLib)
-target_link_libraries(AxonAPIServer NetworkingLib)
+target_link_libraries(AxonAPIClient networking)
+target_link_libraries(AxonAPIServer networking)
 
 if(WIN32)
   target_link_libraries(AxonAPIClient ws2_32)

@@ -8,6 +8,5 @@ endif()
 project ("AxonEngine.examples")
 
 if (BUILD_EXAMPLES)
-  add_subdirectory(basics)
-  add_subdirectory(axon-api)
+  add_all_subdirs()
 endif()

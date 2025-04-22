@@ -12,17 +12,17 @@ add_compile_definitions(TEST_MODE)
 add_executable(ChatClient "client.cpp")
 add_executable(ChatServer "server.cpp")
 
-target_link_libraries(ChatClient NetworkingLib)
-target_link_libraries(ChatServer NetworkingLib)
+target_link_libraries(ChatClient networking)
+target_link_libraries(ChatServer networking)
 
 add_custom_command(TARGET ChatClient POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:NetworkingLib>
+        $<TARGET_FILE:networking>
         $<TARGET_FILE_DIR:ChatClient>
 )
 add_custom_command(TARGET ChatServer POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:NetworkingLib>
+        $<TARGET_FILE:networking>
         $<TARGET_FILE_DIR:ChatServer>
 )
 

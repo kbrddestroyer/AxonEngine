@@ -1,11 +1,10 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <backend.hpp>
 
-#include "../AxonUtility.h"
-#include "networking-core/Synapse.hpp"
-
+#include <AxonUtility.h>
+#include <networking/networking-core/Synapse.hpp>
+#include <backends/backend.hpp>
 
 namespace Networking
 {
@@ -15,6 +14,7 @@ namespace Networking
 	*/
 	AXON_DECLSPEC class AxonNetwork
 	{
+        Synapse<ConnectionMode::UDP> synapse;
 	public:
 		AxonNetwork() = default;
 	};

@@ -101,7 +101,7 @@ template <Networking::ConnectionMode mode>
 void Networking::Synapse<mode>::initializeFromConnectionMode() {
 	if (isServer)
 	{
-		uint8_t returnCode = initialize_server<mode>(socket.socket, info.port);
+		uint8_t returnCode = initialize_server<mode>(socket, info.port);
 	}
 }
 

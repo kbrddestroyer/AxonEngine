@@ -1,7 +1,7 @@
 /* AxonMessage.hpp */
 
 #pragma once
-#include <serialization.hpp>
+#include <serialization/serialization.hpp>
 
 
 namespace Networking

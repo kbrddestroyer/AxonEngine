@@ -22,11 +22,10 @@ void EventSystem::AxonEventManager::invoke(AxonEvent* event)
 	}
 }
 
-EventSystem::GlobalEventManager* EventSystem::GlobalEventManager::instance;
-
-EventSystem::GlobalEventManager* EventSystem::GlobalEventManager::Instance()
+EventSystem::GlobalEventManager& EventSystem::GlobalEventManager::Instance()
 {
-	if (!instance)
-		instance = new EventSystem::GlobalEventManager();
+    // TODO: Fix dynamic allocation
+    // std::unique_ptr
+    static EventSystem::GlobalEventManager instance;
 	return instance;
 }

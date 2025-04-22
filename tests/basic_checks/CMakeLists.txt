@@ -11,7 +11,7 @@ include ("CTest")
 # TEST FILES
 enable_testing()
 
-file (GLOB TEST_SOURCES "test_*.cxx")
+file (GLOB_RECURSE TEST_SOURCES "test_*.cxx")
 message ("Loaded test files: ${TEST_SOURCES}")
 
 link_libraries(networking)

@@ -17,7 +17,7 @@ namespace EventSystem
 	{
 	public:
 		AxonEventManager() = default;
-		~AxonEventManager();
+		virtual ~AxonEventManager();
 
 		template<typename T>
 		void subscribe(std::function<void(const T&)>);
@@ -37,9 +37,7 @@ namespace EventSystem
 	private:
 		GlobalEventManager() = default;
 	public:
-		static GlobalEventManager* Instance();
-	private:
-		static GlobalEventManager* instance;
+		static GlobalEventManager& Instance();
 	};
 }
 

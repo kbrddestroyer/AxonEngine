@@ -1,14 +1,12 @@
 #pragma once
 #include <thread>
 #include <atomic>
-
-#include "../../AxonUtility.h"
-#include <AxonEvent.hpp>
-#include <message/AxonMessage.hpp>
-#include <backend.hpp>
-
 #include <string>
 
+#include <AxonUtility.h>
+#include <events/AxonEvent.hpp>
+#include <backends/backend.hpp>
+#include <networking/message/AxonMessage.hpp>
 
 namespace Networking
 {
@@ -27,14 +25,14 @@ namespace Networking
 	*/
 	struct ConnectionInfo
 	{
-		std::string				hostname = "";
-		uint32_t				port;
+		std::string	hostname = "";
+		uint32_t	port;
 	};
 
 	/**
 	* TODO: Documenting
-	*/
-class AxonNetworkingInternalError : public std::exception
+    */
+    class AxonNetworkingInternalError : public std::exception
 	{
 		uint8_t err;
 	public:
@@ -90,9 +88,9 @@ class AxonNetworkingInternalError : public std::exception
 		Synapse() = delete;
 
 		/** Initializes Synapse in server mode */
-		Synapse(uint32_t);
+		explicit Synapse(uint32_t);
 		/** Initialize Synapse in client mode */
-		Synapse(const ConnectionInfo&);
+		explicit Synapse(const ConnectionInfo&);
 		virtual ~Synapse();
     private:
         void initializeFromConnectionMode();
@@ -119,15 +117,20 @@ class AxonNetworkingInternalError : public std::exception
         bool isAlive;
 	public:
 		/** Initializes Synapse in server mode */
-		inline AsyncSynapse(uint32_t port) : Synapse<mode>(port, mode) {}
+		inline AsyncSynapse<mode>(uint32_t port) : Synapse<mode>(port) {}
 		/** Initialize Synapse in client mode */
-		inline AsyncSynapse(const ConnectionInfo& info) : Synapse<mode>(info) {}
+		inline AsyncSynapse<mode>(const ConnectionInfo& info) : Synapse<mode>(info) {}
 		
-		~AsyncSynapse();
+		virtual ~AsyncSynapse();
 
 		void start() override;
 		void kill();
 	};
+
+    template class Synapse<ConnectionMode::UDP>;
+    template class Synapse<ConnectionMode::TCP>;
+    template class AsyncSynapse<ConnectionMode::UDP>;
+    template class AsyncSynapse<ConnectionMode::TCP>;
 }
 
 /* Synapse.hpp */

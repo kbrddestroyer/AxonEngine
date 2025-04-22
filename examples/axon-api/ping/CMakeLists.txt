@@ -12,17 +12,17 @@ add_compile_definitions(TEST_MODE)
 add_executable(PingClient "client.cpp")
 add_executable(PingServer "server.cpp")
 
-target_link_libraries(PingClient NetworkingLib)
-target_link_libraries(PingServer NetworkingLib)
+target_link_libraries(PingClient networking)
+target_link_libraries(PingServer networking)
 
 add_custom_command(TARGET PingClient POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:NetworkingLib>
+        $<TARGET_FILE:networking>
         $<TARGET_FILE_DIR:PingClient>
 )
 add_custom_command(TARGET PingServer POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:NetworkingLib>
+        $<TARGET_FILE:networking>
         $<TARGET_FILE_DIR:PingServer>
 )
 

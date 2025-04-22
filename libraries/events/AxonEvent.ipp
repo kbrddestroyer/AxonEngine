@@ -1,5 +1,5 @@
-#include "AxonEvent.hpp"
 #pragma once
+#include "AxonEvent.hpp"
 
 template<typename T>
 inline void EventSystem::AxonEventManager::subscribe(std::function<void(const T&)> callback)
