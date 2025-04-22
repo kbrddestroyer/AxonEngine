@@ -42,9 +42,9 @@ int main()
 	manager.invoke(&event);
 
 	/* Global event manager */
-	EventSystem::GlobalEventManager* g_manager = EventSystem::GlobalEventManager::Instance();
-	g_manager->subscribe<TestEvent>(callback);
-	g_manager->subscribe<TestEvent>(callback2);
+	EventSystem::GlobalEventManager& g_manager = EventSystem::GlobalEventManager::Instance();
+	g_manager.subscribe<TestEvent>(callback);
+	g_manager.subscribe<TestEvent>(callback2);
 
-	g_manager->invoke(&event);
+	g_manager.invoke(&event);
 }
