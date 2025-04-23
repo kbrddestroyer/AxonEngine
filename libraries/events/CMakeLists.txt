@@ -1,6 +1,6 @@
 project ("AxonEngine.libraries")
 
-file(GLOB_RECURSE SOURCES "*.c" "*.h" "*.cpp" "*.hpp")
+file(GLOB_RECURSE SOURCES "*.c" "*.h" "*.cpp" "*.hpp" "*.ipp")
 add_library(events STATIC ${SOURCES})
 
 target_compile_definitions(events PUBLIC AXON_LIB)
