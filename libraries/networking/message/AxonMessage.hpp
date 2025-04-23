@@ -17,7 +17,7 @@ namespace Networking
 	AxonMessage is a low-level interface for data storage, serialization and network sharing
 	
 	*/
-	AXON_DECLSPEC class AxonMessage
+	class AXON_DECLSPEC AxonMessage
 	{
 	private:
 		size_t		size;
