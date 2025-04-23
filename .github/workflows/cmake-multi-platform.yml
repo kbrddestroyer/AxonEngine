@@ -28,8 +28,6 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         build_type: [Debug, Release]
         c_compiler: [gcc, clang, cl]
-        conan-version: ["", "2.15.1"]
-        conan-home: ["", "~/custom-conan"]
         include:
           - os: windows-latest
             c_compiler: cl
@@ -58,8 +56,21 @@ jobs:
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
+    - name: Install Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+
+    - name: Install conan
+      run: pip install conan
+
+    - name: Configure conan
+      run: |
+        conan profile detect --force
+
     - name: Conan setup
-      run: cd conan/build && ./install-deps ${{matrix.build_type}} && cd ../..
+      working-directory: conan/build
+      run: ./install-deps ${{matrix.build_type}}
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
