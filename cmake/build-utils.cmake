@@ -23,7 +23,7 @@ function(list_all_tests name_pattern)
         add_test(NAME ${FILENAME} COMMAND $<TARGET_FILE:${FILENAME}_TARGET>)
         target_link_libraries(${FILENAME}_TARGET PRIVATE ${ARGN})
         
-        message ("Loaded test sequence: ${FILENAME})
+        message ("Loaded test sequence: ${FILENAME}")
         if (WIN32)
             set_tests_properties(${FILENAME} PROPERTIES WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/libraries/networking/${CMAKE_BUILD_TYPE})
         endif()
