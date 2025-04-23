@@ -11,7 +11,18 @@ include ("CTest")
 # TEST FILES
 enable_testing()
 
-add_executable(TEST_SERIALIZATION_CXX "test_serialization.cxx" ${SERIALIZATION})
-add_executable(TEST_EVENT_SYSTEM_CXX "test_event_system.cxx" ${AXON_MASTER})
-add_test(NAME TEST_SERIALIZATION COMMAND $<TARGET_FILE:TEST_SERIALIZATION_CXX>)
-add_test(NAME TEST_EVENT_SYSTEM COMMAND $<TARGET_FILE:TEST_EVENT_SYSTEM_CXX>)
+file (GLOB_RECURSE TEST_SOURCES "test_*.cxx")
+message ("Loaded test files: ${TEST_SOURCES}")
+
+link_libraries(networking)
+
+foreach (TEST_SRC ${TEST_SOURCES})
+  get_filename_component(FILENAME ${TEST_SRC} NAME_WE)
+  string(TOUPPER ${FILENAME} FILENAME)
+  add_executable(${FILENAME}_CXX ${TEST_SRC})
+  add_test(NAME ${FILENAME} COMMAND $<TARGET_FILE:TEST_EVENT_SYSTEM_CXX>)
+
+  message ("Loaded test sequence: ${FILENAME}")
+endforeach ()
+
+include_directories("../../libraries")
