@@ -1,5 +1,4 @@
 #include "Synapse.hpp"
-#include <cstdio>
 
 
 #pragma region SYNAPS

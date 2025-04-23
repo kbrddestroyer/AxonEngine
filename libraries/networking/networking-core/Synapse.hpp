@@ -47,7 +47,7 @@ namespace Networking
 	* getMessage() -> AxonMessage: get AxonMessage object
 	* getFrom() -> SOCKADDR_IN_T: get sender network info
 	*/
-	class SynapseMessageReceivedEvent final : public EventSystem::AxonEvent
+	class AXON_DECLSPEC SynapseMessageReceivedEvent final : public EventSystem::AxonEvent
 	{
 	private:
 		const AxonMessage&		message;
@@ -127,10 +127,10 @@ namespace Networking
 		void kill();
 	};
 
-    extern template class AXON_DECLSPEC Synapse<ConnectionMode::UDP>;
-    extern template class AXON_DECLSPEC Synapse<ConnectionMode::TCP>;
-    extern template class AXON_DECLSPEC AsyncSynapse<ConnectionMode::UDP>;
-    extern template class AXON_DECLSPEC AsyncSynapse<ConnectionMode::TCP>;
+    extern template class Synapse<ConnectionMode::UDP>;
+    extern template class Synapse<ConnectionMode::TCP>;
+    extern template class AsyncSynapse<ConnectionMode::UDP>;
+    extern template class AsyncSynapse<ConnectionMode::TCP>;
 }
 
 /* Synapse.hpp */
