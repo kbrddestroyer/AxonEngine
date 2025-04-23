@@ -9,3 +9,20 @@ function(add_all_subdirs)
         endif()
     endforeach()
 endfunction()
+
+function(list_all_tests name_pattern)
+    file (GLOB_RECURSE TEST_SOURCES ${name_pattern})
+
+    foreach (TEST_SRC ${TEST_SOURCES})
+        # Get name to generate target name (e.g. test_something - TEST_SOMETHING)
+
+        get_filename_component(FILENAME ${TEST_SRC} NAME_WE)
+        string(TOUPPER ${FILENAME} FILENAME)
+
+        add_executable(${FILENAME}_TARGET ${TEST_SRC})
+        add_test(NAME ${FILENAME} COMMAND $<TARGET_FILE:${FILENAME}_TARGET>)
+        target_link_libraries(${FILENAME}_TARGET PRIVATE ${ARGN})
+
+        message ("Loaded test sequence: ${FILENAME}")
+    endforeach ()
+endfunction()

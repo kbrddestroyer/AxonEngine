@@ -17,15 +17,7 @@ endif()
 
 project ("AxonEngine")
 
-# For legacy tests
-include ("CTest")
-
-# For unit tests
-find_package(GTest REQUIRED)
-enable_testing()
-
 # Common backends
-
 add_subdirectory(libraries)
 
 # Examples

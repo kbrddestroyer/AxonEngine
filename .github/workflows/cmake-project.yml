@@ -1,5 +1,8 @@
 # This starter workflow is for a CMake project running on a single platform. There is a different starter workflow if you need cross-platform coverage.
 # See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-multi-platform.yml
+
+# This file is deprecated and no longer supported
+# Also it will be removed from pr validation
 name: CMake build
 
 on:

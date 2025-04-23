@@ -11,19 +11,8 @@ project ("AxonEngine.tests.gtest")
 find_package(GTest REQUIRED)
 enable_testing()
 
-file (GLOB_RECURSE TEST_SOURCES "test_*.cpp")
-message ("Loaded test files: ${TEST_SOURCES}")
-
 set (LIST_LIBRARIES networking GTest::gtest GTest::gtest_main)
 
-foreach (TEST_SRC ${TEST_SOURCES})
-    get_filename_component(FILENAME ${TEST_SRC} NAME_WE)
-    string(TOUPPER ${FILENAME} FILENAME)
-    add_executable(${FILENAME}_CXX ${TEST_SRC})
-    target_link_libraries(${FILENAME}_CXX PRIVATE ${LIST_LIBRARIES})
-    add_test(NAME ${FILENAME} COMMAND $<TARGET_FILE:TEST_EVENT_SYSTEM_CXX>)
-
-    message ("Loaded test sequence: ${FILENAME}")
-endforeach ()
+list_all_tests("test_*.cpp" ${LIST_LIBRARIES})
 
 include_directories("../../libraries")
