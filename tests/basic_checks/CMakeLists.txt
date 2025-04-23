@@ -14,12 +14,11 @@ enable_testing()
 file (GLOB_RECURSE TEST_SOURCES "test_*.cxx")
 message ("Loaded test files: ${TEST_SOURCES}")
 
-link_libraries(networking)
-
 foreach (TEST_SRC ${TEST_SOURCES})
   get_filename_component(FILENAME ${TEST_SRC} NAME_WE)
   string(TOUPPER ${FILENAME} FILENAME)
   add_executable(${FILENAME}_CXX ${TEST_SRC})
+  target_link_libraries(${FILENAME}_CXX PRIVATE networking)
   add_test(NAME ${FILENAME} COMMAND $<TARGET_FILE:TEST_EVENT_SYSTEM_CXX>)
 
   message ("Loaded test sequence: ${FILENAME}")

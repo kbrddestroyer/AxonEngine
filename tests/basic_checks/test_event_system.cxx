@@ -1,4 +1,4 @@
-#include <events/AxonEvent.hpp>
+#include <networking/AxonNetwork.hpp>
 
 #include <cassert>
 #include <cstdint>
@@ -10,12 +10,14 @@ private:
 	uint8_t data;
 	bool isChecked = false;
 public:
-	TestEvent(uint8_t data = 0)
+    TestEvent() = delete;
+
+	explicit TestEvent(uint8_t data = 0)
 	{
 		this->data = data;
 	}
 
-	constexpr uint8_t get_data() const { return data; }
+	inline uint8_t get_data() const { return data; }
 };
 
 
