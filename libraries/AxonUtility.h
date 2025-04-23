@@ -17,7 +17,7 @@
 #endif
 
 #elif defined(UNIX_PLATFORM)
-#define AXON_DECLSPEC
+#define AXON_DECLSPEC __attribute__((visibility("default")))
 #else
 #define AXON_DECLSPEC
 #endif
