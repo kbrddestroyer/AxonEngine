@@ -127,10 +127,10 @@ namespace Networking
 		void kill();
 	};
 
-    template class Synapse<ConnectionMode::UDP>;
-    template class Synapse<ConnectionMode::TCP>;
-    template class AsyncSynapse<ConnectionMode::UDP>;
-    template class AsyncSynapse<ConnectionMode::TCP>;
+    extern template class AXON_DECLSPEC Synapse<ConnectionMode::UDP>;
+    extern template class AXON_DECLSPEC Synapse<ConnectionMode::TCP>;
+    extern template class AXON_DECLSPEC AsyncSynapse<ConnectionMode::UDP>;
+    extern template class AXON_DECLSPEC AsyncSynapse<ConnectionMode::TCP>;
 }
 
 /* Synapse.hpp */

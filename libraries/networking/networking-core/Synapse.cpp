@@ -131,3 +131,17 @@ void Networking::AsyncSynapse<mode>::kill()
 }
 
 #pragma endregion
+
+namespace Networking {
+    template
+    class Synapse<ConnectionMode::UDP>;
+
+    template
+    class Synapse<ConnectionMode::TCP>;
+
+    template
+    class AsyncSynapse<ConnectionMode::UDP>;
+
+    template
+    class AsyncSynapse<ConnectionMode::TCP>;
+}

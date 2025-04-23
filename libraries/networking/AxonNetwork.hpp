@@ -12,7 +12,7 @@ namespace Networking
 	* Networking core
 	* Handles multiple synapse connections
 	*/
-	AXON_DECLSPEC class AxonNetwork
+	class AXON_DECLSPEC AxonNetwork
 	{
         Synapse<ConnectionMode::UDP> synapse;
 	public:
