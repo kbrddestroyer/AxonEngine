@@ -5,15 +5,17 @@
 #include <typeindex>
 #include <cstdint>
 
+#include <AxonUtility.h>
+
 
 namespace EventSystem
 {
-	class AxonEvent {
+	class AXON_DECLSPEC AxonEvent {
 	public:
 		virtual ~AxonEvent() = default;
  	};
 
-	class AxonEventManager
+	class AXON_DECLSPEC AxonEventManager
 	{
 	public:
 		AxonEventManager() = default;
@@ -32,7 +34,7 @@ namespace EventSystem
 		friend class GlobalEventManager;
 	};
 
-	class GlobalEventManager : public AxonEventManager
+	class AXON_DECLSPEC GlobalEventManager : public AxonEventManager
 	{
 	private:
 		GlobalEventManager() = default;

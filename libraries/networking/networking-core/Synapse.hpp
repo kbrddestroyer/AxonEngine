@@ -47,7 +47,7 @@ namespace Networking
 	* getMessage() -> AxonMessage: get AxonMessage object
 	* getFrom() -> SOCKADDR_IN_T: get sender network info
 	*/
-	class SynapseMessageReceivedEvent final : public EventSystem::AxonEvent
+	class AXON_DECLSPEC SynapseMessageReceivedEvent final : public EventSystem::AxonEvent
 	{
 	private:
 		const AxonMessage&		message;
