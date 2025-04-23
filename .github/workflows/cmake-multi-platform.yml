@@ -69,7 +69,7 @@ jobs:
         conan profile detect --force
 
     - name: Conan setup
-      working-directory: conan/
+      working-directory: conan
       run: ./install-deps ${{matrix.build_type}}
 
     - name: Configure CMake
