@@ -19,8 +19,6 @@ TEST(TEST_BINARY_STREAM, TEST_COMMON)
     delete newlyCreatedStream;
     ASSERT_NE(newStream.size(), 0);
     ASSERT_NE(newStream.data(), nullptr);
-
-    newStream.clear();
 }
 
 
