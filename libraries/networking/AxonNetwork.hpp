@@ -8,16 +8,7 @@
 
 namespace Networking
 {
-	/**
-	* Networking core
-	* Handles multiple synapse connections
-	*/
-	class AXON_DECLSPEC AxonNetwork
-	{
-        Synapse<ConnectionMode::UDP> synapse;
-	public:
-		AxonNetwork() = default;
-	};
+
 }
 
 /* AxonNetwork.hpp */

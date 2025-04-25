@@ -55,6 +55,8 @@ void Networking::Synapse<mode>::sendTo(const AxonMessage& message, const SOCKADD
 template<>
 void Networking::Synapse<Networking::ConnectionMode::TCP>::listen()
 {
+    // Todo: async support
+
     char *buffer[SYNAPSE_MESSAGE_MAX_SIZE] = {};
     SOCKADDR_IN_T host = {};
 
