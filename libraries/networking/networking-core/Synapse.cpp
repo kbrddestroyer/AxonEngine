@@ -35,6 +35,7 @@ template <Networking::ConnectionMode mode>
 void Networking::Synapse<mode>::start()
 {
 	isAlive = true;
+
 	listen();
 }
 
@@ -51,41 +52,44 @@ void Networking::Synapse<mode>::sendTo(const AxonMessage& message, const SOCKADD
 	send_message<mode>(socket, message.getSerializedBuffer(), message.getSize());
 }
 
-template <Networking::ConnectionMode mode>
-void Networking::Synapse<mode>::listen()
+template<>
+void Networking::Synapse<Networking::ConnectionMode::TCP>::listen()
 {
-	char *buffer[SYNAPSE_MESSAGE_MAX_SIZE] = {};
-	SOCKADDR_IN_T host = {};
+    char *buffer[SYNAPSE_MESSAGE_MAX_SIZE] = {};
+    SOCKADDR_IN_T host = {};
 
-	if (mode == ConnectionMode::UDP) {
-		while (isAlive) {
-			int32_t size = recv_udp_message(reinterpret_cast<char *> (buffer), SYNAPSE_MESSAGE_MAX_SIZE, socket.socket,
-											&host);
-			if (size > 0) {
-				const char *message = const_cast<char *>(reinterpret_cast<char *> (buffer));
-				AxonMessage message_ = AxonMessage(message, size);
-				onMessageReceived(message_, &host);
-			}
-		}
-	}
-	else if (mode == ConnectionMode::TCP)
-	{
-		SOCKET_T client;
-		do {
-			client = accept_incoming(socket.socket, &host);
-		} while (!CHECK_VALID(client));
+    SOCKET_T client;
+    do {
+        client = accept_incoming(socket.socket, &host);
+    } while (!CHECK_VALID(client));
 
-		while (isAlive)
-		{
-			int size = recv_tcp_message((char*) buffer, 256, client);
-			if (size > 0)
-			{
-				const char *message = const_cast<char *>(reinterpret_cast<char *> (buffer));
-				AxonMessage message_ = AxonMessage(message, size);
-				onMessageReceived(message_, &host);
-			}
-		}
-	}
+    while (isAlive)
+    {
+        int size = recv_tcp_message((char*) buffer, 256, client);
+        if (size > 0)
+        {
+            const char *message = const_cast<char *>(reinterpret_cast<char *> (buffer));
+            AxonMessage message_ = AxonMessage(message, size);
+            onMessageReceived(message_, &host);
+        }
+    }
+}
+
+template<>
+void Networking::Synapse<Networking::ConnectionMode::UDP>::listen()
+{
+    char *buffer[SYNAPSE_MESSAGE_MAX_SIZE] = {};
+    SOCKADDR_IN_T host = {};
+
+    while (isAlive) {
+        int32_t size = recv_udp_message(reinterpret_cast<char *> (buffer), SYNAPSE_MESSAGE_MAX_SIZE, socket.socket,
+                                        &host);
+        if (size > 0) {
+            const char *message = const_cast<char *>(reinterpret_cast<char *> (buffer));
+            AxonMessage message_ = AxonMessage(message, size);
+            onMessageReceived(message_, &host);
+        }
+    }
 }
 
 template <Networking::ConnectionMode mode>
@@ -130,17 +134,3 @@ void Networking::AsyncSynapse<mode>::kill()
 }
 
 #pragma endregion
-
-namespace Networking {
-    template
-    class Synapse<ConnectionMode::UDP>;
-
-    template
-    class Synapse<ConnectionMode::TCP>;
-
-    template
-    class AsyncSynapse<ConnectionMode::UDP>;
-
-    template
-    class AsyncSynapse<ConnectionMode::TCP>;
-}

@@ -25,7 +25,7 @@ namespace Networking
 	*/
 	struct ConnectionInfo
 	{
-		std::string	hostname = "";
+		std::string	hostname;
 		uint32_t	port;
 	};
 
@@ -72,7 +72,6 @@ namespace Networking
 	* TODO:
 	*	- Documenting
 	*/
-	
 	template <ConnectionMode mode> class AXON_DECLSPEC Synapse
 	{
 	private:
@@ -84,9 +83,8 @@ namespace Networking
 	protected:
 		std::atomic<bool>	isAlive = false;
 	public:
-		/** Default creation is restriced */
+		/** Default creation is restricted */
 		Synapse() = delete;
-
 		/** Initializes Synapse in server mode */
 		explicit Synapse(uint32_t);
 		/** Initialize Synapse in client mode */
@@ -99,11 +97,9 @@ namespace Networking
 
 		virtual void start();
 
-		void send(const AxonMessage&);
-		void sendTo(const AxonMessage&, const SOCKADDR_IN_T*) const;
-
-		void listen();
-
+		virtual void send(const AxonMessage&);
+		virtual void sendTo(const AxonMessage&, const SOCKADDR_IN_T*) const;
+		virtual void listen();
 		virtual void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*);
 
 		constexpr inline EventSystem::AxonEventManager& getEventManager() { return events; }
@@ -120,17 +116,23 @@ namespace Networking
 		inline AsyncSynapse<mode>(uint32_t port) : Synapse<mode>(port) {}
 		/** Initialize Synapse in client mode */
 		inline AsyncSynapse<mode>(const ConnectionInfo& info) : Synapse<mode>(info) {}
-		
-		virtual ~AsyncSynapse();
 
-		void start() override;
+		~AsyncSynapse() override;
+
+		void start() final;
 		void kill();
 	};
 
-    extern template class Synapse<ConnectionMode::UDP>;
-    extern template class Synapse<ConnectionMode::TCP>;
-    extern template class AsyncSynapse<ConnectionMode::UDP>;
-    extern template class AsyncSynapse<ConnectionMode::TCP>;
+    template<>
+    void Synapse<ConnectionMode::TCP>::listen();
+    template<>
+    void Synapse<ConnectionMode::UDP>::listen();
+
+    template class Synapse<ConnectionMode::UDP>;
+    template class Synapse<ConnectionMode::TCP>;
+
+    template class AsyncSynapse<ConnectionMode::UDP>;
+    template class AsyncSynapse<ConnectionMode::TCP>;
 }
 
 /* Synapse.hpp */
