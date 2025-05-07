@@ -14,12 +14,12 @@ namespace Networking {
 
         /* API */
 
-        void append(const char*, std::size_t);
+        void append(const char*, size_t);
         inline const char* data() const noexcept { return containerPtr; }
-        inline std::size_t size() const noexcept { return containerSize; }
+        inline size_t size() const noexcept { return containerSize; }
         void clear();
     private:
         char* containerPtr = nullptr;
-        std::size_t containerSize = 0;
+        size_t containerSize = 0;
     };
 }
