@@ -6,6 +6,9 @@
 # Python venv
 .venv
 
+# MSVS vcpkg
+vcpkg*
+
 # User-specific files
 *.rsuser
 *.suo

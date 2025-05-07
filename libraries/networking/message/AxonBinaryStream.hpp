@@ -1,8 +1,9 @@
 #pragma once
 #include <cstdint>
+#include <AxonUtility.h>
 
 namespace Networking {
-    class AxonBinaryStreamBase {
+    class AXON_DECLSPEC AxonBinaryStreamBase {
     public:
         AxonBinaryStreamBase() = default;
         AxonBinaryStreamBase(const AxonBinaryStreamBase&);
