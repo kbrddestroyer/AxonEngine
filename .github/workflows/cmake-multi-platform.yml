@@ -61,6 +61,9 @@ jobs:
       with:
         python-version: '3.x'
 
+    - name: Install Ninja
+      uses: seanmiddleditch/gha-setup-ninja@master
+
     - name: Install conan
       run: pip install conan
 
@@ -80,7 +83,9 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DCMAKE_TOOLCHAIN_FILE=conan/build/${{ matrix.build_type }}/conan_toolchain.cmake
         -S ${{ github.workspace }}
+        -G Ninja
 
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).

@@ -11,8 +11,6 @@ project ("AxonEngine" VERSION 0.0.1)
 
 include (${CMAKE_HOME_DIRECTORY}/cmake/build-utils.cmake)
 
-set (CONAN_TOOLCHAIN "${CMAKE_HOME_DIRECTORY}/conan/build/${CMAKE_BUILD_TYPE}/conan_toolchain.cmake")
-
 if(GTK2_${_var}_FOUND)
    set(GTK2_LIBRARIES ${GTK2_LIBRARIES} ${GTK2_${_var}_LIBRARY})
    set(GTK2_LIBRARIES ${GTK2_LIBRARIES} PARENT_SCOPE)
