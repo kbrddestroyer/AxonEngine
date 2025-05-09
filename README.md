@@ -28,5 +28,4 @@ Work in progress, there's no stable version yet
 
 ## Contributing
 
----
 ## Footer
