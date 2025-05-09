@@ -10,6 +10,8 @@ on:
       - main
       - feature/*
       - release
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
