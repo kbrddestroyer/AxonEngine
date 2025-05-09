@@ -113,9 +113,9 @@ namespace Networking
         bool isAlive;
 	public:
 		/** Initializes Synapse in server mode */
-		inline AsyncSynapse<mode>(uint32_t port) : Synapse<mode>(port) {}
+		explicit AsyncSynapse<mode>(uint32_t port) : Synapse<mode>(port), isAlive(false) {}
 		/** Initialize Synapse in client mode */
-		inline AsyncSynapse<mode>(const ConnectionInfo& info) : Synapse<mode>(info) {}
+		explicit AsyncSynapse<mode>(const ConnectionInfo& info) : Synapse<mode>(info), isAlive(false) {}
 
 		~AsyncSynapse() override;
 
