@@ -22,10 +22,12 @@ function(list_all_tests name_pattern)
         add_executable(${FILENAME}_TARGET ${TEST_SRC})
         add_test(NAME ${FILENAME} COMMAND $<TARGET_FILE:${FILENAME}_TARGET>)
         target_link_libraries(${FILENAME}_TARGET PRIVATE ${ARGN})
-        
+
+        add_custom_command(TARGET ${FILENAME}_TARGET POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy -t $<TARGET_FILE_DIR:${FILENAME}_TARGET> $<TARGET_RUNTIME_DLLS:${FILENAME}_TARGET>
+                COMMAND_EXPAND_LISTS
+        )
+
         message ("Loaded test sequence: ${FILENAME}")
-        if (WIN32)
-            set_tests_properties(${FILENAME} PROPERTIES WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/libraries/networking/${CMAKE_BUILD_TYPE})
-        endif()
     endforeach ()
 endfunction()

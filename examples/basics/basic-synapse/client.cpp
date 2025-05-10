@@ -13,9 +13,9 @@ int main()
 {
 	Networking::ConnectionInfo connection = { "localhost", 10423 };
 
-	Networking::Synapse clientConnection = Networking::Synapse<Networking::ConnectionMode::TCP>(connection);
+	Networking::Synapse<Networking::ConnectionMode::TCP> clientConnection(connection);
 
 	const char* message = "Hello World!";
-	Networking::AxonMessage message_ = Networking::AxonMessage((void*) message, strlen(message) + 1, 1);
+	Networking::AxonMessage message_((void*) message, strlen(message) + 1, 1);
 	clientConnection.send(message_);
 }
