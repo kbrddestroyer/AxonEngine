@@ -85,7 +85,7 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -DCMAKE_TOOLCHAIN_FILE=conan/build/${{ matrix.build_type }}/conan_toolchain.cmake
+        -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/conan/build/${{ matrix.build_type }}/conan_toolchain.cmake
         -S ${{ github.workspace }}
         -G Ninja
 
