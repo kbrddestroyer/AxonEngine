@@ -10,7 +10,7 @@
 
 namespace Networking
 {
-	const uint32_t SYNAPSE_MESSAGE_MAX_SIZE = 1024;
+	constexpr uint32_t SYNAPSE_MESSAGE_MAX_SIZE = 1024;
 
 	enum ConnectionMode
 	{
@@ -122,17 +122,6 @@ namespace Networking
 		void start() final;
 		void kill();
 	};
-
-    template<>
-    void Synapse<ConnectionMode::TCP>::listen();
-    template<>
-    void Synapse<ConnectionMode::UDP>::listen();
-
-    template class Synapse<ConnectionMode::UDP>;
-    template class Synapse<ConnectionMode::TCP>;
-
-    template class AsyncSynapse<ConnectionMode::UDP>;
-    template class AsyncSynapse<ConnectionMode::TCP>;
 }
 
 #include "Synapse.ipp"

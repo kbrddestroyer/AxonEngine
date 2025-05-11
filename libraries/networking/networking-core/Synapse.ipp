@@ -1,5 +1,19 @@
 #pragma once
 
+template <Networking::ConnectionMode mode>
+void Networking::Synapse<mode>::initializeFromConnectionMode() {
+    if (isServer)
+    {
+        uint8_t returnCode = initialize_server<mode>(socket, info.port);
+    }
+}
+
+template <Networking::ConnectionMode mode>
+void Networking::AsyncSynapse<mode>::kill()
+{
+    isAlive = false;
+    proc.join();
+}
 
 template <Networking::ConnectionMode mode>
 Networking::Synapse<mode>::Synapse(uint32_t port)

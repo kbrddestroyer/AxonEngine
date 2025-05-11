@@ -1,5 +1,17 @@
 #include "Synapse.hpp"
 
+namespace Networking {
+	template<>
+	void Synapse<ConnectionMode::TCP>::listen();
+	template<>
+	void Synapse<ConnectionMode::UDP>::listen();
+
+	template class Synapse<ConnectionMode::UDP>;
+	template class Synapse<ConnectionMode::TCP>;
+
+	template class AsyncSynapse<ConnectionMode::UDP>;
+	template class AsyncSynapse<ConnectionMode::TCP>;
+}
 
 #pragma region SYNAPS
 
@@ -74,14 +86,6 @@ void Networking::Synapse<mode>::onMessageReceived(const AxonMessage& message, SO
 	events.invoke(&event_);
 }
 
-template <Networking::ConnectionMode mode>
-void Networking::Synapse<mode>::initializeFromConnectionMode() {
-	if (isServer)
-	{
-		uint8_t returnCode = initialize_server<mode>(socket, info.port);
-	}
-}
-
 #pragma endregion
 
 
@@ -92,13 +96,6 @@ void Networking::AsyncSynapse<mode>::start()
 {
 	isAlive = true;
 	proc = std::thread(&Networking::AsyncSynapse<mode>::listen, this);
-}
-
-template <Networking::ConnectionMode mode>
-void Networking::AsyncSynapse<mode>::kill()
-{
-	isAlive = false;
-	proc.join();
 }
 
 #pragma endregion
