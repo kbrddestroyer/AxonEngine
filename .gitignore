@@ -27,6 +27,7 @@ mono_crash.*
 
 # CMake
 [Cc][Mm]akeFiles/
+cmake-build/
 cmake-build-*/
 
 # Build results

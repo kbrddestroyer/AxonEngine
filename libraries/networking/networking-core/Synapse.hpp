@@ -135,4 +135,6 @@ namespace Networking
     template class AsyncSynapse<ConnectionMode::TCP>;
 }
 
+#include "Synapse.ipp"
+
 /* Synapse.hpp */
