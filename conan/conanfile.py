@@ -7,7 +7,7 @@ class AxonConan(ConanFile):
     requires = "gtest/1.14.0"
 
     def generate(self):
-        tc = CMakeToolchain(self, generator="Ninja")
+        tc = CMakeToolchain(self)
         tc.generate()
 
         deps = CMakeDeps(self)
