@@ -7,6 +7,8 @@ Work in progress, there's no stable version yet
 ## Repository health status
 
 [![CMake - Cross-platform](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/cmake-multi-platform.yml)
+[![CMake Cross-platform](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/cmake-multi-platform.yml/badge.svg?event=workflow_dispatch)](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/cmake-multi-platform.yml)
+[![CMake Cross-platform](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/cmake-multi-platform.yml/badge.svg?branch=release&event=push)](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/cmake-multi-platform.yml)
 
 ## Before you start
 
