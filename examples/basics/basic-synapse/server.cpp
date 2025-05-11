@@ -15,7 +15,7 @@ void onMessageReceived(const Networking::SynapseMessageReceivedEvent& event)
 
 int main()
 {
-	Networking::AsyncSynapse serverConnection = Networking::AsyncSynapse<Networking::ConnectionMode::TCP>(10423);
+	Networking::AsyncSynapse<Networking::ConnectionMode::TCP> serverConnection(10423);
 	serverConnection.getEventManager().subscribe<Networking::SynapseMessageReceivedEvent>(onMessageReceived);
 
 	std::cout << "Starting Synapse connection" << std::endl;

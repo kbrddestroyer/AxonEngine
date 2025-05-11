@@ -6,8 +6,6 @@ Work in progress, there's no stable version yet
 
 ## Repository health status
 
-[![CMake - x64](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/cmake-project.yml/badge.svg)](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/cmake-project.yml)
-
 [![CMake - Cross-platform](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/cmake-multi-platform.yml)
 
 ## Before you start
@@ -30,5 +28,4 @@ Work in progress, there's no stable version yet
 
 ## Contributing
 
----
 ## Footer

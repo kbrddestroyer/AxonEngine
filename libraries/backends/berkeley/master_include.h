@@ -24,6 +24,7 @@
 #define SOCKET_T int32_t
 #define SOCKADDR_T struct sockaddr
 #define SOCKADDR_IN_T struct sockaddr_in
+#define SOCKLEN_T socklen_t
 #define CHECK_VALID(s) ((s) >= 0)
 #define CLOSESOCKET(s) close(s)
 
@@ -58,6 +59,7 @@
 #define SOCKET_T SOCKET
 #define SOCKADDR_T SOCKADDR
 #define SOCKADDR_IN_T SOCKADDR_IN
+#define SOCKLEN_T socklen_t
 #define ADDRINFO_T ADDRINFO
 #define CHECK_VALID(s) ((s) != SOCKET_ERROR)
 #define CLOSESOCKET(s) closesocket(s)

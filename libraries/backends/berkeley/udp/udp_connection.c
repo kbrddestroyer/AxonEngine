@@ -65,7 +65,7 @@ int32_t send_udp_message(const char* message, size_t size, SOCKET_T from, const 
 
 int32_t recv_udp_message(char* const message, size_t max_size, SOCKET_T to, SOCKADDR_IN_T* from)
 {
-	size_t len = sizeof(*from);
+	SOCKLEN_T len = (SOCKLEN_T) sizeof(*from);
 	return recvfrom(to, message, max_size, 0, (SOCKADDR_T*)from, &len);
 }
 
