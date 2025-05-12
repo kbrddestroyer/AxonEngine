@@ -43,7 +43,7 @@ uint8_t deserialize(const char* serialized, const size_t size, void** deserializ
     /* Shrink header size */
 
     size_t shrunk = actual;
-    while (shrunk == actual)
+    while (shrunk == actual != 0 && header_size > 0)
     {
         shrunk = actual & (1ULL << --header_size * 8) - 1;
     }
