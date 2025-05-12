@@ -1,11 +1,10 @@
 #include "serialization.h"
-
 #include <string.h>
 
 
-char* serialize(char* data, size_t size, TAG_T tag, size_t* total_size)
+char* serialize(const char* data, size_t size, TAG_T tag, size_t* totalSize)
 {
-    *total_size = 0;
+    *totalSize = 0;
     size_t header_size = 0;
     size_t footer_size = 0;
 
@@ -14,8 +13,8 @@ char* serialize(char* data, size_t size, TAG_T tag, size_t* total_size)
     while (tag >> footer_size * 8)
         footer_size += 1;
 
-    *total_size = size + header_size + footer_size;
-    char* buffer = calloc(*total_size, sizeof(char));
+    *totalSize = size + header_size + footer_size;
+    char* buffer = calloc(*totalSize, sizeof(char));
     
     if (buffer == NULL)
         return NULL;   // ERR_COULD_NOT_ALLOC
@@ -27,21 +26,24 @@ char* serialize(char* data, size_t size, TAG_T tag, size_t* total_size)
     return buffer;
 }
 
-uint8_t deserialize(const char* serialized, size_t size, void** deserialized, size_t* actualSize, TAG_T* tag)
+uint8_t deserialize(const char* serialized, const size_t size, void** deserialized, size_t* actualSize, TAG_T* tag)
 {
-    size_t actual;
-    actual = size;
+    size_t actual = size;
     size_t header_size = sizeof(actual);
-    while (size <= actual && header_size-- > 0)
+    do
     {
         actual = (*(size_t*)(serialized));
-        actual &= (1ULL << header_size * 8) - 1;
+        actual &= (1ULL << --header_size * 8) - 1;
+    } while (size < actual && header_size > 0);
+
+    if (header_size == 0 || actual == 0) {
+        return 1;
     }
 
     /* Shrink header size */
 
     size_t shrunk = actual;
-    while (shrunk == actual)
+    while (shrunk == actual != 0 && header_size > 0)
     {
         shrunk = actual & (1ULL << --header_size * 8) - 1;
     }

@@ -7,6 +7,7 @@ if (POLICY CMP0091)
   cmake_policy(SET CMP0091 NEW)
 endif()
 
+set (CMAKE_CXX_STANDARD c++17)
 project ("AxonEngine" VERSION 0.0.1)
 
 include (${CMAKE_HOME_DIRECTORY}/cmake/build-utils.cmake)

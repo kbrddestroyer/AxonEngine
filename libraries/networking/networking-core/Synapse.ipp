@@ -1,14 +1,6 @@
 #pragma once
 
 template <Networking::ConnectionMode mode>
-void Networking::Synapse<mode>::initializeFromConnectionMode() {
-    if (isServer)
-    {
-        uint8_t returnCode = initialize_server<mode>(socket, info.port);
-    }
-}
-
-template <Networking::ConnectionMode mode>
 void Networking::AsyncSynapse<mode>::kill()
 {
     isAlive = false;
@@ -19,9 +11,13 @@ template <Networking::ConnectionMode mode>
 Networking::Synapse<mode>::Synapse(uint32_t port)
 {
     isServer = true;
-
     info.port = port;
-    initializeFromConnectionMode();
+
+    uint8_t result = initialize_server<mode>(socket, port);
+
+    if (result != SUCCESS) {
+        throw AxonNetworkingInternalError(result);
+    }
 }
 
 
@@ -32,7 +28,11 @@ Networking::Synapse<mode>::Synapse(const ConnectionInfo& connection)
     info.hostname = connection.hostname;
     info.port = connection.port;
 
-    initializeFromConnectionMode();
+    uint8_t result = initialize_client<mode>(socket, connection.hostname.c_str(), connection.port);
+
+    if (result != SUCCESS) {
+        throw AxonNetworkingInternalError(result);
+    }
 }
 
 

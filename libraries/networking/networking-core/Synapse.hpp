@@ -90,8 +90,6 @@ namespace Networking
 		/** Initialize Synapse in client mode */
 		explicit Synapse(const ConnectionInfo&);
 		virtual ~Synapse();
-    private:
-        void initializeFromConnectionMode();
 	public:
 		inline bool alive() const { return isAlive.load(); };
 
