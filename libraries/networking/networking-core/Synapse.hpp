@@ -12,7 +12,7 @@ namespace Networking
 {
 	constexpr uint32_t SYNAPSE_MESSAGE_MAX_SIZE = 1024;
 
-	enum ConnectionMode
+	enum class ConnectionMode
 	{
 		UDP = SOCK_DGRAM,
 		TCP = SOCK_STREAM
@@ -26,7 +26,7 @@ namespace Networking
 	struct ConnectionInfo
 	{
 		std::string	hostname;
-		uint32_t	port;
+		uint32_t	port = 10432;
 	};
 
 	/**
