@@ -1,0 +1,51 @@
+name: macos-build.yml
+on:
+  push:
+    branches:
+      - main
+      - release
+      - release/*
+      - feature/*
+      - archive/*
+  pull_request:
+    branches:
+      - main
+      - release
+      - release/*
+      - feature/*
+      - archive/*
+
+jobs:
+  build-macos-gcc-debug:
+      uses: ./.github/workflows/reusables/cmake-crossplatform.yml
+      with:
+        os: macos-latest
+        c_compiler: gcc
+        cpp_compiler: g++
+        build_type: Debug
+
+  build-macos-gcc-release:
+    needs: build-macos-gcc-debug
+    uses: ./.github/workflows/reusables/cmake-crossplatform.yml
+    with:
+      os: macos-latest
+      c_compiler: gcc
+      cpp_compiler: g++
+      build_type: Release
+
+  build-macos-clang-debug:
+    uses: ./.github/workflows/reusables/cmake-crossplatform.yml
+    with:
+      os: macos-latest
+      c_compiler: clang
+      cpp_compiler: clang++
+      build_type: Debug
+
+  build-macos-clang-release:
+    needs: build-macos-clang-debug
+    uses: ./.github/workflows/reusables/cmake-crossplatform.yml
+    with:
+      os: macos-latest
+      c_compiler: clang
+      cpp_compiler: clang++
+      build_type: Release
