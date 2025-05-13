@@ -12,7 +12,7 @@
 
 /* unix */
 
-#if defined(__unix__)
+#if defined(__unix__) || defined(__APPLE__)
 #include <sys/socket.h>
 #include <netdb.h>
 #include <ifaddrs.h>
