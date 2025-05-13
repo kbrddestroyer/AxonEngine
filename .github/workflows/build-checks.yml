@@ -1,0 +1,26 @@
+name: CMake Build - Checks
+on:
+  push:
+    branches:
+      - main
+      - release
+      - release/*
+      - feature/*
+      - archive/*
+  pull_request:
+    branches:
+      - main
+      - release
+      - release/*
+      - feature/*
+      - archive/*
+
+jobs:
+  build-macos:
+    uses: ./.github/workflows/macos-build.yml
+
+  build-linux:
+    uses: ./.github/workflows/linux-build.yml
+
+  build-windows:
+    uses: ./.github/workflows/windows-build.yml

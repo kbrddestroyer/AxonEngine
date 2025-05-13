@@ -1,0 +1,17 @@
+name: Windows Build
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  windows-matrix-build:
+    strategy:
+      matrix:
+        build_type: [Debug, Release]
+
+    uses: ./.github/workflows/cmake-crossplatform.yml
+    with:
+      os: windows-latest
+      c_compiler: cl
+      cpp_compiler: cl
+      build_type: ${{ matrix.build_type }}

@@ -1,0 +1,18 @@
+name: MacOS Build
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  macos-matrix-build:
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [Debug, Release]
+        compiler: [ {c: gcc, cxx: g++}, {c: clang, cxx: clang++} ]
+    uses: ./.github/workflows/cmake-crossplatform.yml
+    with:
+      os: macos-latest
+      c_compiler: ${{ matrix.compiler.c }}
+      cpp_compiler: ${{ matrix.compiler.cxx }}
+      build_type: ${{ matrix.build_type }}
