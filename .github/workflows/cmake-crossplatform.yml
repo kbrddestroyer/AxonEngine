@@ -67,6 +67,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{inputs.os}}-${{inputs.build_type}}-${{inputs.c_compiler}}
+          name: ${{inputs.os}}-${{inputs.build_type}}-${{inputs.c_compiler}}-${{ github.run_id }}
           path: ${{ steps.strings.outputs.build-output-dir }}
-          
