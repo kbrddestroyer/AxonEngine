@@ -8,12 +8,10 @@ jobs:
     strategy:
       matrix:
         build_type: [Debug, Release]
-        c_compiler: [gcc, clang]
-        cxx_compiler: [g++, clang++]
-
+        compiler: [ {c: gcc, cxx: g++}, {c: clang, cxx: clang++} ]
     uses: ./.github/workflows/cmake-crossplatform.yml
     with:
       os: macos-latest
-      c_compiler: ${{ matrix.c_compiler }}
-      cpp_compiler: ${{ matrix.cxx_compiler }}
+      c_compiler: ${{ matrix.compiler.x }}
+      cpp_compiler: ${{ matrix.compiler.cxx }}
       build_type: ${{ matrix.build_type }}
