@@ -1,0 +1,34 @@
+name: Windows Build
+on:
+  push:
+    branches:
+      - main
+      - release
+      - release/*
+      - feature/*
+      - archive/*
+  pull_request:
+    branches:
+      - main
+      - release
+      - release/*
+      - feature/*
+      - archive/*
+
+jobs:
+  build-windows-debug:
+      uses: ./.github/workflows/cmake-crossplatform.yml
+      with:
+        os: windows-latest
+        c_compiler: cl
+        cpp_compiler: cl
+        build_type: Debug
+
+  build-windows-release:
+    needs: build-windows-debug
+    uses: ./.github/workflows/cmake-crossplatform.yml
+    with:
+      os: windows-latest
+      c_compiler: cl
+      cpp_compiler: cl
+      build_type: Release
