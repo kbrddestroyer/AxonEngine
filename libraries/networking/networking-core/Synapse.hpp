@@ -12,7 +12,7 @@ namespace Networking
 {
 	constexpr uint32_t SYNAPSE_MESSAGE_MAX_SIZE = 1024;
 
-	enum class ConnectionMode
+	enum ConnectionMode
 	{
 		UDP = SOCK_DGRAM,
 		TCP = SOCK_STREAM
@@ -31,8 +31,8 @@ namespace Networking
 
 	/**
 	* TODO: Documenting
-    */
-    class AxonNetworkingInternalError : public std::exception
+    	*/
+    	class AxonNetworkingInternalError : public std::exception
 	{
 		uint8_t err;
 	public:
