@@ -6,9 +6,11 @@ Work in progress, there's no stable version yet
 
 ## Repository health status
 
-[![CMake - Cross-platform](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/cmake-multi-platform.yml)
-[![CMake Cross-platform](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/cmake-multi-platform.yml/badge.svg?event=workflow_dispatch)](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/cmake-multi-platform.yml)
-[![CMake Cross-platform](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/cmake-multi-platform.yml/badge.svg?branch=release&event=push)](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/cmake-multi-platform.yml)
+[![Linux Build](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/linux-build.yml/badge.svg)](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/linux-build.yml)
+
+[![Windows Build](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/windows-build.yml/badge.svg)](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/windows-build.yml)
+
+[![MacOS Build](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/macos-build.yml/badge.svg)](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/macos-build.yml)
 
 ## Before you start
 
