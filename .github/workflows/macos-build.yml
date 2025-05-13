@@ -1,51 +1,19 @@
 name: MacOS Build
 on:
-  push:
-    branches:
-      - main
-      - release
-      - release/*
-      - feature/*
-      - archive/*
-  pull_request:
-    branches:
-      - main
-      - release
-      - release/*
-      - feature/*
-      - archive/*
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
-  build-macos-gcc-debug:
-      uses: ./.github/workflows/cmake-crossplatform.yml
-      with:
-        os: macos-latest
-        c_compiler: gcc
-        cpp_compiler: g++
-        build_type: Debug
+  macos-matrix-build:
+    strategy:
+      matrix:
+        build_type: [Debug, Release]
+        c_compiler: [gcc, clang]
+        cxx_compiler: [g++, clang++]
 
-  build-macos-gcc-release:
-    needs: build-macos-gcc-debug
     uses: ./.github/workflows/cmake-crossplatform.yml
     with:
       os: macos-latest
-      c_compiler: gcc
-      cpp_compiler: g++
-      build_type: Release
-
-  build-macos-clang-debug:
-    uses: ./.github/workflows/cmake-crossplatform.yml
-    with:
-      os: macos-latest
-      c_compiler: clang
-      cpp_compiler: clang++
-      build_type: Debug
-
-  build-macos-clang-release:
-    needs: build-macos-clang-debug
-    uses: ./.github/workflows/cmake-crossplatform.yml
-    with:
-      os: macos-latest
-      c_compiler: clang
-      cpp_compiler: clang++
-      build_type: Release
+      c_compiler: ${{ matrix.c_compiler }}
+      cpp_compiler: ${{ matrix.cxx_compiler }}
+      build_type: ${{ matrix.build_type }}

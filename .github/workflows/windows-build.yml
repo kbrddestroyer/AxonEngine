@@ -1,34 +1,17 @@
 name: Windows Build
 on:
-  push:
-    branches:
-      - main
-      - release
-      - release/*
-      - feature/*
-      - archive/*
-  pull_request:
-    branches:
-      - main
-      - release
-      - release/*
-      - feature/*
-      - archive/*
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
-  build-windows-debug:
-      uses: ./.github/workflows/cmake-crossplatform.yml
-      with:
-        os: windows-latest
-        c_compiler: cl
-        cpp_compiler: cl
-        build_type: Debug
+  windows-matrix-build:
+    strategy:
+      matrix:
+        build_type: [Debug, Release]
 
-  build-windows-release:
-    needs: build-windows-debug
     uses: ./.github/workflows/cmake-crossplatform.yml
     with:
       os: windows-latest
       c_compiler: cl
       cpp_compiler: cl
-      build_type: Release
+      build_type: ${{ matrix.build_type }}

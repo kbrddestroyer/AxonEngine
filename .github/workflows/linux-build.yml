@@ -1,52 +1,19 @@
 name: Linux Build
 on:
-  push:
-    branches:
-      - main
-      - release
-      - release/*
-      - feature/*
-      - archive/*
-  pull_request:
-    branches:
-      - main
-      - release
-      - release/*
-      - feature/*
-      - archive/*
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
-  build-ubuntu-gcc-debug:
-      uses: ./.github/workflows/cmake-crossplatform.yml
-      with:
-        os: ubuntu-latest
-        c_compiler: gcc
-        cpp_compiler: g++
-        build_type: Debug
+  linux-matrix-build:
+    strategy:
+      matrix:
+        build_type: [Debug, Release]
+        c_compiler: [gcc, clang]
+        cxx_compiler: [g++, clang++]
 
-  build-ubuntu-gcc-release:
-    needs: build-ubuntu-gcc-debug
     uses: ./.github/workflows/cmake-crossplatform.yml
     with:
       os: ubuntu-latest
-      c_compiler: gcc
-      cpp_compiler: g++
-      build_type: Release
-
-  build-ubuntu-clang-debug:
-    uses: ./.github/workflows/cmake-crossplatform.yml
-    with:
-      os: ubuntu-latest
-      c_compiler: clang
-      cpp_compiler: clang++
-      build_type: Debug
-
-  build-ubuntu-clang-release:
-    needs: build-ubuntu-clang-debug
-    uses: ./.github/workflows/cmake-crossplatform.yml
-    with:
-      os: ubuntu-latest
-      c_compiler: clang
-      cpp_compiler: clang++
-      build_type: Release
-      
+      c_compiler: ${{ matrix.c_compiler }}
+      cpp_compiler: ${{ matrix.cxx_compiler }}
+      build_type: ${{ matrix.build_type }}
