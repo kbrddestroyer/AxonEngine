@@ -59,10 +59,14 @@ void Networking::Synapse<mode>::start()
 }
 
 template <Networking::ConnectionMode mode>
+void Networking::Synapse<mode>::sendPooled() {
+
+}
+
+template <Networking::ConnectionMode mode>
 void Networking::Synapse<mode>::send(const AxonMessage& message)
 {
-    if (!isServer)
-        sendTo(message, &socket.conn);
+    sendTo(message, &socket.conn);
 }
 
 template <Networking::ConnectionMode mode>
@@ -72,7 +76,7 @@ void Networking::Synapse<mode>::sendTo(const AxonMessage& message, const SOCKADD
 }
 
 template<>
-void Networking::Synapse<Networking::ConnectionMode::TCP>::listen()
+inline void Networking::Synapse<Networking::ConnectionMode::TCP>::listen()
 {
     // Todo: async support
 
@@ -86,10 +90,10 @@ void Networking::Synapse<Networking::ConnectionMode::TCP>::listen()
 
     while (isAlive)
     {
-        int size = recv_tcp_message((char*) buffer, 256, client);
+        const int32_t size = recv_tcp_message(reinterpret_cast<char *>(buffer), 256, client);
         if (size > 0)
         {
-            const char *message = const_cast<char *>(reinterpret_cast<char *> (buffer));
+            const char *message = reinterpret_cast<char *> (buffer);
             AxonMessage message_ = AxonMessage(message, size);
             onMessageReceived(message_, &host);
         }
@@ -97,16 +101,16 @@ void Networking::Synapse<Networking::ConnectionMode::TCP>::listen()
 }
 
 template<>
-void Networking::Synapse<Networking::ConnectionMode::UDP>::listen()
+inline void Networking::Synapse<Networking::ConnectionMode::UDP>::listen()
 {
-    char *buffer[SYNAPSE_MESSAGE_MAX_SIZE] = {};
     SOCKADDR_IN_T host = {};
 
     while (isAlive) {
+        char* buffer[SYNAPSE_MESSAGE_MAX_SIZE] = {};
         int32_t size = recv_udp_message(reinterpret_cast<char *> (buffer), SYNAPSE_MESSAGE_MAX_SIZE, socket.socket,
                                         &host);
         if (size > 0) {
-            const char *message = const_cast<char *>(reinterpret_cast<char *> (buffer));
+            const char *message = reinterpret_cast<char *> (buffer);
             AxonMessage message_ = AxonMessage(message, size);
             onMessageReceived(message_, &host);
         }

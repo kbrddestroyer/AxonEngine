@@ -19,8 +19,9 @@ Networking::AxonMessage::AxonMessage(void* message, size_t size, uint32_t tag)
 	
 	this->size = size;
 	this->tag = tag;
+	this->serializedSize = 0;
 
-	this->serialized = serialize(reinterpret_cast<char*>(message), size, tag, &this->serializedSize);
+	this->serialized = serialize(static_cast<char*>(message), size, tag, &this->serializedSize);
 }
 
 Networking::AxonMessage::AxonMessage(const char* bits, size_t actualSize)
@@ -67,6 +68,10 @@ Networking::AxonMessage::~AxonMessage()
 		free(this->serialized);
 	if (this->message)
 		free(this->message);
+}
+
+TAG_T Networking::AxonMessage::generateTag() const {
+
 }
 
 #pragma endregion
