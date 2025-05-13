@@ -1,4 +1,4 @@
-name: macos-build.yml
+name: MacOS Build
 on:
   push:
     branches:
