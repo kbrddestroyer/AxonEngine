@@ -12,6 +12,6 @@ jobs:
     uses: ./.github/workflows/cmake-crossplatform.yml
     with:
       os: ubuntu-latest
-      c_compiler: ${{ matrix.compiler.x }}
+      c_compiler: ${{ matrix.compiler.c }}
       cpp_compiler: ${{ matrix.compiler.cxx }}
       build_type: ${{ matrix.build_type }}
