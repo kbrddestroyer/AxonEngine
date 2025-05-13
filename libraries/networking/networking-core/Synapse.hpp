@@ -26,13 +26,13 @@ namespace Networking
 	struct ConnectionInfo
 	{
 		std::string	hostname;
-		uint32_t	port;
+		uint32_t	port = 10432;
 	};
 
 	/**
 	* TODO: Documenting
-    */
-    class AxonNetworkingInternalError : public std::exception
+    	*/
+    	class AxonNetworkingInternalError : public std::exception
 	{
 		uint8_t err;
 	public:
