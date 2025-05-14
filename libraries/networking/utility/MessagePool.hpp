@@ -4,7 +4,7 @@
 #include <memory>
 
 namespace Networking {
-    struct MessagePoolNode
+    struct AXON_DECLSPEC MessagePoolNode
     {
         AxonMessage message;
         SOCKADDR_IN_T destination;
@@ -12,7 +12,7 @@ namespace Networking {
 
     typedef std::shared_ptr<MessagePoolNode> MessagePoolNodePtr;
 
-    class MessagePoolBase {
+    class AXON_DECLSPEC MessagePoolBase {
     public:
         MessagePoolBase() = default;
 

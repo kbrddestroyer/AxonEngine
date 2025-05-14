@@ -13,9 +13,17 @@ project ("AxonEngine" VERSION 0.0.1)
 include_directories(include)
 include (${CMAKE_HOME_DIRECTORY}/cmake/build-utils.cmake)
 
+if (${CMAKE_BUILD_TYPE} EQUAL "Debug")
+    set (BUILD_TESTS ON)
+endif()
+
 if(GTK2_${_var}_FOUND)
    set(GTK2_LIBRARIES ${GTK2_LIBRARIES} ${GTK2_${_var}_LIBRARY})
    set(GTK2_LIBRARIES ${GTK2_LIBRARIES} PARENT_SCOPE)
+endif()
+
+if (BUILD_TESTS)
+    enable_testing()
 endif()
 
 add_subdirectory(libraries)
