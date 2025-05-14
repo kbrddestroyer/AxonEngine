@@ -59,8 +59,11 @@ void Networking::Synapse<mode>::start()
 }
 
 template <Networking::ConnectionMode mode>
-void Networking::Synapse<mode>::sendPooled() {
+void Networking::Synapse<mode>::sendPooled(const AxonMessage& message, const SOCKADDR_IN_T* dest) {
+    if (!dest)
+        dest = &socket.conn;
 
+    pool.push( { message, *dest } );
 }
 
 template <Networking::ConnectionMode mode>
@@ -72,18 +75,18 @@ void Networking::Synapse<mode>::send(const AxonMessage& message)
 template <Networking::ConnectionMode mode>
 void Networking::Synapse<mode>::sendTo(const AxonMessage& message, const SOCKADDR_IN_T* dest) const
 {
-    send_message<mode>(socket, message.getSerializedBuffer(), message.getSize());
+    Networking::SerializedAxonMessage serialized = message.getSerialized();
+    send_message<mode>(socket, serialized.bitstream, serialized.size);
 }
 
 template<>
 inline void Networking::Synapse<Networking::ConnectionMode::TCP>::listen()
 {
     // Todo: async support
-
     char *buffer[SYNAPSE_MESSAGE_MAX_SIZE] = {};
     SOCKADDR_IN_T host = {};
-
     SOCKET_T client;
+
     do {
         client = accept_incoming(socket.socket, &host);
     } while (!CHECK_VALID(client));
@@ -97,6 +100,8 @@ inline void Networking::Synapse<Networking::ConnectionMode::TCP>::listen()
             AxonMessage message_ = AxonMessage(message, size);
             onMessageReceived(message_, &host);
         }
+
+        update();
     }
 }
 
@@ -114,6 +119,17 @@ inline void Networking::Synapse<Networking::ConnectionMode::UDP>::listen()
             AxonMessage message_ = AxonMessage(message, size);
             onMessageReceived(message_, &host);
         }
+
+        update();
+    }
+}
+
+template <Networking::ConnectionMode mode>
+void Networking::Synapse<mode>::update() {
+    if (pool.getPoolSize() > 0) {
+        MessagePoolNodePtr pNode = pool.pop();
+
+        sendTo(pNode->message, &pNode->destination);
     }
 }
 

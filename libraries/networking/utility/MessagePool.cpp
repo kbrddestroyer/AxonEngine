@@ -1,13 +1,16 @@
 #include "MessagePool.hpp"
+#include <networking/networking-core/Synapse.hpp>
 
 
-void Networking::MessagePoolBase::push(const AxonMessage& message) {
-    messagePool.push(std::move(message));
+void Networking::MessagePoolBase::push(MessagePoolNode message) {
+    messagePool.push(std::make_shared<MessagePoolNode> (message));
 }
 
-Networking::AxonMessage Networking::MessagePoolBase::pop() {
-    AxonMessage message = messagePool.top();
-    messagePool.pop();
+Networking::MessagePoolNodePtr Networking::MessagePoolBase::pop() {
+    MessagePoolNodePtr message = messagePool.front();
 
+
+    messagePool.pop();
     return message;
 }
+

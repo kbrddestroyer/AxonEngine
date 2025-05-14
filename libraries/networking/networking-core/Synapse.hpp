@@ -89,20 +89,22 @@ namespace Networking
 		virtual ~Synapse();
 
 		bool alive() const { return isAlive.load(); };
-		void sendPooled();
 
 		virtual void start();
 		virtual void send(const AxonMessage&);
 		virtual void sendTo(const AxonMessage&, const SOCKADDR_IN_T*) const;
 		virtual void listen();
+        virtual void update();
 		virtual void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*);
 
 		EventSystem::AxonEventManager& getEventManager() { return events; }
-	protected:
+    protected:
+        void sendPooled(const AxonMessage&, const SOCKADDR_IN_T* = nullptr);
+    protected:
 		EventSystem::AxonEventManager events;
 		MessagePoolBase		pool;
 	private:
-		const bool			isServer;
+		bool			    isServer;
 		ConnectionInfo		info;
 		Socket              socket;
 	};
