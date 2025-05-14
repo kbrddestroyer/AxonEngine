@@ -20,11 +20,28 @@ Work in progress, there's no stable version yet
 
 ## Requirements
 
+### Conan
+
+```bash
+cd conan/
+./install-deps.sh Debug
+./install-deps.sh Release
+```
+
 ## Building
 
-- Create cmake-build directory
-- `cd cmake-build`
-- `cmake .. && cmake --build .`
+1. Manual build from command prompt
+
+```bash
+mkdir cmake-build && cd cmake-build
+cmake .. -DCMAKE-TOOLCHAIN-FILE=../conan/build/Debug/conan_toolchain.cmake
+```
+
+2. CLion
+
+3. Visual Studio 2022+
+
+Modify and use CMakePresets.json
 
 ## Usage
 
