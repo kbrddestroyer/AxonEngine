@@ -7,15 +7,15 @@
 
 #include <networking/AxonNetwork.hpp>
 #include <string.h>
+#include <iostream>
 
 
 int main()
 {
 	Networking::ConnectionInfo connection = { "localhost", 10423 };
 
-	Networking::Synapse<Networking::ConnectionMode::TCP> clientConnection(connection);
-
+	Networking::Synapse<Networking::ConnectionMode::UDP> clientConnection(connection);
 	const char* message = "Hello World!";
-	Networking::AxonMessage message_((void*) message, strlen(message) + 1, 1);
+	Networking::AxonMessage message_(const_cast<char*>( message ), strlen(message) + 1, 1);
 	clientConnection.send(message_);
 }

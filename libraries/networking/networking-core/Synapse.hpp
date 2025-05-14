@@ -98,7 +98,6 @@ namespace Networking
 		virtual void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*);
 
 		EventSystem::AxonEventManager& getEventManager() { return events; }
-    protected:
         void sendPooled(const AxonMessage&, const SOCKADDR_IN_T* = nullptr);
     protected:
 		EventSystem::AxonEventManager events;

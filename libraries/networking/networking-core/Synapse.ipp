@@ -21,6 +21,8 @@ Networking::Synapse<mode>::Synapse(uint32_t port)
     isServer = true;
     info.port = port;
 
+    socket = {};
+
     uint8_t result = initialize_server<mode>(socket, port);
 
     if (result != SUCCESS) {
@@ -35,6 +37,8 @@ Networking::Synapse<mode>::Synapse(const ConnectionInfo& connection)
     isServer = false;
     info.hostname = connection.hostname;
     info.port = connection.port;
+
+    socket = {};
 
     uint8_t result = initialize_client<mode>(socket, connection.hostname.c_str(), connection.port);
 
@@ -87,9 +91,15 @@ inline void Networking::Synapse<Networking::ConnectionMode::TCP>::listen()
     SOCKADDR_IN_T host = {};
     SOCKET_T client;
 
-    do {
-        client = accept_incoming(socket.socket, &host);
-    } while (!CHECK_VALID(client));
+    if (isServer) {
+        do {
+            client = accept_incoming(socket.socket, &host);
+        } while (!CHECK_VALID(client));
+    }
+    else {
+        host = socket.conn;
+        client = socket.socket;
+    }
 
     while (isAlive)
     {
