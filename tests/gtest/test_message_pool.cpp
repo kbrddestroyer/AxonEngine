@@ -6,7 +6,9 @@ TEST(TEST_MESSAGE_POOL, TEST_REGULAR)
 {
     Networking::MessagePoolBase pool;
 
-    Networking::AxonMessage message("Hello World!", 13);
+    const char* initData = "Hello World!";
+
+    Networking::AxonMessage message(const_cast<char*>(initData), strlen(initData), 0, 0);
     Networking::MessagePoolNode node = { message, {} };
 
     pool.push(node);
