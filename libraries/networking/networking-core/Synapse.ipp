@@ -21,6 +21,8 @@ Networking::Synapse<mode>::Synapse(uint32_t port)
     isServer = true;
     info.port = port;
 
+    socket = {};
+
     uint8_t result = initialize_server<mode>(socket, port);
 
     if (result != SUCCESS) {
@@ -35,6 +37,8 @@ Networking::Synapse<mode>::Synapse(const ConnectionInfo& connection)
     isServer = false;
     info.hostname = connection.hostname;
     info.port = connection.port;
+
+    socket = {};
 
     uint8_t result = initialize_client<mode>(socket, connection.hostname.c_str(), connection.port);
 
@@ -59,57 +63,83 @@ void Networking::Synapse<mode>::start()
 }
 
 template <Networking::ConnectionMode mode>
+void Networking::Synapse<mode>::sendPooled(const AxonMessage& message, const SOCKADDR_IN_T* dest) {
+    if (!dest)
+        dest = &socket.conn;
+
+    pool.push( { message, *dest } );
+}
+
+template <Networking::ConnectionMode mode>
 void Networking::Synapse<mode>::send(const AxonMessage& message)
 {
-    if (!isServer)
-        sendTo(message, &socket.conn);
+    sendTo(message, &socket.conn);
 }
 
 template <Networking::ConnectionMode mode>
 void Networking::Synapse<mode>::sendTo(const AxonMessage& message, const SOCKADDR_IN_T* dest) const
 {
-    send_message<mode>(socket, message.getSerializedBuffer(), message.getSize());
+    SerializedAxonMessage serialized = message.getSerialized();
+    send_message<mode>(socket, serialized.bitstream, serialized.size);
 }
 
 template<>
-void Networking::Synapse<Networking::ConnectionMode::TCP>::listen()
+inline void Networking::Synapse<Networking::ConnectionMode::TCP>::listen()
 {
     // Todo: async support
-
     char *buffer[SYNAPSE_MESSAGE_MAX_SIZE] = {};
     SOCKADDR_IN_T host = {};
-
     SOCKET_T client;
-    do {
-        client = accept_incoming(socket.socket, &host);
-    } while (!CHECK_VALID(client));
+
+    if (isServer) {
+        do {
+            client = accept_incoming(socket.socket, &host);
+        } while (!CHECK_VALID(client));
+    }
+    else {
+        host = socket.conn;
+        client = socket.socket;
+    }
 
     while (isAlive)
     {
-        int size = recv_tcp_message((char*) buffer, 256, client);
+        const int32_t size = recv_tcp_message(reinterpret_cast<char *>(buffer), 256, client);
         if (size > 0)
         {
-            const char *message = const_cast<char *>(reinterpret_cast<char *> (buffer));
+            const char *message = reinterpret_cast<char *> (buffer);
             AxonMessage message_ = AxonMessage(message, size);
             onMessageReceived(message_, &host);
         }
+
+        update();
     }
 }
 
 template<>
-void Networking::Synapse<Networking::ConnectionMode::UDP>::listen()
+inline void Networking::Synapse<Networking::ConnectionMode::UDP>::listen()
 {
-    char *buffer[SYNAPSE_MESSAGE_MAX_SIZE] = {};
     SOCKADDR_IN_T host = {};
 
     while (isAlive) {
+        char* buffer[SYNAPSE_MESSAGE_MAX_SIZE] = {};
         int32_t size = recv_udp_message(reinterpret_cast<char *> (buffer), SYNAPSE_MESSAGE_MAX_SIZE, socket.socket,
                                         &host);
         if (size > 0) {
-            const char *message = const_cast<char *>(reinterpret_cast<char *> (buffer));
+            const char *message = reinterpret_cast<char *> (buffer);
             AxonMessage message_ = AxonMessage(message, size);
             onMessageReceived(message_, &host);
         }
+
+        update();
+    }
+}
+
+template <Networking::ConnectionMode mode>
+void Networking::Synapse<mode>::update() {
+    if (pool.getPoolSize() > 0) {
+        MessagePoolNodePtr pNode = pool.pop();
+
+        sendTo(pNode->message, &pNode->destination);
     }
 }
 
@@ -128,7 +158,10 @@ void Networking::Synapse<mode>::onMessageReceived(const AxonMessage& message, SO
 template <Networking::ConnectionMode mode>
 void Networking::AsyncSynapse<mode>::kill()
 {
-    isAlive = false;
+    if (!this->isAlive)
+        return;
+
+    this->isAlive = false;
     proc.join();
 }
 
@@ -141,8 +174,8 @@ Networking::AsyncSynapse<mode>::~AsyncSynapse()
 template <Networking::ConnectionMode mode>
 void Networking::AsyncSynapse<mode>::start()
 {
-    isAlive = true;
-    proc = std::thread(&Networking::AsyncSynapse<mode>::listen, this);
+    this->isAlive = true;
+    proc = std::thread(&AsyncSynapse::listen, this);
 }
 
 #pragma endregion

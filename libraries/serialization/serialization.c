@@ -2,7 +2,7 @@
 #include <string.h>
 
 
-char* serialize(const char* data, size_t size, TAG_T tag, size_t* totalSize)
+char* serialize(const char* data, const size_t size, const TAG_T tag, size_t* totalSize)
 {
     *totalSize = 0;
     size_t header_size = 0;
@@ -60,7 +60,7 @@ uint8_t deserialize(const char* serialized, const size_t size, void** deserializ
         return 2;
     
     memcpy(*deserialized, serialized + header_size, actual);
-    size_t footer_size = size - actual - header_size;
+    const size_t footer_size = size - actual - header_size;
     
     *tag = (*(uint64_t*) (serialized + actual + header_size)) & ((1ULL << footer_size * 8) - 1);
     *actualSize = actual;

@@ -10,12 +10,12 @@
 
 void onMessageReceived(const Networking::SynapseMessageReceivedEvent& event)
 {
-	std::cout << reinterpret_cast<char*>(event.getMessage().getMessage()) << std::endl;
+	std::cout << static_cast<char*>(event.getMessage().getMessage()) << std::endl;
 }
 
 int main()
 {
-	Networking::Synapse<Networking::ConnectionMode::TCP> serverConnection(10423);
+	Networking::Synapse<Networking::ConnectionMode::UDP> serverConnection(10423);
 	serverConnection.getEventManager().subscribe<Networking::SynapseMessageReceivedEvent>(onMessageReceived);
 
 	std::cout << "Starting Synapse connection" << std::endl;

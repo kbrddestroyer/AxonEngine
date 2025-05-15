@@ -7,6 +7,7 @@
 #include <events/AxonEvent.hpp>
 #include <backends/backend.hpp>
 #include <networking/message/AxonMessage.hpp>
+#include <networking/utility/MessagePool.hpp>
 
 namespace Networking
 {
@@ -36,8 +37,8 @@ namespace Networking
 	{
 		uint8_t err;
 	public:
-		inline explicit AxonNetworkingInternalError(uint8_t err = 0) : err(err) {}
-		inline constexpr uint8_t code() const { return err; }
+		explicit AxonNetworkingInternalError(uint8_t err = 0) : err(err) {}
+		constexpr uint8_t code() const { return err; }
 	};
 
 	/**
@@ -49,17 +50,17 @@ namespace Networking
 	*/
 	class AXON_DECLSPEC SynapseMessageReceivedEvent final : public EventSystem::AxonEvent
 	{
-	private:
-		const AxonMessage&		message;
-		SOCKADDR_IN_T* from;
 	public:
 		SynapseMessageReceivedEvent(const AxonMessage& message, SOCKADDR_IN_T* from) : EventSystem::AxonEvent(), message(message)
 		{
 			this->from = from;
 		}
 
-		inline const AxonMessage& getMessage() const { return message; }
-		inline SOCKADDR_IN_T* getFrom() const { return from; }
+		const AxonMessage& getMessage() const { return message; }
+		SOCKADDR_IN_T* getFrom() const { return from; }
+	private:
+		const AxonMessage&		message;
+		SOCKADDR_IN_T* from;
 	};
 
 	/**
@@ -72,16 +73,9 @@ namespace Networking
 	* TODO:
 	*	- Documenting
 	*/
-	template <ConnectionMode mode> class AXON_DECLSPEC Synapse
+	template <ConnectionMode> class AXON_DECLSPEC Synapse
 	{
-	private:
-		EventSystem::AxonEventManager events;
-
-		bool				isServer;
-		ConnectionInfo		info;
-		Socket              socket;
-	protected:
-		std::atomic<bool>	isAlive = false;
+		const size_t MAX_MESSAGE = 1024;
 	public:
 		/** Default creation is restricted */
 		Synapse() = delete;
@@ -89,36 +83,46 @@ namespace Networking
 		explicit Synapse(uint32_t);
 		/** Initialize Synapse in client mode */
 		explicit Synapse(const ConnectionInfo&);
+
 		virtual ~Synapse();
-	public:
-		inline bool alive() const { return isAlive.load(); };
+
+		bool alive() const { return isAlive.load(); };
 
 		virtual void start();
-
 		virtual void send(const AxonMessage&);
 		virtual void sendTo(const AxonMessage&, const SOCKADDR_IN_T*) const;
 		virtual void listen();
+        virtual void update();
 		virtual void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*);
 
-		constexpr inline EventSystem::AxonEventManager& getEventManager() { return events; }
+		EventSystem::AxonEventManager& getEventManager() { return events; }
+        void sendPooled(const AxonMessage&, const SOCKADDR_IN_T* = nullptr);
+    protected:
+		EventSystem::AxonEventManager events;
+		MessagePoolBase		pool;
+		std::atomic<bool>	isAlive = false;
+	private:
+		bool			    isServer;
+		ConnectionInfo		info;
+		Socket              socket;
 	};
 
 	template <ConnectionMode mode>
 	class AXON_DECLSPEC AsyncSynapse : public Synapse<mode>
 	{
-	private:
-		std::thread proc;
-        bool isAlive;
 	public:
 		/** Initializes Synapse in server mode */
-		explicit AsyncSynapse<mode>(uint32_t port) : Synapse<mode>(port), isAlive(false) {}
+		explicit AsyncSynapse(uint32_t port) : Synapse<mode>(port) {}
+
 		/** Initialize Synapse in client mode */
-		explicit AsyncSynapse<mode>(const ConnectionInfo& info) : Synapse<mode>(info), isAlive(false) {}
+		explicit AsyncSynapse(const ConnectionInfo& info) : Synapse<mode>(info) {}
 
 		~AsyncSynapse() override;
 
 		void start() final;
 		void kill();
+	private:
+		std::thread proc;
 	};
 }
 
