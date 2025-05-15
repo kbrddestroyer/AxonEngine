@@ -76,8 +76,6 @@ namespace Networking
 	template <ConnectionMode> class AXON_DECLSPEC Synapse
 	{
 		const size_t MAX_MESSAGE = 1024;
-	protected:
-		std::atomic<bool>	isAlive = false;
 	public:
 		/** Default creation is restricted */
 		Synapse() = delete;
@@ -102,6 +100,7 @@ namespace Networking
     protected:
 		EventSystem::AxonEventManager events;
 		MessagePoolBase		pool;
+		std::atomic<bool>	isAlive = false;
 	private:
 		bool			    isServer;
 		ConnectionInfo		info;
@@ -113,10 +112,10 @@ namespace Networking
 	{
 	public:
 		/** Initializes Synapse in server mode */
-		explicit AsyncSynapse(uint32_t port) : Synapse<mode>(port), isAlive(false) {}
+		explicit AsyncSynapse(uint32_t port) : Synapse<mode>(port) {}
 
 		/** Initialize Synapse in client mode */
-		explicit AsyncSynapse(const ConnectionInfo& info) : Synapse<mode>(info), isAlive(false) {}
+		explicit AsyncSynapse(const ConnectionInfo& info) : Synapse<mode>(info) {}
 
 		~AsyncSynapse() override;
 
@@ -124,7 +123,6 @@ namespace Networking
 		void kill();
 	private:
 		std::thread proc;
-		bool isAlive;
 	};
 }
 

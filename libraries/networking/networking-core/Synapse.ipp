@@ -79,7 +79,7 @@ void Networking::Synapse<mode>::send(const AxonMessage& message)
 template <Networking::ConnectionMode mode>
 void Networking::Synapse<mode>::sendTo(const AxonMessage& message, const SOCKADDR_IN_T* dest) const
 {
-    Networking::SerializedAxonMessage serialized = message.getSerialized();
+    SerializedAxonMessage serialized = message.getSerialized();
     send_message<mode>(socket, serialized.bitstream, serialized.size);
 }
 
@@ -158,7 +158,10 @@ void Networking::Synapse<mode>::onMessageReceived(const AxonMessage& message, SO
 template <Networking::ConnectionMode mode>
 void Networking::AsyncSynapse<mode>::kill()
 {
-    isAlive = false;
+    if (!this->isAlive)
+        return;
+
+    this->isAlive = false;
     proc.join();
 }
 
@@ -171,8 +174,8 @@ Networking::AsyncSynapse<mode>::~AsyncSynapse()
 template <Networking::ConnectionMode mode>
 void Networking::AsyncSynapse<mode>::start()
 {
-    isAlive = true;
-    proc = std::thread(&Networking::AsyncSynapse<mode>::listen, this);
+    this->isAlive = true;
+    proc = std::thread(&AsyncSynapse::listen, this);
 }
 
 #pragma endregion
