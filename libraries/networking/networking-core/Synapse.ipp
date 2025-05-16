@@ -67,7 +67,7 @@ void Networking::Synapse<mode>::sendPooled(const AxonMessage& message, const SOC
     if (!dest)
         dest = &socket.conn;
 
-    pool->push( { Networking::SerializedAxonMessage(message), *dest } );
+    pool->push( { message.getSerialized(), *dest } );
 }
 
 template <Networking::ConnectionMode mode>
@@ -139,11 +139,10 @@ inline void Networking::Synapse<Networking::ConnectionMode::UDP>::listen()
 
 template <Networking::ConnectionMode mode>
 void Networking::Synapse<mode>::update() {
-    if (pool->getPoolSize() > 0) {
-        MessagePoolNodePtr pNode = pool->pop();
-
-        this->sendTo(pNode->message, &pNode->destination);
-    }
+    MessagePoolNodePtr pNode = pool->pop();
+    if (!pNode.get())
+        return;
+    this->sendTo(pNode->message, &pNode->destination);
 }
 
 template <Networking::ConnectionMode mode>

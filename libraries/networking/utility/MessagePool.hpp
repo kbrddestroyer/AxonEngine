@@ -20,7 +20,7 @@ namespace Networking {
 
         GETTER size_t getPoolSize() const { return messagePool.size(); }
 
-        void push(MessagePoolNode);
+        void push(const MessagePoolNode&);
         MessagePoolNodePtr pop();
     private:
         std::queue<MessagePoolNodePtr> messagePool;
