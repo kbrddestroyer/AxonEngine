@@ -106,7 +106,7 @@ inline void Networking::Synapse<Networking::ConnectionMode::TCP>::listen()
         if (size > 0)
         {
             const char *message = reinterpret_cast<char *> (buffer);
-            AxonMessage message_ = AxonMessage(message, size);
+            AxonMessage message_(SerializedAxonMessage(message, size));
             onMessageReceived(message_, &host);
         }
 
@@ -125,7 +125,7 @@ inline void Networking::Synapse<Networking::ConnectionMode::UDP>::listen()
                                         &host);
         if (size > 0) {
             const char *message = reinterpret_cast<char *> (buffer);
-            AxonMessage message_ = AxonMessage(message, size);
+            AxonMessage message_(SerializedAxonMessage(message, size));
             onMessageReceived(message_, &host);
         }
 

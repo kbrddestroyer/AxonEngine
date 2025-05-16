@@ -96,27 +96,6 @@ Networking::AxonMessage::AxonMessage(void* message, size_t size, uint8_t partID,
 	memcpy(this->message, message, size);
 }
 
-Networking::AxonMessage::AxonMessage(const char* bits, size_t actualSize) :
-    message(),
-    size(),
-    partID(),
-    flags(),
-    uniqueID(getUniqueID())
-{
-    TAG_T tag;
-
-	deserialize(
-		bits,
-		actualSize,
-		&this->message,
-		&this->size,
-		&tag
-	);
-
-    decompressTag(tag);
-}
-
-
 Networking::AxonMessage::AxonMessage(const Networking::SerializedAxonMessage &serialized) :
     message(),
     size(),

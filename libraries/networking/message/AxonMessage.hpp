@@ -73,13 +73,6 @@ namespace Networking
 		*/
 		AxonMessage(void*, size_t, uint8_t = 0, uint8_t = 0);
 
-		/**
-		* Create new message from legacy serialized data (recv mode)
-		 *
-		 * @see Networking::SerializedAxonMessage
-		*/
-		AxonMessage(const char*, size_t);
-
         /**
          * Create new message from serialized message structure (preferred)
          */
