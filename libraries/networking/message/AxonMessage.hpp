@@ -57,6 +57,7 @@ namespace Networking
         uintptr_t offset = 0;
         const char* bitstream = nullptr;
         bool owning = true;
+
         friend class AxonMessage;
     };
 

@@ -38,7 +38,7 @@ namespace Networking
 		uint8_t err;
 	public:
 		explicit AxonNetworkingInternalError(uint8_t err = 0) : err(err) {}
-		constexpr uint8_t code() const { return err; }
+		GETTER  constexpr uint8_t code() const { return err; }
 	};
 
 	/**
@@ -56,10 +56,10 @@ namespace Networking
 			this->from = from;
 		}
 
-		const AxonMessage& getMessage() const { return message; }
-		SOCKADDR_IN_T* getFrom() const { return from; }
+		GETTER const AxonMessage& getMessage() const { return message; }
+		GETTER SOCKADDR_IN_T* getFrom() const { return from; }
 	private:
-		const AxonMessage&		message;
+		const AxonMessage&	message;
 		SOCKADDR_IN_T* from;
 	};
 
@@ -90,7 +90,7 @@ namespace Networking
 
 		virtual void start();
 		virtual void send(const AxonMessage&);
-		virtual void sendTo(const AxonMessage&, const SOCKADDR_IN_T*) const;
+		virtual void sendTo(const SerializedAxonMessage&, const SOCKADDR_IN_T*) const;
 		virtual void listen();
         virtual void update();
 		virtual void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*);
@@ -99,8 +99,8 @@ namespace Networking
         void sendPooled(const AxonMessage&, const SOCKADDR_IN_T* = nullptr);
     protected:
 		EventSystem::AxonEventManager events;
-		MessagePoolBase		pool;
-		std::atomic<bool>	isAlive = false;
+		std::unique_ptr<MessagePoolBase> pool = std::make_unique<MessagePoolBase>();
+		std::atomic<bool> isAlive = false;
 	private:
 		bool			    isServer;
 		ConnectionInfo		info;

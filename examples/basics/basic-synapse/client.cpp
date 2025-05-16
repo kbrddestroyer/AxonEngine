@@ -20,5 +20,5 @@ int main()
 	clientConnection.start();
 
 	Networking::AxonMessage message_(const_cast<char*>( message ), strlen(message) + 1, 1);
-	clientConnection.send(message_);
+	clientConnection.sendPooled(message_);
 }

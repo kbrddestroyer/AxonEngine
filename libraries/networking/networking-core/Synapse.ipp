@@ -67,20 +67,19 @@ void Networking::Synapse<mode>::sendPooled(const AxonMessage& message, const SOC
     if (!dest)
         dest = &socket.conn;
 
-    pool.push( { Networking::SerializedAxonMessage(message), *dest } );
+    pool->push( { Networking::SerializedAxonMessage(message), *dest } );
 }
 
 template <Networking::ConnectionMode mode>
 void Networking::Synapse<mode>::send(const AxonMessage& message)
 {
-    sendTo(message, &socket.conn);
+    sendTo(message.getSerialized(), &socket.conn);
 }
 
 template <Networking::ConnectionMode mode>
-void Networking::Synapse<mode>::sendTo(const AxonMessage& message, const SOCKADDR_IN_T* dest) const
+void Networking::Synapse<mode>::sendTo(const SerializedAxonMessage& serialized, const SOCKADDR_IN_T* dest) const
 {
-    SerializedAxonMessage serialized = message.getSerialized();
-    send_message<mode>(socket, serialized.getBits(), serialized.getSize());
+    send_message<mode>({ socket.socket, *dest }, serialized.getBits(), serialized.getSize());
 }
 
 template<>
@@ -132,14 +131,18 @@ inline void Networking::Synapse<Networking::ConnectionMode::UDP>::listen()
 
         update();
     }
+
+    // If being killed
+    while (pool->getPoolSize() > 0)
+        update();
 }
 
 template <Networking::ConnectionMode mode>
 void Networking::Synapse<mode>::update() {
-    if (pool.getPoolSize() > 0) {
-        MessagePoolNodePtr pNode = pool.pop();
+    if (pool->getPoolSize() > 0) {
+        MessagePoolNodePtr pNode = pool->pop();
 
-        send_message<mode>(socket, pNode->message.getBits(), pNode->message.getSize());
+        this->sendTo(pNode->message, &pNode->destination);
     }
 }
 

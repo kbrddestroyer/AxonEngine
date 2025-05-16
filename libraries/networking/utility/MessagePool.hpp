@@ -2,6 +2,8 @@
 #include <networking/message/AxonMessage.hpp>
 #include <queue>
 #include <memory>
+#include <mutex>
+
 
 namespace Networking {
     struct AXON_DECLSPEC MessagePoolNode
@@ -22,5 +24,6 @@ namespace Networking {
         MessagePoolNodePtr pop();
     private:
         std::queue<MessagePoolNodePtr> messagePool;
+        std::mutex poolMutex;
     };
 }
