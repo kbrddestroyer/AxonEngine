@@ -6,7 +6,7 @@
 namespace Networking {
     struct AXON_DECLSPEC MessagePoolNode
     {
-        AxonMessage message;
+        SerializedAxonMessage message;
         SOCKADDR_IN_T destination;
     };
 
@@ -16,7 +16,8 @@ namespace Networking {
     public:
         MessagePoolBase() = default;
 
-        size_t getPoolSize() const { return messagePool.size(); }
+        GETTER size_t getPoolSize() const { return messagePool.size(); }
+
         void push(MessagePoolNode);
         MessagePoolNodePtr pop();
     private:

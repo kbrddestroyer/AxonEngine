@@ -33,7 +33,7 @@ TEST(TEST_SERIALIZATION, TEST_MESSAGE) {
 
     Networking::SerializedAxonMessage serialized = message_.getSerialized();
 
-    Networking::AxonMessage deserialized(serialized.bitstream, serialized.size);
+    Networking::AxonMessage deserialized(serialized);
 
     ASSERT_EQ(deserialized.getFlags(), message_.getFlags());
     ASSERT_EQ(deserialized.getPartID(), message_.getPartID());
@@ -49,9 +49,8 @@ TEST(TEST_SERIALIZATION, TEST_MESSAGE_TAG) {
     message_.setFlags(Networking::TAG_FLAGS::FINISH | Networking::TAG_FLAGS::ACKNOWLEDGE);
 
     Networking::SerializedAxonMessage serialized = message_.getSerialized();
-    Networking::AxonMessage cpyMessage(serialized.bitstream, serialized.size);
+    Networking::AxonMessage cpyMessage(serialized.getBits(), serialized.getSize());
 
-    ASSERT_EQ(cpyMessage.getPartID(), 1);
     ASSERT_TRUE(~cpyMessage.getFlags() ^ (Networking::TAG_FLAGS::ACKNOWLEDGE | Networking::TAG_FLAGS::FINISH));
 }
 

@@ -67,7 +67,7 @@ void Networking::Synapse<mode>::sendPooled(const AxonMessage& message, const SOC
     if (!dest)
         dest = &socket.conn;
 
-    pool.push( { message, *dest } );
+    pool.push( { Networking::SerializedAxonMessage(message), *dest } );
 }
 
 template <Networking::ConnectionMode mode>
@@ -80,7 +80,7 @@ template <Networking::ConnectionMode mode>
 void Networking::Synapse<mode>::sendTo(const AxonMessage& message, const SOCKADDR_IN_T* dest) const
 {
     SerializedAxonMessage serialized = message.getSerialized();
-    send_message<mode>(socket, serialized.bitstream, serialized.size);
+    send_message<mode>(socket, serialized.getBits(), serialized.getSize());
 }
 
 template<>
@@ -139,7 +139,7 @@ void Networking::Synapse<mode>::update() {
     if (pool.getPoolSize() > 0) {
         MessagePoolNodePtr pNode = pool.pop();
 
-        sendTo(pNode->message, &pNode->destination);
+        send_message<mode>(socket, pNode->message.getBits(), pNode->message.getSize());
     }
 }
 

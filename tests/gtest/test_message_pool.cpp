@@ -9,7 +9,7 @@ TEST(TEST_MESSAGE_POOL, TEST_REGULAR)
     const char* initData = "Hello World!";
 
     Networking::AxonMessage message(const_cast<char*>(initData), strlen(initData), 0, 0);
-    Networking::MessagePoolNode node = { message, {} };
+    Networking::MessagePoolNode node = { message.getSerialized(), {} };
 
     pool.push(node);
     ASSERT_EQ(pool.getPoolSize(), 1);

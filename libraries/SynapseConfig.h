@@ -1,8 +1,3 @@
-//
-// Created by agrudko on 5/16/25.
-//
+#pragma once
 
-#ifndef AXONENGINE_SYNAPSECONFIG_H
-#define AXONENGINE_SYNAPSECONFIG_H
-
-#endif //AXONENGINE_SYNAPSECONFIG_H
+#define SYNAPSE_MESSAGE_SIZE_MAX 1024
