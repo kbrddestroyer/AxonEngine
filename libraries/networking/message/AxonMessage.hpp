@@ -37,9 +37,9 @@ namespace Networking
     public:
         SerializedAxonMessage() = delete;
         SerializedAxonMessage(const char*, size_t);
-        explicit SerializedAxonMessage(const AxonMessage&);
+        SerializedAxonMessage(const AxonMessage&);
 
-        explicit SerializedAxonMessage(const SerializedAxonMessage&);
+        SerializedAxonMessage(const SerializedAxonMessage&);
         explicit SerializedAxonMessage(SerializedAxonMessage&, size_t, uintptr_t);
         explicit SerializedAxonMessage(SerializedAxonMessage&&) noexcept;
 

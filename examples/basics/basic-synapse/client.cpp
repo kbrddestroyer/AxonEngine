@@ -32,7 +32,7 @@ int main()
         sstream <<
             "Sending message on " <<
             std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) - startTimestamp;
-        Networking::AxonMessage message_(const_cast<char*>(sstream.str().c_str()), sstream.str().length());
+        Networking::AxonMessage message_(const_cast<char*>(sstream.str().c_str()), sstream.str().length() + 1);
 
         clientConnection.sendPooled(message_);
     }

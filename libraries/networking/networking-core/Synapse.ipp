@@ -63,7 +63,7 @@ void Networking::Synapse<mode>::start()
 }
 
 template <Networking::ConnectionMode mode>
-void Networking::Synapse<mode>::sendPooled(const AxonMessage& message, const SOCKADDR_IN_T* dest) {
+void Networking::Synapse<mode>::sendPooled(const AxonMessage& message, const SOCKADDR_IN_T* dest) const {
     if (!dest)
         dest = &socket.conn;
 
@@ -86,31 +86,48 @@ template<>
 inline void Networking::Synapse<Networking::ConnectionMode::TCP>::listen()
 {
     // Todo: async support
-    char *buffer[SYNAPSE_MESSAGE_MAX_SIZE] = {};
-    SOCKADDR_IN_T host = {};
-    SOCKET_T client;
 
     if (isServer) {
-        do {
-            client = accept_incoming(socket.socket, &host);
-        } while (!CHECK_VALID(client));
-    }
-    else {
-        host = socket.conn;
-        client = socket.socket;
-    }
+        SOCKADDR_IN_T host = {};
 
-    while (isAlive)
-    {
-        const int32_t size = recv_tcp_message(reinterpret_cast<char *>(buffer), 256, client);
-        if (size > 0)
+        fd_set master;
+        FD_ZERO(&master);
+        SOCKET_T maxSocket = socket.socket;
+        while (isAlive)
         {
-            const char *message = reinterpret_cast<char *> (buffer);
-            AxonMessage message_(SerializedAxonMessage(message, size));
-            onMessageReceived(message_, &host);
-        }
+            fd_set reads = master;
+            if (!CHECK_VALID(select(maxSocket + 1, &reads, nullptr, nullptr, nullptr))) {
+                return;
+            }
+            for (SOCKET_T connectionSock = 1; connectionSock <= maxSocket; ++connectionSock) {
+                if (FD_ISSET(connectionSock, &reads)){
+                    if (connectionSock == socket.socket) {
+                        sockaddr_storage storage = {};
+                        SOCKET_T client = accept_incoming(socket.socket, reinterpret_cast<SOCKADDR_IN *>(&storage));
 
-        update();
+                        if (!CHECK_VALID(client)) {
+                            return;
+                        }
+
+                        FD_SET(client, &master);
+                        if (client > maxSocket)
+                            maxSocket = client;
+                    }
+
+                }
+                else {
+                    char *buffer[SYNAPSE_MESSAGE_MAX_SIZE] = {};
+                    const int32_t size = recv_tcp_message(reinterpret_cast<char *>(buffer), 256, connectionSock);
+                    if (size > 0)
+                    {
+                        const char *message = reinterpret_cast<char *> (buffer);
+                        AxonMessage message_(SerializedAxonMessage(message, size));
+                        onMessageReceived(message_, &host);
+                    }
+                }
+            }
+            update();
+        }
     }
 }
 
