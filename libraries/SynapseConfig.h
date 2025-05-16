@@ -1,0 +1,8 @@
+//
+// Created by agrudko on 5/16/25.
+//
+
+#ifndef AXONENGINE_SYNAPSECONFIG_H
+#define AXONENGINE_SYNAPSECONFIG_H
+
+#endif //AXONENGINE_SYNAPSECONFIG_H
