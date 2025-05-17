@@ -1,4 +1,5 @@
 #pragma once
+#include <SynapseConfig.h>
 
 namespace Networking {
     template<>
@@ -116,7 +117,7 @@ inline void Networking::Synapse<Networking::ConnectionMode::TCP>::listen()
 
                 }
                 else {
-                    char *buffer[SYNAPSE_MESSAGE_MAX_SIZE] = {};
+                    char *buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
                     const int32_t size = recv_tcp_message(reinterpret_cast<char *>(buffer), 256, connectionSock);
                     if (size > 0)
                     {
@@ -137,8 +138,8 @@ inline void Networking::Synapse<Networking::ConnectionMode::UDP>::listen()
     SOCKADDR_IN_T host = {};
 
     while (isAlive) {
-        char* buffer[SYNAPSE_MESSAGE_MAX_SIZE] = {};
-        int32_t size = recv_udp_message(reinterpret_cast<char *> (buffer), SYNAPSE_MESSAGE_MAX_SIZE, socket.socket,
+        char* buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
+        int32_t size = recv_udp_message(reinterpret_cast<char *> (buffer), SYNAPSE_MESSAGE_SIZE_MAX, socket.socket,
                                         &host);
         if (size > 0) {
             const char *message = reinterpret_cast<char *> (buffer);

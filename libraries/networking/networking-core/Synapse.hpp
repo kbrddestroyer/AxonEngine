@@ -8,61 +8,14 @@
 #include <backends/backend.hpp>
 #include <networking/message/AxonMessage.hpp>
 #include <networking/utility/MessagePool.hpp>
+#include <message/AxonMessage.hpp>
+#include <utility/MessagePool.hpp>
+
+#include <networking-core/SynapseUtility.hpp>
+#include <networking-core/SynapseEvents.hpp>
 
 namespace Networking
 {
-	constexpr uint32_t SYNAPSE_MESSAGE_MAX_SIZE = 1024;
-
-	enum ConnectionMode
-	{
-		UDP = SOCK_DGRAM,
-		TCP = SOCK_STREAM
-	};
-
-	/**
-	* Low-level connection info for convenient storage
-	* TODO:
-	* - Research replacement
-	*/
-	struct ConnectionInfo
-	{
-		std::string	hostname;
-		uint32_t	port = 10432;
-	};
-
-	/**
-	* TODO: Documenting
-    	*/
-    	class AxonNetworkingInternalError : public std::exception
-	{
-		uint8_t err;
-	public:
-		explicit AxonNetworkingInternalError(uint8_t err = 0) : err(err) {}
-		GETTER  constexpr uint8_t code() const { return err; }
-	};
-
-	/**
-	* Synapse message when message is recieved from remote host
-	*
-	* Functions:
-	* getMessage() -> AxonMessage: get AxonMessage object
-	* getFrom() -> SOCKADDR_IN_T: get sender network info
-	*/
-	class AXON_DECLSPEC SynapseMessageReceivedEvent final : public EventSystem::AxonEvent
-	{
-	public:
-		SynapseMessageReceivedEvent(const AxonMessage& message, SOCKADDR_IN_T* from) : EventSystem::AxonEvent(), message(message)
-		{
-			this->from = from;
-		}
-
-		GETTER const AxonMessage& getMessage() const { return message; }
-		GETTER SOCKADDR_IN_T* getFrom() const { return from; }
-	private:
-		const AxonMessage&	message;
-		SOCKADDR_IN_T* from;
-	};
-
 	/**
 	* Axon connection handler
 	* Specifies connection handling to one remote host
