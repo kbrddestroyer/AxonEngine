@@ -17,16 +17,13 @@
 namespace Networking
 {
 	/**
-	* Axon connection handler
-	* Specifies connection handling to one remote host
+	* Axon basic connection handler
+	* Specifies connection handling: one-to-one for client connection and one-to-many for server
 	*
-	* EventSystem API:
-	* WIP currently
-	*
-	* TODO:
-	*	- Documenting
+	* @tparam conn connection mode (TCP|UDP)
+	* @tparam mode synapse mode (CLIENT|SERVER)
 	*/
-	template <ConnectionMode, SynapseMode> class AXON_DECLSPEC BasicSynapse
+	template <ConnectionMode conn, SynapseMode mode> class AXON_DECLSPEC BasicSynapse
 	{
 		const size_t MAX_MESSAGE = 1024;
 	public:
@@ -39,7 +36,8 @@ namespace Networking
 
 		virtual ~BasicSynapse();
 
-		bool alive() const { return isAlive.load(); };
+		GETTER bool alive() const { return isAlive.load(); };
+		virtual void kill() { isAlive.store(false); }
 
 		virtual void start();
 		virtual void send(const AxonMessage&);
@@ -47,9 +45,6 @@ namespace Networking
 
 		// This function should be instanced for each connection type
 		virtual void listen() {}
-
-		// --- INTERFACE FUNCTIONS --- //
-
         virtual void update() {}
 		virtual void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*) {};
     protected:
@@ -58,7 +53,12 @@ namespace Networking
 		Socket              socketInfo;
 	};
 
-
+	/**
+	 *	Advanced connection handler with event system
+	 *
+	 * @tparam conn connection mode (TCP|UDP)
+	 * @tparam mode synapse mode (CLIENT|SERVER)
+	 */
 	template <ConnectionMode conn, SynapseMode mode>
 	class AXON_DECLSPEC Synapse : public BasicSynapse<conn, mode> {
 	public:
@@ -84,8 +84,14 @@ namespace Networking
 		std::unique_ptr<MessagePoolBase> pool = std::make_unique<MessagePoolBase>();
 	};
 
+	/**
+	 *	Synapse with listen() function in separated thread.
+	 *
+	 * @tparam conn connection mode (TCP|UDP)
+	 * @tparam mode synapse mode (CLIENT|SERVER)
+	 */
 	template <ConnectionMode conn, SynapseMode mode>
-	class AXON_DECLSPEC AsyncSynapse : public Synapse<conn, mode>
+	class AXON_DECLSPEC AsyncSynapse final : public Synapse<conn, mode>
 	{
 	public:
 		/** Initializes Synapse in server mode */
@@ -96,8 +102,8 @@ namespace Networking
 
 		~AsyncSynapse() override;
 
-		void start() final;
-		void kill();
+		void start() override;
+		void kill() override;
 	private:
 		std::thread proc;
 	};
