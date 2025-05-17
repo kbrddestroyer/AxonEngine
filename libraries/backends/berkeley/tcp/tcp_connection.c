@@ -76,7 +76,7 @@ int32_t recv_tcp_message(char* const message, size_t max_size, SOCKET_T c_sock)
 
 SOCKET_T accept_incoming(SOCKET_T server, SOCKADDR_IN_T* c_addr)
 {
-	SOCKLEN_T addr_s = (SOCKLEN_T) sizeof(*c_addr);
+	SOCKLEN_T addr_s = sizeof(*c_addr);
 	return accept(server, (SOCKADDR_T*) c_addr, &addr_s);
 }
 
