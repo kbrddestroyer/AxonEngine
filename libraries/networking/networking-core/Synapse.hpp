@@ -26,7 +26,7 @@ namespace Networking
 	* TODO:
 	*	- Documenting
 	*/
-	template <ConnectionMode> class AXON_DECLSPEC Synapse
+	template <ConnectionMode, SynapseMode> class AXON_DECLSPEC Synapse
 	{
 		const size_t MAX_MESSAGE = 1024;
 	public:
@@ -60,15 +60,15 @@ namespace Networking
 		Socket              socket;
 	};
 
-	template <ConnectionMode mode>
-	class AXON_DECLSPEC AsyncSynapse : public Synapse<mode>
+	template <ConnectionMode conn, SynapseMode mode>
+	class AXON_DECLSPEC AsyncSynapse : public Synapse<conn, mode>
 	{
 	public:
 		/** Initializes Synapse in server mode */
-		explicit AsyncSynapse(uint32_t port) : Synapse<mode>(port) {}
+		explicit AsyncSynapse(uint32_t port) : Synapse<conn, mode>(port) {}
 
 		/** Initialize Synapse in client mode */
-		explicit AsyncSynapse(const ConnectionInfo& info) : Synapse<mode>(info) {}
+		explicit AsyncSynapse(const ConnectionInfo& info) : Synapse<conn, mode>(info) {}
 
 		~AsyncSynapse() override;
 

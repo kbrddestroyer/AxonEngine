@@ -17,7 +17,7 @@ int main()
 {
 	Networking::ConnectionInfo connection = { "localhost", 10423 };
 
-	Networking::AsyncSynapse<Networking::ConnectionMode::TCP> clientConnection(connection);
+	Networking::AsyncSynapse<Networking::ConnectionMode::TCP, Networking::SynapseMode::CLIENT> clientConnection(connection);
 
     time_t startTimestamp = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
