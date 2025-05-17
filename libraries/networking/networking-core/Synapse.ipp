@@ -1,5 +1,6 @@
 #pragma once
 #include <SynapseConfig.h>
+#include <iostream>
 
 namespace Networking {
     template<>
@@ -93,34 +94,53 @@ inline void Networking::Synapse<Networking::ConnectionMode::TCP>::listen()
 
         fd_set master;
         FD_ZERO(&master);
+        FD_SET(socket.socket, &master);
         SOCKET_T maxSocket = socket.socket;
+
         while (isAlive)
         {
+            timeval tv = { 0, 10000 };
             fd_set reads = master;
-            if (!CHECK_VALID(select(maxSocket + 1, &reads, nullptr, nullptr, nullptr))) {
-                return;
+            if (select(maxSocket + 1, &reads, nullptr, nullptr, 0) <= 0) {
+                continue;
             }
-            for (SOCKET_T connectionSock = 1; connectionSock <= maxSocket; ++connectionSock) {
+            std::cout << "Select() " << reads.fd_count << " " << maxSocket << std::endl;
+            for (uint16_t i = 0; i < reads.fd_count; i++) {
+                SOCKET_T connectionSock = reads.fd_array[i];
+
+                std::cout << "Iterating on: " << i << " " << connectionSock << std::endl;
+
                 if (FD_ISSET(connectionSock, &reads)){
+                    std::cout << "Accepting on: " << i << " " << connectionSock << std::endl;
+
                     if (connectionSock == socket.socket) {
                         sockaddr_storage storage = {};
                         SOCKET_T client = accept_incoming(socket.socket, reinterpret_cast<SOCKADDR_IN *>(&storage));
 
                         if (!CHECK_VALID(client)) {
-                            return;
+                            std::cout << "Error" << std::endl;
+                            continue;
                         }
 
                         FD_SET(client, &master);
-                        if (client > maxSocket)
+                        if (client > maxSocket) {
                             maxSocket = client;
-                    }
+                        }
 
-                }
-                else {
-                    char *buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
-                    const int32_t size = recv_tcp_message(reinterpret_cast<char *>(buffer), 256, connectionSock);
-                    if (size > 0)
-                    {
+                        std::cout << "Accepted " << client << std::endl;
+                    }
+                    else {
+                        std::cout << "Listening on: " << i << " " << connectionSock << std::endl;
+
+                        char *buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
+                        const int32_t size = recv_tcp_message(reinterpret_cast<char *>(buffer), 256, connectionSock);
+
+                        if (size < 0) {
+                            FD_CLR(connectionSock, &master);
+                            CLOSESOCKET(connectionSock);
+                            continue;
+                        }
+
                         const char *message = reinterpret_cast<char *> (buffer);
                         AxonMessage message_(SerializedAxonMessage(message, size));
                         onMessageReceived(message_, &host);
@@ -130,6 +150,8 @@ inline void Networking::Synapse<Networking::ConnectionMode::TCP>::listen()
             update();
         }
     }
+
+    isAlive = false;
 }
 
 template<>
