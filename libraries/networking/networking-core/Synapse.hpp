@@ -26,38 +26,62 @@ namespace Networking
 	* TODO:
 	*	- Documenting
 	*/
-	template <ConnectionMode, SynapseMode> class AXON_DECLSPEC Synapse
+	template <ConnectionMode, SynapseMode> class AXON_DECLSPEC BasicSynapse
 	{
 		const size_t MAX_MESSAGE = 1024;
 	public:
 		/** Default creation is restricted */
-		Synapse() = delete;
+		BasicSynapse() = delete;
 		/** Initializes Synapse in server mode */
-		explicit Synapse(uint32_t);
+		explicit BasicSynapse(uint32_t);
 		/** Initialize Synapse in client mode */
-		explicit Synapse(const ConnectionInfo&);
+		explicit BasicSynapse(const ConnectionInfo&);
 
-		virtual ~Synapse();
+		virtual ~BasicSynapse();
 
 		bool alive() const { return isAlive.load(); };
 
 		virtual void start();
 		virtual void send(const AxonMessage&);
 		virtual void sendTo(const SerializedAxonMessage&, const SOCKADDR_IN_T*) const;
-		virtual void listen();
-        virtual void update();
-		virtual void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*);
+
+		// This function should be instanced for each connection type
+		virtual void listen() {}
+
+		// --- INTERFACE FUNCTIONS --- //
+
+        virtual void update() {}
+		virtual void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*) {};
+    protected:
+		std::atomic<bool>	isAlive = false;
+		ConnectionInfo		connectionInfo;
+		Socket              socketInfo;
+	};
+
+
+	template <ConnectionMode conn, SynapseMode mode>
+	class AXON_DECLSPEC Synapse : public BasicSynapse<conn, mode> {
+	public:
+#pragma region CONSTRUCTING
+		/** Initializes Synapse in server mode */
+		explicit Synapse(uint32_t port) : BasicSynapse<conn, mode>(port) {}
+		/** Initialize Synapse in client mode */
+		explicit Synapse(const ConnectionInfo &info) : BasicSynapse<conn, mode>(info) {}
+
+		~Synapse() override = default;
+#pragma endregion
+
+#pragma region INTERFACE
+
+		void update() override;
+		void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*) override;
 
 		EventSystem::AxonEventManager& getEventManager() { return events; }
-        void sendPooled(const AxonMessage&, const SOCKADDR_IN_T* = nullptr) const;
-    protected:
+		void sendPooled(const AxonMessage&, const SOCKADDR_IN_T* = nullptr) const;
+#pragma endregion
+	protected:
 		EventSystem::AxonEventManager events;
 		std::unique_ptr<MessagePoolBase> pool = std::make_unique<MessagePoolBase>();
-		std::atomic<bool> isAlive = false;
-	private:
-		bool			    isServer;
-		ConnectionInfo		info;
-		Socket              socket;
 	};
 
 	template <ConnectionMode conn, SynapseMode mode>

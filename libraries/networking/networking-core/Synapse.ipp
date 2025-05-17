@@ -5,55 +5,28 @@
 #include "Synapse.hpp"
 
 namespace Networking {
-    template <ConnectionMode conn, SynapseMode mode>
-    void Synapse<conn, mode>::listen() {}
-
     template<>
-    void Synapse<ConnectionMode::TCP, SynapseMode::SERVER>::listen();
-
+    void BasicSynapse<TCP, SynapseMode::SERVER>::listen();
     template<>
-    void Synapse<ConnectionMode::UDP, SynapseMode::SERVER>::listen();
-
-    template class Synapse<ConnectionMode::UDP, SynapseMode::SERVER>;
-    template class Synapse<ConnectionMode::UDP, SynapseMode::CLIENT>;
-    template class Synapse<ConnectionMode::TCP, SynapseMode::SERVER>;
-    template class Synapse<ConnectionMode::TCP, SynapseMode::CLIENT>;
-
-
-    template class AsyncSynapse<ConnectionMode::UDP, SynapseMode::SERVER>;
-    template class AsyncSynapse<ConnectionMode::UDP, SynapseMode::CLIENT>;
-    template class AsyncSynapse<ConnectionMode::TCP, SynapseMode::SERVER>;
-    template class AsyncSynapse<ConnectionMode::TCP, SynapseMode::CLIENT>;
+    void BasicSynapse<UDP, SynapseMode::SERVER>::listen();
+    template<>
+    void BasicSynapse<TCP, SynapseMode::CLIENT>::listen();
+    template<>
+    void BasicSynapse<UDP, SynapseMode::CLIENT>::listen();
 }
 
-#pragma region SYNAPSE
+#pragma region BASIC_SYNAPSE
+
+#pragma region CONTRUCTING
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-Networking::Synapse<conn, mode>::Synapse(uint32_t port)
+Networking::BasicSynapse<conn, mode>::BasicSynapse(uint32_t port)
 {
-    isServer = true;
-    info.port = port;
+    connectionInfo.port = port;
 
-    socket = {};
+    socketInfo = {};
 
-    uint8_t result = initialize_server<conn>(socket, port);
-
-    if (result != SUCCESS) {
-        throw AxonNetworkingInternalError(result);
-    }
-}
-
-
-template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-Networking::Synapse<conn, mode>::Synapse(const ConnectionInfo& connection)
-{
-    isServer = false;
-    info.hostname = connection.hostname;
-    info.port = connection.port;
-
-    socket = {};
-
-    uint8_t result = initialize_client<conn>(socket, connection.hostname.c_str(), connection.port);
+    uint8_t result = initialize_server<conn>(socketInfo, port);
 
     if (result != SUCCESS) {
         throw AxonNetworkingInternalError(result);
@@ -61,118 +34,112 @@ Networking::Synapse<conn, mode>::Synapse(const ConnectionInfo& connection)
 }
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-Networking::Synapse<conn, mode>::~Synapse()
+Networking::BasicSynapse<conn, mode>::BasicSynapse(const ConnectionInfo& connection)
+{
+    connectionInfo.hostname = connection.hostname;
+    connectionInfo.port = connection.port;
+
+    socketInfo = {};
+
+    uint8_t result = initialize_client<conn>(socketInfo, connection.hostname.c_str(), connection.port);
+
+    if (result != SUCCESS) {
+        throw AxonNetworkingInternalError(result);
+    }
+}
+
+template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
+Networking::BasicSynapse<conn, mode>::~BasicSynapse()
 {
     isAlive = false;
-    finalize_udp(socket.socket);
+    finalize_udp(socketInfo.socket);
 }
 
-template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::Synapse<conn, mode>::start()
-{
-    isAlive = true;
+#pragma endregion
 
+template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
+void Networking::BasicSynapse<conn, mode>::start()
+{
+    isAlive.store(true);
     listen();
 }
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::Synapse<conn, mode>::sendPooled(const AxonMessage& message, const SOCKADDR_IN_T* dest) const {
-    if (!dest)
-        dest = &socket.conn;
-
-    pool->push( { message.getSerialized(), *dest } );
+void Networking::BasicSynapse<conn, mode>::send(const AxonMessage& message)
+{
+    sendTo(message.getSerialized(), &socketInfo.conn);
 }
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::Synapse<conn, mode>::send(const AxonMessage& message)
+void Networking::BasicSynapse<conn, mode>::sendTo(const SerializedAxonMessage& serialized, const SOCKADDR_IN_T* dest) const
 {
-    sendTo(message.getSerialized(), &socket.conn);
+    send_message<conn>({ socketInfo.socket, *dest }, serialized.getBits(), serialized.getSize());
 }
 
-template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::Synapse<conn, mode>::sendTo(const SerializedAxonMessage& serialized, const SOCKADDR_IN_T* dest) const
-{
-    send_message<conn>({ socket.socket, *dest }, serialized.getBits(), serialized.getSize());
-}
+#pragma region SERVER_FUNCTIONS
 
 template<>
-inline void Networking::Synapse<Networking::ConnectionMode::TCP, Networking::SynapseMode::SERVER>::listen()
+inline void Networking::BasicSynapse<Networking::ConnectionMode::TCP, Networking::SynapseMode::SERVER>::listen()
 {
-    // Todo: async support
+    SOCKADDR_IN_T host = {};
 
-    if (isServer) {
-        SOCKADDR_IN_T host = {};
+    fd_set master;
+    FD_ZERO(&master);
+    FD_SET(socketInfo.socket, &master);
+    SOCKET_T maxSocket = socketInfo.socket;
 
-        fd_set master;
-        FD_ZERO(&master);
-        FD_SET(socket.socket, &master);
-        SOCKET_T maxSocket = socket.socket;
+    while (isAlive)
+    {
+        timeval tv = { 0, 10000 };
+        fd_set reads = master;
+        if (select(maxSocket + 1, &reads, nullptr, nullptr, 0) <= 0) {
+            continue;
+        }
+        for (uint16_t i = 0; i < reads.fd_count; i++) {
+            SOCKET_T connectionSock = reads.fd_array[i];
 
-        while (isAlive)
-        {
-            timeval tv = { 0, 10000 };
-            fd_set reads = master;
-            if (select(maxSocket + 1, &reads, nullptr, nullptr, 0) <= 0) {
-                continue;
-            }
-            std::cout << "Select() " << reads.fd_count << " " << maxSocket << std::endl;
-            for (uint16_t i = 0; i < reads.fd_count; i++) {
-                SOCKET_T connectionSock = reads.fd_array[i];
+            if (FD_ISSET(connectionSock, &reads)){
+                if (connectionSock == socketInfo.socket) {
+                    sockaddr_storage storage = {};
+                    SOCKET_T client = accept_incoming(socketInfo.socket, reinterpret_cast<SOCKADDR_IN *>(&storage));
 
-                std::cout << "Iterating on: " << i << " " << connectionSock << std::endl;
-
-                if (FD_ISSET(connectionSock, &reads)){
-                    std::cout << "Accepting on: " << i << " " << connectionSock << std::endl;
-
-                    if (connectionSock == socket.socket) {
-                        sockaddr_storage storage = {};
-                        SOCKET_T client = accept_incoming(socket.socket, reinterpret_cast<SOCKADDR_IN *>(&storage));
-
-                        if (!CHECK_VALID(client)) {
-                            std::cout << "Error" << std::endl;
-                            continue;
-                        }
-
-                        FD_SET(client, &master);
-                        if (client > maxSocket) {
-                            maxSocket = client;
-                        }
-
-                        std::cout << "Accepted " << client << std::endl;
+                    if (!CHECK_VALID(client)) {
+                        continue;
                     }
-                    else {
-                        std::cout << "Listening on: " << i << " " << connectionSock << std::endl;
 
-                        char *buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
-                        const int32_t size = recv_tcp_message(reinterpret_cast<char *>(buffer), 256, connectionSock);
-
-                        if (size < 0) {
-                            FD_CLR(connectionSock, &master);
-                            CLOSESOCKET(connectionSock);
-                            continue;
-                        }
-
-                        const char *message = reinterpret_cast<char *> (buffer);
-                        AxonMessage message_(SerializedAxonMessage(message, size));
-                        onMessageReceived(message_, &host);
+                    FD_SET(client, &master);
+                    if (client > maxSocket) {
+                        maxSocket = client;
                     }
                 }
-            }
-            update();
-        }
-    }
+                else {
+                    char *buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
+                    const int32_t size = recv_tcp_message(reinterpret_cast<char *>(buffer), 256, connectionSock);
 
-    isAlive = false;
+                    if (size < 0) {
+                        FD_CLR(connectionSock, &master);
+                        CLOSESOCKET(connectionSock);
+                        continue;
+                    }
+
+                    const char *message = reinterpret_cast<char *> (buffer);
+                    AxonMessage message_(SerializedAxonMessage(message, size));
+                    onMessageReceived(message_, &host);
+                }
+            }
+        }
+        update();
+    }
 }
 
 template<>
-inline void Networking::Synapse<Networking::ConnectionMode::UDP, Networking::SynapseMode::SERVER>::listen()
+inline void Networking::BasicSynapse<Networking::ConnectionMode::UDP, Networking::SynapseMode::SERVER>::listen()
 {
     SOCKADDR_IN_T host = {};
 
     while (isAlive) {
         char* buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
-        int32_t size = recv_udp_message(reinterpret_cast<char *> (buffer), SYNAPSE_MESSAGE_SIZE_MAX, socket.socket,
+        int32_t size = recv_udp_message(reinterpret_cast<char *> (buffer), SYNAPSE_MESSAGE_SIZE_MAX, socketInfo.socket,
                                         &host);
         if (size > 0) {
             const char *message = reinterpret_cast<char *> (buffer);
@@ -182,11 +149,56 @@ inline void Networking::Synapse<Networking::ConnectionMode::UDP, Networking::Syn
 
         update();
     }
-
-    // If being killed
-    while (pool->getPoolSize() > 0)
-        update();
 }
+
+#pragma endregion
+
+#pragma region CLIENT_FUNCTIONS
+
+template<>
+inline void Networking::BasicSynapse<Networking::ConnectionMode::TCP, Networking::SynapseMode::CLIENT>::listen() {
+    // Todo: async support
+    SOCKADDR_IN_T host = socketInfo.conn;
+    SOCKET_T client = socketInfo.socket;
+
+    while (isAlive)
+    {
+        char *buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
+        const int32_t size = recv_tcp_message(reinterpret_cast<char *>(buffer), 256, client);
+        if (size > 0)
+        {
+            const char *message = reinterpret_cast<char *> (buffer);
+            AxonMessage message_(SerializedAxonMessage(message, size));
+            onMessageReceived(message_, &host);
+        }
+
+        update();
+    }
+}
+
+template<>
+inline void Networking::BasicSynapse<Networking::ConnectionMode::UDP, Networking::SynapseMode::CLIENT>::listen() {
+    SOCKADDR_IN_T host = {};
+
+    while (isAlive) {
+        char* buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
+        int32_t size = recv_udp_message(reinterpret_cast<char *> (buffer), SYNAPSE_MESSAGE_SIZE_MAX, socketInfo.socket,
+                                        &host);
+        if (size > 0) {
+            const char *message = reinterpret_cast<char *> (buffer);
+            AxonMessage message_(SerializedAxonMessage(message, size));
+            onMessageReceived(message_, &host);
+        }
+
+        update();
+    }
+}
+
+#pragma endregion
+
+#pragma endregion
+
+#pragma region SYNAPSE
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
 void Networking::Synapse<conn, mode>::update() {
@@ -197,9 +209,16 @@ void Networking::Synapse<conn, mode>::update() {
 }
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
+void Networking::Synapse<conn, mode>::sendPooled(const AxonMessage& message, const SOCKADDR_IN_T* dest) const {
+    if (!dest)
+        dest = &this->socketInfo.conn;
+
+    pool->push( { message.getSerialized(), *dest } );
+}
+
+template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
 void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& message, SOCKADDR_IN_T* from)
 {
-    // Notify
     SynapseMessageReceivedEvent event_ = SynapseMessageReceivedEvent(message, from);
     events.invoke(&event_);
 }
