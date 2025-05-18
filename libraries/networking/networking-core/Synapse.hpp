@@ -1,4 +1,6 @@
 #pragma once
+#include "BasicSynapse.hpp"
+
 #include <thread>
 #include <atomic>
 #include <string>
@@ -16,45 +18,6 @@
 
 namespace Networking
 {
-	/**
-	* Axon basic connection handler
-	* Specifies connection handling: one-to-one for client connection and one-to-many for server
-	*
-	* @tparam conn connection mode (TCP|UDP)
-	* @tparam mode synapse mode (CLIENT|SERVER)
-	*/
-	template <ConnectionMode conn, SynapseMode mode> class AXON_DECLSPEC BasicSynapse
-	{
-		const size_t MAX_MESSAGE = 1024;
-	public:
-		/** Default creation is restricted */
-		BasicSynapse() = delete;
-		/** Initializes Synapse in server mode */
-		explicit BasicSynapse(uint32_t);
-		/** Initialize Synapse in client mode */
-		explicit BasicSynapse(const ConnectionInfo&);
-
-		virtual ~BasicSynapse();
-
-		GETTER bool alive() const { return isAlive.load(); };
-		virtual void kill() { isAlive.store(false); }
-
-		virtual void start();
-		virtual void send(const AxonMessage&);
-		virtual void sendTo(const SerializedAxonMessage&, const SOCKADDR_IN_T*) const;
-
-		// This function should be instanced for each connection type
-		virtual void listen() {}
-        virtual void update() {}
-		virtual void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*) {};
-
-		void processIncomingMessage(const char*, size_t, SOCKADDR_IN_T*);
-    protected:
-		std::atomic<bool>	isAlive = false;
-		ConnectionInfo		connectionInfo;
-		Socket              socketInfo;
-	};
-
 	/**
 	 *	Advanced connection handler with event system
 	 *
