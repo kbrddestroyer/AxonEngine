@@ -76,6 +76,11 @@ void Networking::BasicSynapse<conn, mode>::sendTo(const SerializedAxonMessage& s
     send_message<conn>({ socketInfo.socket, *dest }, serialized.getBits(), serialized.getSize());
 }
 
+template<Networking::ConnectionMode conn, Networking::SynapseMode mode>
+void Networking::BasicSynapse<conn, mode>::processIncomingMessage(const char *message, const size_t size, SOCKADDR_IN *host) {
+    onMessageReceived(AxonMessage(SerializedAxonMessage(message, size)), host);
+}
+
 #pragma region SERVER_FUNCTIONS
 
 template<>
@@ -122,9 +127,7 @@ inline void Networking::BasicSynapse<Networking::ConnectionMode::TCP, Networking
                         continue;
                     }
 
-                    const char *message = reinterpret_cast<char *> (buffer);
-                    AxonMessage message_(SerializedAxonMessage(message, size));
-                    onMessageReceived(message_, &host);
+                    processIncomingMessage(reinterpret_cast<const char*>(buffer), size, &host);
                 }
             }
         }
@@ -142,9 +145,7 @@ inline void Networking::BasicSynapse<Networking::ConnectionMode::UDP, Networking
         int32_t size = recv_udp_message(reinterpret_cast<char *> (buffer), SYNAPSE_MESSAGE_SIZE_MAX, socketInfo.socket,
                                         &host);
         if (size > 0) {
-            const char *message = reinterpret_cast<char *> (buffer);
-            AxonMessage message_(SerializedAxonMessage(message, size));
-            onMessageReceived(message_, &host);
+            processIncomingMessage(reinterpret_cast<const char*>(buffer), size, &host);
         }
 
         update();
@@ -167,9 +168,7 @@ inline void Networking::BasicSynapse<Networking::ConnectionMode::TCP, Networking
         const int32_t size = recv_tcp_message(reinterpret_cast<char *>(buffer), 256, client);
         if (size > 0)
         {
-            const char *message = reinterpret_cast<char *> (buffer);
-            AxonMessage message_(SerializedAxonMessage(message, size));
-            onMessageReceived(message_, &host);
+            processIncomingMessage(reinterpret_cast<const char*>(buffer), size, &host);
         }
 
         update();
@@ -185,9 +184,7 @@ inline void Networking::BasicSynapse<Networking::ConnectionMode::UDP, Networking
         int32_t size = recv_udp_message(reinterpret_cast<char *> (buffer), SYNAPSE_MESSAGE_SIZE_MAX, socketInfo.socket,
                                         &host);
         if (size > 0) {
-            const char *message = reinterpret_cast<char *> (buffer);
-            AxonMessage message_(SerializedAxonMessage(message, size));
-            onMessageReceived(message_, &host);
+            processIncomingMessage(reinterpret_cast<const char*>(buffer), size, &host);
         }
 
         update();
