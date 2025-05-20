@@ -1,7 +1,7 @@
 #include "AxonMessage.hpp"
-#include <memory.h>
 #include <utility>
 
+#include <SynapseConfig.h>
 
 #pragma region SERIALIZED_AXON_MESSAGE
 
@@ -12,33 +12,33 @@ Networking::SerializedAxonMessage::SerializedAxonMessage(const char *raw, size_t
         return;
 
     bitstream = new char[size];
-    memcpy((void*) bitstream, raw, size);
+    memcpy(const_cast<char*>(bitstream), raw, size);
 }
 
-Networking::SerializedAxonMessage::SerializedAxonMessage(const Networking::AxonMessage &message) {
+Networking::SerializedAxonMessage::SerializedAxonMessage(const AxonMessage &message) {
     TAG_T tag = generateTag(message.getPartID(), message.getFlags());
 
     bitstream = serialize(static_cast<char*>(message.getMessage()), message.getSize(), tag, &size);
 }
 
-Networking::SerializedAxonMessage::SerializedAxonMessage(const Networking::SerializedAxonMessage &message) :
+Networking::SerializedAxonMessage::SerializedAxonMessage(const SerializedAxonMessage &message) :
     size(message.size)
 {
     if (size > 0) {
         bitstream = new char[size];
-        memcpy((void*) bitstream, message.bitstream, size);
+        memcpy(const_cast<char*>(bitstream), message.bitstream, size);
     }
 }
 
-Networking::SerializedAxonMessage::SerializedAxonMessage(Networking::SerializedAxonMessage &message, size_t newSize, uintptr_t offset) :
+Networking::SerializedAxonMessage::SerializedAxonMessage(SerializedAxonMessage &message, const size_t newSize, uintptr_t offset) :
     size(newSize),
-    bitstream(message.bitstream),
-    offset(offset)
+    offset(offset),
+    bitstream(message.bitstream)
 {
     message.owning = false;
 }
 
-Networking::SerializedAxonMessage::SerializedAxonMessage(Networking::SerializedAxonMessage &&message) noexcept :
+Networking::SerializedAxonMessage::SerializedAxonMessage(SerializedAxonMessage &&message) noexcept :
     size(std::exchange(message.size, 0)),
     bitstream(std::exchange(message.bitstream, nullptr))
 {}
@@ -53,7 +53,7 @@ TAG_T Networking::SerializedAxonMessage::generateTag(const uint8_t optionalData,
 }
 
 Networking::SerializedAxonMessage &
-Networking::SerializedAxonMessage::operator=(const Networking::SerializedAxonMessage &message) {
+Networking::SerializedAxonMessage::operator=(const SerializedAxonMessage &message) {
     if (&message == this)
         return *this;
 
@@ -62,14 +62,14 @@ Networking::SerializedAxonMessage::operator=(const Networking::SerializedAxonMes
     if (size > 0)
     {
         bitstream = new char[size];
-        memcpy((void*) bitstream, message.bitstream, size);
+        memcpy(const_cast<char*>(bitstream), message.bitstream, size);
     }
 
     return * this;
 }
 
 Networking::SerializedAxonMessage &
-Networking::SerializedAxonMessage::operator=(Networking::SerializedAxonMessage &&message) noexcept {
+Networking::SerializedAxonMessage::operator=(SerializedAxonMessage &&message) noexcept {
     if (&message == this)
         return *this;
 
@@ -79,11 +79,16 @@ Networking::SerializedAxonMessage::operator=(Networking::SerializedAxonMessage &
     return * this;
 }
 
+Networking::SerializedAxonMessage Networking::SerializedAxonMessage::split() {
+    size_t sendSize = SYNAPSE_MESSAGE_SIZE_MAX;
+
+}
+
 #pragma endregion
 
 #pragma region AxonMessage
 
-Networking::AxonMessage::AxonMessage(void* message, size_t size, uint8_t partID, uint8_t flags) :
+Networking::AxonMessage::AxonMessage(const void* message, size_t size, uint8_t partID, uint8_t flags) :
     size(size),
     partID(partID),
     flags(flags),
@@ -96,10 +101,7 @@ Networking::AxonMessage::AxonMessage(void* message, size_t size, uint8_t partID,
 	memcpy(this->message, message, size);
 }
 
-Networking::AxonMessage::AxonMessage(const Networking::SerializedAxonMessage &serialized) :
-    message(),
-    size(),
-    partID(),
+Networking::AxonMessage::AxonMessage(const SerializedAxonMessage &serialized) :
     flags(),
     uniqueID(getUniqueID())
 {

@@ -37,11 +37,11 @@ namespace Networking
     public:
         SerializedAxonMessage() = delete;
         SerializedAxonMessage(const char*, size_t);
-        SerializedAxonMessage(const AxonMessage&);
+        explicit SerializedAxonMessage(const AxonMessage&);
 
         SerializedAxonMessage(const SerializedAxonMessage&);
         explicit SerializedAxonMessage(SerializedAxonMessage&, size_t, uintptr_t);
-        explicit SerializedAxonMessage(SerializedAxonMessage&&) noexcept;
+        SerializedAxonMessage(SerializedAxonMessage&&) noexcept;
 
         ~SerializedAxonMessage();
 
@@ -50,6 +50,8 @@ namespace Networking
 
         SerializedAxonMessage& operator=(const SerializedAxonMessage&);
         SerializedAxonMessage& operator=(SerializedAxonMessage&&) noexcept;
+
+		SerializedAxonMessage split();
     protected:
         static TAG_T generateTag(uint8_t, uint8_t);
     private:
@@ -71,7 +73,7 @@ namespace Networking
 		/**
 		* Create new message from actual data (send mode)
 		*/
-		AxonMessage(void*, size_t, uint8_t = 0, uint8_t = 0);
+		AxonMessage(const void*, size_t, uint8_t = 0, uint8_t = 0);
 
         /**
          * Create new message from serialized message structure (preferred)
@@ -86,12 +88,12 @@ namespace Networking
         GETTER size_t getSize() const { return size; }
         GETTER uint8_t getFlags() const { return flags; }
         GETTER uint8_t getPartID() const { return partID; }
-        GETTER bool hasFlag(TAG_FLAGS flag) const { return flags & flag; }
+        GETTER bool hasFlag(const TAG_FLAGS flag) const { return flags & flag; }
 
-        void setPartID(uint8_t id) { this->partID = id; }
-        void setFlags(uint8_t flagSet) { this->flags = flagSet; }
-        void addFlag(TAG_FLAGS flag) { this->flags |= flag; }
-        void removeFlag(TAG_FLAGS flag) { this->flags ^= flag; }
+        void setPartID(const uint8_t id) { this->partID = id; }
+        void setFlags(const uint8_t flagSet) { this->flags = flagSet; }
+        void addFlag(const TAG_FLAGS flag) { this->flags |= flag; }
+        void removeFlag(const TAG_FLAGS flag) { this->flags ^= flag; }
     protected:
         inline void decompressTag(TAG_T);
 
@@ -100,7 +102,7 @@ namespace Networking
 		size_t		size{};
 		void*		message{};
         uint8_t     partID = 0;
-        uint8_t     flags = TAG_FLAGS::UNDEFINED;
+        uint8_t     flags = UNDEFINED;
         uint64_t    uniqueID{};
 	};
 }
