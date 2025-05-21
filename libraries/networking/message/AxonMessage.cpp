@@ -11,6 +11,7 @@ Networking::SerializedAxonMessage::SerializedAxonMessage(const char *raw, size_t
 {
     if (size == 0)
         return;
+    bytes = new char[size];
     memcpy(const_cast<char*>(bytes), raw, size);
 }
 

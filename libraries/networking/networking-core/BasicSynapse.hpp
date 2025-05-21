@@ -54,4 +54,5 @@ namespace Networking {
 }
 
 #include "BasicSynapse.ipp"
+
 // BasicSynapse.hpp
