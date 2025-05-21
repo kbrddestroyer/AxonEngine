@@ -1,5 +1,5 @@
 #pragma once
-#include <SynapseConfig.h>
+#include "netconfig.h"
 #include <iostream>
 
 #include "Synapse.hpp"

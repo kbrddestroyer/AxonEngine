@@ -2,7 +2,7 @@
 #include <common_macro.h>
 
 namespace Networking {
-    const char * AxonNetworkingInternalError::what() const {
+    const char * AxonNetworkingInternalError::what() const noexcept {
         switch (err) {
             case SUCCESS:
                 return "The code really has thrown SUCCESS exception. Check usage.";

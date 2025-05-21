@@ -2,6 +2,9 @@
 
 #pragma once
 #include <serialization/serialization.hpp>
+#include "netconfig.h"
+
+#include <memory>
 
 namespace Networking
 {
@@ -46,19 +49,21 @@ namespace Networking
         ~SerializedAxonMessage();
 
         GETTER size_t getSize()  const { return size; }
-        GETTER const char* getBits() const { return bitstream; }
+        GETTER const char* getBits() const { return bytes; }
 
         SerializedAxonMessage& operator=(const SerializedAxonMessage&);
         SerializedAxonMessage& operator=(SerializedAxonMessage&&) noexcept;
 
-		SerializedAxonMessage split();
+		std::unique_ptr<SerializedAxonMessage> split();
     protected:
         static TAG_T generateTag(uint8_t, uint8_t);
     private:
-        size_t size = 0;
-        uintptr_t offset = 0;
-        const char* bitstream = nullptr;
-        bool owning = true;
+        size_t size         = 0;
+        uintptr_t offset    = 0;
+        bool owning         = true;
+
+        const char* bytes = { 0 };
+
 
         friend class AxonMessage;
     };

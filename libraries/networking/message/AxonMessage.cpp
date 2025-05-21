@@ -1,7 +1,8 @@
 #include "AxonMessage.hpp"
 #include <utility>
+#include <memory.h>
 
-#include <SynapseConfig.h>
+#include "netconfig.h"
 
 #pragma region SERIALIZED_AXON_MESSAGE
 
@@ -10,42 +11,40 @@ Networking::SerializedAxonMessage::SerializedAxonMessage(const char *raw, size_t
 {
     if (size == 0)
         return;
-
-    bitstream = new char[size];
-    memcpy(const_cast<char*>(bitstream), raw, size);
+    memcpy(const_cast<char*>(bytes), raw, size);
 }
 
 Networking::SerializedAxonMessage::SerializedAxonMessage(const AxonMessage &message) {
     TAG_T tag = generateTag(message.getPartID(), message.getFlags());
 
-    bitstream = serialize(static_cast<char*>(message.getMessage()), message.getSize(), tag, &size);
+    bytes = serialize(static_cast<char*>(message.getMessage()), message.getSize(), tag, &size);
 }
 
 Networking::SerializedAxonMessage::SerializedAxonMessage(const SerializedAxonMessage &message) :
     size(message.size)
 {
     if (size > 0) {
-        bitstream = new char[size];
-        memcpy(const_cast<char*>(bitstream), message.bitstream, size);
+        bytes = new char[size];
+        memcpy(const_cast<char*>(bytes), message.bytes, size);
     }
 }
 
 Networking::SerializedAxonMessage::SerializedAxonMessage(SerializedAxonMessage &message, const size_t newSize, uintptr_t offset) :
-    size(newSize),
-    offset(offset),
-    bitstream(message.bitstream)
+        size(newSize),
+        offset(offset),
+        bytes(message.bytes)
 {
     message.owning = false;
 }
 
 Networking::SerializedAxonMessage::SerializedAxonMessage(SerializedAxonMessage &&message) noexcept :
-    size(std::exchange(message.size, 0)),
-    bitstream(std::exchange(message.bitstream, nullptr))
+        size(std::exchange(message.size, 0)),
+        bytes(std::exchange(message.bytes, nullptr))
 {}
 
 Networking::SerializedAxonMessage::~SerializedAxonMessage() {
-    if (bitstream && owning)
-        delete[] bitstream;
+    if (bytes && owning)
+        delete[] bytes;
 }
 
 TAG_T Networking::SerializedAxonMessage::generateTag(const uint8_t optionalData, const uint8_t newFlags) {
@@ -61,8 +60,8 @@ Networking::SerializedAxonMessage::operator=(const SerializedAxonMessage &messag
 
     if (size > 0)
     {
-        bitstream = new char[size];
-        memcpy(const_cast<char*>(bitstream), message.bitstream, size);
+        bytes = new char[size];
+        memcpy(const_cast<char*>(bytes), message.bytes, size);
     }
 
     return * this;
@@ -74,13 +73,18 @@ Networking::SerializedAxonMessage::operator=(SerializedAxonMessage &&message) no
         return *this;
 
     std::exchange(size, message.size);
-    std::exchange(bitstream, message.bitstream);
+    std::exchange(bytes, message.bytes);
 
     return * this;
 }
 
-Networking::SerializedAxonMessage Networking::SerializedAxonMessage::split() {
-    size_t sendSize = SYNAPSE_MESSAGE_SIZE_MAX;
+std::unique_ptr<Networking::SerializedAxonMessage> Networking::SerializedAxonMessage::split() {
+    if (size <= SYNAPSE_MESSAGE_SIZE_MAX) {
+        return {};
+    }
+
+    size_t leftSize = size - SYNAPSE_MESSAGE_SIZE_MAX;
+    size = SYNAPSE_MESSAGE_SIZE_MAX;
 
 }
 
@@ -108,7 +112,7 @@ Networking::AxonMessage::AxonMessage(const SerializedAxonMessage &serialized) :
     TAG_T tag;
 
     deserialize(
-            serialized.bitstream,
+            serialized.bytes,
             serialized.size,
             &this->message,
             &this->size,

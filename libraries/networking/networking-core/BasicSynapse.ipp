@@ -1,7 +1,7 @@
 #pragma once
 #include "BasicSynapse.hpp"
 
-#include <SynapseConfig.h>
+#include "netconfig.h"
 
 namespace Networking {
     template<>
@@ -76,8 +76,8 @@ void Networking::BasicSynapse<conn, mode>::sendTo(const SerializedAxonMessage& s
 }
 
 template<Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::BasicSynapse<conn, mode>::processIncomingMessage(const char *message, const size_t size, SOCKADDR_IN *host) {
-    onMessageReceived(AxonMessage(SerializedAxonMessage(message, size)), host);
+void Networking::BasicSynapse<conn, mode>::processIncomingMessage(SerializedAxonMessage message, SOCKADDR_IN_T *host) {
+    onMessageReceived(AxonMessage(message), host);
 }
 
 #pragma region SERVER_FUNCTIONS
@@ -85,8 +85,6 @@ void Networking::BasicSynapse<conn, mode>::processIncomingMessage(const char *me
 template<>
 inline void Networking::BasicSynapse<Networking::ConnectionMode::TCP, Networking::SynapseMode::SERVER>::listen()
 {
-    // TODO: Refactoring and optimization
-
     SOCKADDR_IN_T host = {};
 
     fd_set master;
@@ -101,13 +99,11 @@ inline void Networking::BasicSynapse<Networking::ConnectionMode::TCP, Networking
         if (select(maxSocket + 1, &reads, nullptr, nullptr, &tv) <= 0) {
             continue;
         }
-        for (uint16_t i = 0; i < reads.fd_count; i++) {
-            SOCKET_T connectionSock = reads.fd_array[i];
-
+        for (SOCKET_T connectionSock = 1; connectionSock <= maxSocket; connectionSock++) {
             if (FD_ISSET(connectionSock, &reads)){
                 if (connectionSock == socketInfo.socket) {
                     sockaddr_storage storage = {};
-                    SOCKET_T client = accept_incoming(socketInfo.socket, reinterpret_cast<SOCKADDR_IN *>(&storage));
+                    SOCKET_T client = accept_incoming(socketInfo.socket, reinterpret_cast<SOCKADDR_IN_T *>(&storage));
 
                     if (!CHECK_VALID(client)) {
                         continue;
@@ -119,8 +115,8 @@ inline void Networking::BasicSynapse<Networking::ConnectionMode::TCP, Networking
                     }
                 }
                 else {
-                    char *buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
-                    const int32_t size = recv_tcp_message(reinterpret_cast<char *>(buffer), 256, connectionSock);
+                    char buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
+                    const int32_t size = recv_message<TCP>(socketInfo, buffer, 256);
 
                     if (size < 0) {
                         FD_CLR(connectionSock, &master);
@@ -128,7 +124,7 @@ inline void Networking::BasicSynapse<Networking::ConnectionMode::TCP, Networking
                         continue;
                     }
 
-                    processIncomingMessage(reinterpret_cast<const char*>(buffer), size, &host);
+                    processIncomingMessage(SerializedAxonMessage(buffer, size), &host);
                 }
             }
         }
@@ -142,11 +138,10 @@ inline void Networking::BasicSynapse<Networking::ConnectionMode::UDP, Networking
     SOCKADDR_IN_T host = {};
 
     while (isAlive) {
-        char* buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
-        int32_t size = recv_udp_message(reinterpret_cast<char *> (buffer), SYNAPSE_MESSAGE_SIZE_MAX, socketInfo.socket,
-                                        &host);
+        char buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
+        int32_t size = recv_message<UDP>(socketInfo, buffer, SYNAPSE_MESSAGE_SIZE_MAX);
         if (size > 0) {
-            processIncomingMessage(reinterpret_cast<const char*>(buffer), size, &host);
+            processIncomingMessage(SerializedAxonMessage(buffer, size), &host);
         }
 
         update();
@@ -165,11 +160,11 @@ inline void Networking::BasicSynapse<Networking::ConnectionMode::TCP, Networking
 
     while (isAlive)
     {
-        char *buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
+        char buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
         const int32_t size = recv_tcp_message(reinterpret_cast<char *>(buffer), 256, client);
         if (size > 0)
         {
-            processIncomingMessage(reinterpret_cast<const char*>(buffer), size, &host);
+            processIncomingMessage(SerializedAxonMessage(buffer, size), &host);
         }
 
         update();
@@ -181,11 +176,11 @@ inline void Networking::BasicSynapse<Networking::ConnectionMode::UDP, Networking
     SOCKADDR_IN_T host = {};
 
     while (isAlive) {
-        char* buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
+        char buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
         int32_t size = recv_udp_message(reinterpret_cast<char *> (buffer), SYNAPSE_MESSAGE_SIZE_MAX, socketInfo.socket,
                                         &host);
         if (size > 0) {
-            processIncomingMessage(reinterpret_cast<const char*>(buffer), size, &host);
+            processIncomingMessage(SerializedAxonMessage(buffer, size), &host);
         }
 
         update();

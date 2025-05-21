@@ -18,6 +18,32 @@ struct Socket
 	SOCKADDR_IN_T	conn;
 };
 
+struct Header {
+    size_t size = 0;
+};
+
+struct Footer {
+    /* sizeof = 2 bytes */
+
+    uint8_t partID = 0;
+    uint8_t flags = 0;
+};
+
+static_assert(
+        sizeof(Header) + sizeof(Footer) < SYNAPSE_MESSAGE_SIZE_MAX,
+        "There's no space left on network package"
+);
+
+struct Body {
+    const char serialized[SYNAPSE_MESSAGE_SIZE_MAX - sizeof(Header) - sizeof(Footer)] = { 0 };
+};
+
+struct NetworkMessage {
+    Header      header;
+    Body        body;
+    Footer      footer;
+};
+
 #endif
 
 /* basic_networking.h */

@@ -45,7 +45,7 @@ namespace Networking {
         virtual void update() {}
         virtual void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*) {};
 
-        void processIncomingMessage(const char*, size_t, SOCKADDR_IN_T*);
+        void processIncomingMessage(SerializedAxonMessage, SOCKADDR_IN_T*);
     protected:
         std::atomic<bool>	isAlive = false;  // TODO: move this from here
         ConnectionInfo		connectionInfo;
