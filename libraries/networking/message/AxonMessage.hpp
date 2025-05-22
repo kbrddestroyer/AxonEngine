@@ -5,6 +5,7 @@
 #include "netconfig.h"
 
 #include <memory>
+#include <bitset>
 
 namespace Networking
 {
@@ -19,16 +20,16 @@ namespace Networking
      * - VALIDATE - package should be validated and sender waits for validation package
      * - ACKNOWLEDGE - validation message for package with ID
      * - PARTIAL - message is being split into parts. Check data section for partID
-     * - FINISH - last message in partial send
      */
 	enum TAG_FLAGS
 	{
-		UNDEFINED	= 0,
-		VALIDATE	= 1,
-		ACKNOWLEDGE = 1 << 1,
-		PARTIAL		= 1 << 2,
-		FINISH		= 1 << 3
+		UNDEFINED	= 0,        /// default
+		VALIDATE	= 1,        /// "how copy?"
+		ACKNOWLEDGE = 1 << 1,   /// response package, "copy that!"
+		PARTIAL		= 1 << 2,   /// set if message bits are part of a partial delivery
 	};
+
+    static_assert(sizeof(TAG_FLAGS) < sizeof(uint8_t));
 
     class AxonMessage;
 
@@ -40,31 +41,50 @@ namespace Networking
     public:
         SerializedAxonMessage() = delete;
         SerializedAxonMessage(const char*, size_t);
-        explicit SerializedAxonMessage(const AxonMessage&);
-
         SerializedAxonMessage(const SerializedAxonMessage&);
-        explicit SerializedAxonMessage(SerializedAxonMessage&, size_t, uintptr_t);
+        explicit SerializedAxonMessage(const AxonMessage&);
+        explicit SerializedAxonMessage(SerializedAxonMessage&, size_t, uintptr_t, uint8_t, uint8_t, uint64_t);
         SerializedAxonMessage(SerializedAxonMessage&&) noexcept;
 
         ~SerializedAxonMessage();
 
         GETTER size_t getSize()  const { return size; }
         GETTER const char* getBits() const { return bytes; }
+        GETTER uint8_t getFlags() const { return flags; }
+        GETTER uint8_t getPartID() const { return partID; }
 
         SerializedAxonMessage& operator=(const SerializedAxonMessage&);
         SerializedAxonMessage& operator=(SerializedAxonMessage&&) noexcept;
 
+        GETTER bool hasFlag(const TAG_FLAGS flag) const { return flags & flag; }
+
+        // Mostly for debugging
+        GETTER std::bitset<8> getFlagSet() const noexcept { return { flags }; }
+
+        void setPartID(const uint8_t id) { this->partID = id; }
+
+        // Resets old flags, sets new flag set
+        void setFlags(const uint8_t flagSet) { this->flags = flagSet; }
+        void addFlag(const TAG_FLAGS flag) { this->flags |= flag; }
+        void removeFlag(const TAG_FLAGS flag) { this->flags ^= flag; }
+
 		std::unique_ptr<SerializedAxonMessage> split();
     protected:
         static TAG_T generateTag(uint8_t, uint8_t);
+        static uint64_t generateUniqueID() {
+            static uint64_t uniqueID = 0;
+            return uniqueID++;
+        }
     private:
-        size_t size         = 0;
-        uintptr_t offset    = 0;
-        bool owning         = true;
+        size_t      size        = 0;
+        uint64_t    uniqueID    = 0;
+        uintptr_t   offset      = 0;
+        bool        owning      = true;
 
-        const char* bytes = { 0 };
+        const char* bytes       = nullptr;
 
-
+        uint8_t partID          = 0;
+        uint8_t flags           = UNDEFINED;
         friend class AxonMessage;
     };
 
@@ -88,17 +108,9 @@ namespace Networking
 		AxonMessage(const AxonMessage&);
 		~AxonMessage();
 
-        GETTER SerializedAxonMessage getSerialized() const;
-        GETTER void* getMessage() const { return message; }
-        GETTER size_t getSize() const { return size; }
-        GETTER uint8_t getFlags() const { return flags; }
-        GETTER uint8_t getPartID() const { return partID; }
-        GETTER bool hasFlag(const TAG_FLAGS flag) const { return flags & flag; }
-
-        void setPartID(const uint8_t id) { this->partID = id; }
-        void setFlags(const uint8_t flagSet) { this->flags = flagSet; }
-        void addFlag(const TAG_FLAGS flag) { this->flags |= flag; }
-        void removeFlag(const TAG_FLAGS flag) { this->flags ^= flag; }
+        WGETTER(SerializedAxonMessage getSerialized());
+        WGETTER(void* getMessage()) { return message; }
+        WGETTER(size_t getSize()) { return size; }
     protected:
         inline void decompressTag(TAG_T);
 

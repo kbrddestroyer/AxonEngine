@@ -24,4 +24,9 @@
 #define AXON_DECLSPEC
 #endif
 #endif
+
+#define GETTER_W(DECL) GETTER DECL const
+#define GETTER_WNE(DECL) GETTER_W(DECL) noexcept
+
+#define WGETTER GETTER_WNE
 #endif

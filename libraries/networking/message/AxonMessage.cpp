@@ -3,6 +3,7 @@
 #include <memory.h>
 
 #include "netconfig.h"
+#include "backends/berkeley/basic_networking.h"
 
 #pragma region SERIALIZED_AXON_MESSAGE
 
@@ -30,10 +31,13 @@ Networking::SerializedAxonMessage::SerializedAxonMessage(const SerializedAxonMes
     }
 }
 
-Networking::SerializedAxonMessage::SerializedAxonMessage(SerializedAxonMessage &message, const size_t newSize, uintptr_t offset) :
+Networking::SerializedAxonMessage::SerializedAxonMessage(SerializedAxonMessage &message, const size_t newSize, uintptr_t offset, uint8_t nPartID, uint8_t flagSet, uint64_t id) :
         size(newSize),
         offset(offset),
-        bytes(message.bytes)
+        bytes(message.bytes),
+        partID(nPartID),
+        flags(flagSet),
+        uniqueID(id)
 {
     message.owning = false;
 }
@@ -86,7 +90,12 @@ std::unique_ptr<Networking::SerializedAxonMessage> Networking::SerializedAxonMes
 
     size_t leftSize = size - SYNAPSE_MESSAGE_SIZE_MAX;
     size = SYNAPSE_MESSAGE_SIZE_MAX;
+    addFlag(PARTIAL);
 
+    return std::make_unique<SerializedAxonMessage>(
+            *this,
+            leftSize, offset, partID + 1, flags ^ PARTIAL, size
+        );
 }
 
 #pragma endregion
