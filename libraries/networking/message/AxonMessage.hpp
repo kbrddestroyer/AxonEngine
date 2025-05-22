@@ -43,7 +43,7 @@ namespace Networking
 		/**
 		* Create new message from actual data (send mode)
 		*/
-		AxonMessage(void*, size_t, uint8_t = 0, uint8_t = 0);
+		AxonMessage(void*, size64_t, uint8_t = 0, uint8_t = 0);
 
 		/**
 		* Create new message from legacy serialized data (recv mode)
