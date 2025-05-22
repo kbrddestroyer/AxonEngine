@@ -29,7 +29,7 @@ namespace Networking
 
     struct SerializedAxonMessage
     {
-        size_t size = 0;
+        size64_t size = 0;
         const char* bitstream = nullptr;
     };
 
@@ -50,7 +50,7 @@ namespace Networking
 		 *
 		 * @see Networking::SerializedAxonMessage
 		*/
-		AxonMessage(const char*, size_t);
+		AxonMessage(const char*, size64_t);
 
         /**
          * Create new message from serialized message structure (preferred)
@@ -62,7 +62,7 @@ namespace Networking
 
         SerializedAxonMessage getSerialized() const;
 		void* getMessage() const { return message; }
-		size_t getSize() const { return size; }
+		size64_t getSize() const { return size; }
         uint8_t getFlags() const { return flags; }
         uint8_t getPartID() const { return partID; }
 
@@ -71,12 +71,12 @@ namespace Networking
         void addFlag(TAG_FLAGS flag) { this->flags |= flag; }
         void removeFlag(TAG_FLAGS flag) { this->flags ^= flag; }
 
-        AxonMessage split(size_t);
+        AxonMessage split(size64_t);
     protected:
         static TAG_T generateTag(uint8_t, uint8_t);
         inline void decompressTag(TAG_T);
 	private:
-		size_t		size;
+		size64_t	size;
 		void*		message;
         uint8_t     partID = 0;
         uint8_t     flags = TAG_FLAGS::UNDEFINED;
