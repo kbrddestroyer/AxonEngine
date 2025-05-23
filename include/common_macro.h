@@ -1,7 +1,7 @@
 #ifndef AXONENGINE_COMMON_MACRO_H
 #define AXONENGINE_COMMON_MACRO_H
 
-#include <cstdint>
+#include <stdint.h>
 
 #pragma region ERROR_CODES
 #define ERR_WININIT_FAIL		1
