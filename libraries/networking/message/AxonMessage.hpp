@@ -76,7 +76,7 @@ namespace Networking
             return uniqueID++;
         }
     private:
-        size_t      size        = 0;
+        size64_t    size        = 0;
         uint64_t    uniqueID    = 0;
         uintptr_t   offset      = 0;
         bool        owning      = true;
@@ -98,7 +98,7 @@ namespace Networking
 		/**
 		* Create new message from actual data (send mode)
 		*/
-		AxonMessage(const void*, size_t, uint8_t = 0, uint8_t = 0);
+		AxonMessage(const void*, size64_t, uint8_t = 0, uint8_t = 0);
 
         /**
          * Create new message from serialized message structure (preferred)
@@ -110,14 +110,16 @@ namespace Networking
 
         WGETTER(SerializedAxonMessage getSerialized());
         WGETTER(void* getMessage()) { return message; }
-        WGETTER(size_t getSize()) { return size; }
+        WGETTER(size64_t getSize()) { return size; }
+
     protected:
         inline void decompressTag(TAG_T);
 
         static uint64_t getUniqueID();
 	private:
-		size_t		size{};
-		void*		message{};
+
+		size64_t	size;
+		void*		message;
         uint8_t     partID = 0;
         uint8_t     flags = UNDEFINED;
         uint64_t    uniqueID{};
