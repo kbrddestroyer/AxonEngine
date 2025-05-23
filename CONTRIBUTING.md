@@ -7,7 +7,7 @@ First of all, thank you for your interest in the project!
 First things first: if you're not sure how to format your code correctly, just do your best and mention in the pull request that you're open to suggestions. We're here to help.
 Our primary goal and guiding philosophy is to build a friendly community of developers, support each other, and grow together as we improve our coding skills.
 
-Think of this guide as a reference, not a rulebook — it's here to help, not to limit you.
+Think of this guide as a reference, not a rulebook - it's here to help, not to limit you.
 
 * [C++ Reference](https://en.cppreference.com/w/)
 * [Getting Started with CMake](https://cmake.org/cmake/help/latest/guide/tutorial/A%20Basic%20Starting%20Point.html)
@@ -87,7 +87,6 @@ inside your build directory.
 #### Recommended Class Layout
 
 1. Constructors
-
    * Default
    * Parameterized
    * Conversion
@@ -141,7 +140,8 @@ namespace MyNamespace {
 
 ### Memory
 
-Avoid raw memory allocation in C++ code. Use smart pointers instead. Functions like `malloc`, `calloc`, and `free` are forbidden.
+As said above, avoid raw memory allocation in C++ code. Use smart pointers instead. 
+Functions like `malloc`, `calloc`, and `free` are forbidden in C++ code.
 
 ---
 
