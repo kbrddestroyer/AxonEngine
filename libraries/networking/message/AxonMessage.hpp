@@ -29,8 +29,6 @@ namespace Networking
 		PARTIAL		= 1 << 2,   /// set if message bits are part of a partial delivery
 	};
 
-    static_assert(sizeof(TAG_FLAGS) < sizeof(uint8_t));
-
     class AxonMessage;
 
     /*
