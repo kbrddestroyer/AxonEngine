@@ -5,7 +5,7 @@
 
 #pragma region AxonMessage
 
-Networking::AxonMessage::AxonMessage(void* message, size_t size, uint8_t partID, uint8_t flags)
+Networking::AxonMessage::AxonMessage(void* message, size64_t size, uint8_t partID, uint8_t flags)
 {
 	if (message == nullptr)
 		return;
@@ -23,7 +23,7 @@ Networking::AxonMessage::AxonMessage(void* message, size_t size, uint8_t partID,
     this->flags = flags;
 }
 
-Networking::AxonMessage::AxonMessage(const char* bits, size_t actualSize)
+Networking::AxonMessage::AxonMessage(const char* bits, size64_t actualSize)
 {
     TAG_T tag;
 
@@ -81,7 +81,7 @@ void Networking::AxonMessage::decompressTag(const TAG_T tag) {
     flags = tag & ((1UL << 9) - 1);
 }
 
-Networking::AxonMessage Networking::AxonMessage::split(const size_t sendSize) {
+Networking::AxonMessage Networking::AxonMessage::split(const size64_t sendSize) {
     if (sendSize >= size)
         throw 1;
     uintptr_t pMessage = reinterpret_cast<uintptr_t> (message);
