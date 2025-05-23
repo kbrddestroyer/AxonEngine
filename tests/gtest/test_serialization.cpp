@@ -7,13 +7,13 @@ TEST(TEST_SERIALIZATION, TEST_SERIALIZATION_GENERAL)
     const char* message = "Hello World!";
     void* buffer;
     TAG_T tag = 25;
-    size_t total = 0;
+    size64_t total = 0;
 
     const char* serialized = const_cast<const char*>(serialize(const_cast<char *>(message), strlen(message), tag, &total));
 
     ASSERT_TRUE(total);
 
-    size_t deserialized_size = 0;
+    size64_t deserialized_size = 0;
     uint8_t ret = deserialize((char*)serialized, total, (void**) &buffer, &deserialized_size, &tag);
 
     ASSERT_EQ(ret, 0);

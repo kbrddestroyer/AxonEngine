@@ -13,7 +13,7 @@ project ("AxonEngine" VERSION 0.0.1)
 include_directories(include)
 include (${CMAKE_HOME_DIRECTORY}/cmake/build-utils.cmake)
 
-if (${CMAKE_BUILD_TYPE} EQUAL "Debug")
+if (NOT {BUILD_TESTS})
     set (BUILD_TESTS ON)
 endif()
 
