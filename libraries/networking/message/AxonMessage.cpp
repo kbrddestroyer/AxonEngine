@@ -108,7 +108,7 @@ std::unique_ptr<Networking::SerializedAxonMessage> Networking::SerializedAxonMes
 
 #pragma region AxonMessage
 
-Networking::AxonMessage::AxonMessage(const void* message, size_t size, uint8_t partID, uint8_t flags) :
+Networking::AxonMessage::AxonMessage(const void* message, size64_t size, uint8_t partID, uint8_t flags) :
     size(size),
     partID(partID),
     flags(flags),
