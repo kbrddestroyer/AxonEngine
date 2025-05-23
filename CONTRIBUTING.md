@@ -1,140 +1,148 @@
-# Contributing Guide [WIP]
+## Contributing Guide \[WIP]
 
 First of all, thank you for your interest in the project!
 
-## Before you start
+## Before You Start
 
-- [CPP Reference](https://en.cppreference.com/w/)
-- [Getting started with CMake](https://cmake.org/cmake/help/latest/guide/tutorial/A%20Basic%20Starting%20Point.html)
-- [Getting started with Conan](https://docs.conan.io/1/getting_started.html)
-- [Project wiki page](https://github.com/kbrddestroyer/AxonEngine/wiki)
-- - [Project building step-by-step guide](https://github.com/kbrddestroyer/AxonEngine/wiki/Building-with-CMake)
+First things first: if you're not sure how to format your code correctly, just do your best and mention in the pull request that you're open to suggestions. We're here to help.
+Our primary goal and guiding philosophy is to build a friendly community of developers, support each other, and grow together as we improve our coding skills.
 
-## Getting involved
+Think of this guide as a reference, not a rulebook — it's here to help, not to limit you.
 
-The process of contribution requires you to modify your fork repository and opening a pull-request into central repo.
-That's can be done by following this steps:
+* [C++ Reference](https://en.cppreference.com/w/)
+* [Getting Started with CMake](https://cmake.org/cmake/help/latest/guide/tutorial/A%20Basic%20Starting%20Point.html)
+* [Getting Started with Conan](https://docs.conan.io/1/getting_started.html)
+* [Project Wiki Page](https://github.com/kbrddestroyer/AxonEngine/wiki)
+* [Step-by-Step Build Guide](https://github.com/kbrddestroyer/AxonEngine/wiki/Building-with-CMake)
 
-1. Fork central repository. Clone your fork repo.
-2. Consider adding central repository as upstream remote. `git remote add upstream https://github.com/kbrddestroyer/AxonEngine.git`
-3. `git checkout main && git pull`
+## Getting Involved
 
-Remember to keep your fork synchronized. This will minimise merge conflicts and allow you to operate the latest source 
-code. You can do `git pull -u upstream main` to achieve this or synchronize fork directly on GitHub repo page.
+To contribute, fork the central repository and submit a pull request from your fork. Follow these steps:
 
-Make some changes. Push them to your fork repository.
-After the job is done, open a pull-request to the central repository. It can be done [here](https://github.com/kbrddestroyer/AxonEngine/compare).
+1. Fork the central repository and clone your fork.
+2. Add the central repository as an upstream remote:
 
-Pull-request in `main`, `release/*`, or `feature/*` branch will trigger **status checks** to run. Currently, those include
-[linux](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/linux-build.yml),
-[windows](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/windows-build.yml) and
-[macos](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/macos-build.yml) builds. Both linux 
-and macos builds include **gcc** and **clang** compilation checks.
+   ```bash
+   git remote add upstream https://github.com/kbrddestroyer/AxonEngine.git
+   ```
+3. Pull the latest changes from upstream:
 
-Status checks will also run **CTest** on each platform and build configuration.
+   ```bash
+   git checkout main
+   git pull upstream main
+   ```
 
-If your branch passes all status checks and code review, it will be merged into central repository.
+   Remember to keep your fork synchronized with the central repository. This minimizes merge conflicts and ensures you're working with the latest code.
+4. Make your changes and push them to your fork.
+5. Open a pull request to the central repository [here](https://github.com/kbrddestroyer/AxonEngine/compare).
 
-# Development process
+Pull requests to `main`, `release/*`, or `feature/*` branches trigger **status checks**:
 
-## Building from sources
+* [Linux Build](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/linux-build.yml)
+* [Windows Build](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/windows-build.yml)
+* [macOS Build](https://github.com/kbrddestroyer/AxonEngine/actions/workflows/macos-build.yml)
 
-> A detailed build guide is available on Wiki page.
+Status checks include **GCC** and **Clang** builds (Linux/macOS) and **CTest** on all platforms. If your branch passes checks and review, it will be merged.
 
-Briefly, you'll need **Python 3**, **Conan** and **CMake** to successfully build project from the sources.
-Please, refer to those tools **install guides**, our **Wiki page**, **Discussions section** or our Discord if you have 
-any issues. Also consider [creating an issue](https://github.com/kbrddestroyer/AxonEngine/issues/new) if you've faced
-some errors in build scripts, source code, etc.
+## Development Process
 
-Tests can be executed by running `ctest` command inside your build directory. 
+### Building from Sources
+
+> A detailed build guide is available on the Wiki page.
+
+You will need **Python 3**, **Conan**, and **CMake** to build the project.
+Refer to installation guides, the Wiki, Discussions section, or Discord if you encounter issues. [Create an issue](https://github.com/kbrddestroyer/AxonEngine/issues/new) if you find errors in code or scripts.
+
+Run tests with:
+
+```bash
+ctest
+```
+
+inside your build directory.
 
 ## Codestyle
 
-### General
+### General Guidelines
 
-- All header files are required to contain [include guard](https://en.wikipedia.org/wiki/Include_guard). 
-`#pragma once` is preferred as include guard. 
-- It is preferable to name C++ header files with `.hpp` extension, C headers with `.h`.
-- It's better not to use `TODO` or alike comments in code. Instead, consider opening an issue. 
-- Files are primarily named with PascalCase, it is allowed to use snake_case for singular headers.
-- `using namespace std` is definitely not allowed.
-- `#include` corresponding header in your cpp file first. 
+* Use `#pragma once` for include guards.
+* Use `.hpp` for C++ headers, `.h` for C headers.
+* Avoid comments like `TODO` in code; instead, open an issue.
+* Use PascalCase for filenames, snake\_case allowed for singular headers.
+* Do not use `using namespace std;`
+* Always include the corresponding header first in `.cpp` files.
 
-### Making custom types
+### Custom Types
 
-- Classes, structures, enums and namespaces are named in PascalCase, as well as containing file.
-- `typedef` should use lowercase or camelCase for name, containing `_t` suffix and optionally type size in bits if 
-speaking of numerics.
-- Preprocessor macro should be named in CAPITAL_CASE 
-- Constant fields and template parameters should be names in CAPITAL_CASE, using underscore as word separator.
-- - Templates parameters can be named with  single character, e.g. `typename T`, `class U`, etc.
-- Static fields should be named with PascalCase;
-- Variables and functions inside a class should be named with camelCase
+* Use PascalCase for class, struct, enum, and namespace names.
+* `typedef` names: camelCase or snake\_case, end with `_t`, optionally include bit-size.
+* Macro names: UPPER\_SNAKE\_CASE
+* Constants and template parameters: UPPER\_SNAKE\_CASE
+* Template parameters may be single letters (e.g. `T`, `U`).
+* Static class fields: PascalCase
+* Member variables and methods: camelCase
 
-It is better to use class if you plan to implement methods, otherwise use structure.
+> Prefer `class` if methods are needed; otherwise, use `struct`.
 
-An example of class containment order variant:
+#### Recommended Class Layout
 
 1. Constructors
-   1. Default constructor
-   2. Parameterized constructor
-   3. Converting constructors
-   4. Copy constructors
-   5. Move constructors
+
+   * Default
+   * Parameterized
+   * Conversion
+   * Copy
+   * Move
 2. Destructor
-3. Getter and setter methods
-4. Custom methods
+3. Getters and Setters
+4. Custom Methods
 5. Operators
-6. Class fields
-7. Friends declaration
+6. Fields
+7. Friend Declarations
 
 ```cpp
-// file: MyCustomClass.hpp
-
-namespace MyCustomNamespace {
-    class MyCystomClass {
+// MyCustomClass.hpp
+namespace MyNamespace {
+    class MyCustomClass {
     public:
         MyCustomClass();
     };
 }
 ```
 
-It is better not to use `using namespace` in your code. Instead, manually specify namespace in implementation, for example:
-
 ```cpp
-// file; MyCustomClass.cpp
-
-MyCustomNamespace::MyCustomClass::MyCustomClass() {
-    // Some code goes here
+// MyCustomClass.cpp
+MyNamespace::MyCustomClass::MyCustomClass() {
+    // Implementation
 }
-
 ```
 
-or 
+Or:
 
 ```cpp
-namespace MyCustomNamespace {
+namespace MyNamespace {
     MyCustomClass::MyCustomClass() {
-        // Some code goes here
+        // Implementation
     }
 }
 ```
 
-> Please, never use multiple inheritance, it can lead to serious issues.
+### Forbidden Practices
 
-#### Getter methods
+* Never use `using namespace std;`
+* Avoid multiple inheritance
+* Do not use `malloc`, `calloc`, `free` in C++
+* Prefer smart pointers over `new` and `delete`
 
-All getter methods should be marked as `const` and `noexcept` if it's possible.
+### Getter Methods
 
-> If getter can't be marked as `const` consider making separate method, that won't be associated with getter methods.
+* Must be marked `const` and `noexcept` when possible
+* If `const` is not possible, use a differently named method
 
-#### Memory
+### Memory
 
-Dynamic memory allocation in C++ code is not welcomed, `malloc`, `calloc`, `free` are completely forbidden in C++ code
-and considered insecure. If you *really need* memory allocation, use `new` and `delete`.
-
-Instead of dynamic allocation, use smart pointers. That's more secure way.
+Avoid raw memory allocation in C++ code. Use smart pointers instead. Functions like `malloc`, `calloc`, and `free` are forbidden.
 
 ---
 
-If you encountered a piece of code, that's not following this codestyle, please open an issue with `refactoring` label.
+If you find code that doesn’t follow these guidelines, [open an issue](https://github.com/kbrddestroyer/AxonEngine/issues/new) with the `refactoring` label.
