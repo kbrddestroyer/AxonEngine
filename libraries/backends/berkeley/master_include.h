@@ -2,6 +2,7 @@
 #define MASTER_INCLUDE_H
 
 #include <common_macro.h>
+#include <netconfig.h>
 
 /* common */
 

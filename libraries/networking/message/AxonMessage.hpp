@@ -2,6 +2,10 @@
 
 #pragma once
 #include <serialization/serialization.hpp>
+#include "netconfig.h"
+
+#include <memory>
+#include <bitset>
 
 namespace Networking
 {
@@ -16,21 +20,70 @@ namespace Networking
      * - VALIDATE - package should be validated and sender waits for validation package
      * - ACKNOWLEDGE - validation message for package with ID
      * - PARTIAL - message is being split into parts. Check data section for partID
-     * - FINISH - last message in partial send
      */
 	enum TAG_FLAGS
 	{
-		UNDEFINED	= 0,
-		VALIDATE	= 1,
-		ACKNOWLEDGE = 1 << 1,
-		PARTIAL		= 1 << 2,
-		FINISH		= 1 << 3
+		UNDEFINED	= 0,        /// default
+		VALIDATE	= 1,        /// "how copy?"
+		ACKNOWLEDGE = 1 << 1,   /// response package, "copy that!"
+		PARTIAL		= 1 << 2,   /// set if message bits are part of a partial delivery
 	};
 
-    struct SerializedAxonMessage
+    class AxonMessage;
+
+    /*
+     * Class, optimized for queued storage, bit split
+     */
+    class AXON_DECLSPEC SerializedAxonMessage
     {
-        size64_t size = 0;
-        const char* bitstream = nullptr;
+    public:
+        SerializedAxonMessage() = delete;
+        SerializedAxonMessage(const char*, size64_t);
+        SerializedAxonMessage(const SerializedAxonMessage&);
+        explicit SerializedAxonMessage(const AxonMessage&);
+        explicit SerializedAxonMessage(SerializedAxonMessage&, size_t, uintptr_t, uint8_t, uint8_t, uint64_t);
+        SerializedAxonMessage(SerializedAxonMessage&&) noexcept;
+
+        ~SerializedAxonMessage();
+
+        GETTER size_t getSize()  const { return size; }
+        GETTER const char* getBits() const { return bytes; }
+        GETTER uint8_t getFlags() const { return flags; }
+        GETTER uint8_t getPartID() const { return partID; }
+
+        SerializedAxonMessage& operator=(const SerializedAxonMessage&);
+        SerializedAxonMessage& operator=(SerializedAxonMessage&&) noexcept;
+
+        GETTER bool hasFlag(const TAG_FLAGS flag) const { return flags & flag; }
+
+        // Mostly for debugging
+        GETTER std::bitset<8> getFlagSet() const noexcept { return { flags }; }
+
+        void setPartID(const uint8_t id) { this->partID = id; }
+
+        // Resets old flags, sets new flag set
+        void setFlags(const uint8_t flagSet) { this->flags = flagSet; }
+        void addFlag(const TAG_FLAGS flag) { this->flags |= flag; }
+        void removeFlag(const TAG_FLAGS flag) { this->flags ^= flag; }
+
+		std::unique_ptr<SerializedAxonMessage> split();
+    protected:
+        static TAG_T generateTag(uint8_t, uint8_t);
+        static uint64_t generateUniqueID() {
+            static uint64_t uniqueID = 0;
+            return uniqueID++;
+        }
+    private:
+        size64_t    size        = 0;
+        uint64_t    uniqueID    = 0;
+        uintptr_t   offset      = 0;
+        bool        owning      = true;
+
+        const char* bytes       = nullptr;
+
+        uint8_t partID          = 0;
+        uint8_t flags           = UNDEFINED;
+        friend class AxonMessage;
     };
 
 	/*
@@ -43,44 +96,31 @@ namespace Networking
 		/**
 		* Create new message from actual data (send mode)
 		*/
-		AxonMessage(void*, size64_t, uint8_t = 0, uint8_t = 0);
-
-		/**
-		* Create new message from legacy serialized data (recv mode)
-		 *
-		 * @see Networking::SerializedAxonMessage
-		*/
-		AxonMessage(const char*, size64_t);
+		AxonMessage(const void*, size64_t, uint8_t = 0, uint8_t = 0);
 
         /**
          * Create new message from serialized message structure (preferred)
          */
-        AxonMessage(const SerializedAxonMessage&);
+        explicit AxonMessage(const SerializedAxonMessage&);
 
 		AxonMessage(const AxonMessage&);
 		~AxonMessage();
 
-        SerializedAxonMessage getSerialized() const;
-		void* getMessage() const { return message; }
-		size64_t getSize() const { return size; }
-        uint8_t getFlags() const { return flags; }
-        uint8_t getPartID() const { return partID; }
+        WGETTER(SerializedAxonMessage getSerialized());
+        WGETTER(void* getMessage()) { return message; }
+        WGETTER(size64_t getSize()) { return size; }
 
-        void setPartID(uint8_t partID) { this->partID = partID; }
-        void setFlags(uint8_t flags) { this->flags = flags; }
-        void addFlag(TAG_FLAGS flag) { this->flags |= flag; }
-        void removeFlag(TAG_FLAGS flag) { this->flags ^= flag; }
-
-        AxonMessage split(size64_t);
     protected:
-        static TAG_T generateTag(uint8_t, uint8_t);
         inline void decompressTag(TAG_T);
+
+        static uint64_t getUniqueID();
 	private:
+
 		size64_t	size;
 		void*		message;
         uint8_t     partID = 0;
-        uint8_t     flags = TAG_FLAGS::UNDEFINED;
-        uint64_t    uniqueID;
+        uint8_t     flags = UNDEFINED;
+        uint64_t    uniqueID{};
 	};
 }
 

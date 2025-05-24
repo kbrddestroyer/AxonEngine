@@ -33,10 +33,7 @@ TEST(TEST_SERIALIZATION, TEST_MESSAGE) {
 
     Networking::SerializedAxonMessage serialized = message_.getSerialized();
 
-    Networking::AxonMessage deserialized(serialized.bitstream, serialized.size);
-
-    ASSERT_EQ(deserialized.getFlags(), message_.getFlags());
-    ASSERT_EQ(deserialized.getPartID(), message_.getPartID());
+    Networking::AxonMessage deserialized(serialized);
     ASSERT_EQ(deserialized.getSize(), message_.getSize());
 }
 
@@ -45,14 +42,14 @@ TEST(TEST_SERIALIZATION, TEST_MESSAGE_TAG) {
     const char* message = "Hello World!";
     Networking::AxonMessage message_( const_cast<char*> ( message ) , strlen(message) + 1, 0);
 
-    message_.setPartID(1);
-    message_.setFlags(Networking::TAG_FLAGS::FINISH | Networking::TAG_FLAGS::ACKNOWLEDGE);
-
     Networking::SerializedAxonMessage serialized = message_.getSerialized();
-    Networking::AxonMessage cpyMessage(serialized.bitstream, serialized.size);
 
-    ASSERT_EQ(cpyMessage.getPartID(), 1);
-    ASSERT_TRUE(~cpyMessage.getFlags() ^ (Networking::TAG_FLAGS::ACKNOWLEDGE | Networking::TAG_FLAGS::FINISH));
+    serialized.setPartID(1);
+    serialized.setFlags(Networking::TAG_FLAGS::ACKNOWLEDGE);
+
+    Networking::SerializedAxonMessage cpyMessage(serialized.getBits(), serialized.getSize());
+
+    ASSERT_TRUE(~cpyMessage.getFlags() ^ (Networking::TAG_FLAGS::ACKNOWLEDGE));
 }
 
 int main(int argc, char* argv[])
