@@ -136,7 +136,7 @@ namespace MyNamespace {
 ### Getter Methods
 
 * Must be marked `const` and `noexcept` when possible
-* If `const` is not possible, use a differently named method
+* If `const` is not possible, consider using a different name, so that your method won't be associated with getters.
 
 ### Memory
 
