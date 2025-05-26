@@ -1,7 +1,7 @@
 #ifndef CUSTOM_UTILITY_H
 #define CUSTOM_UTILITY_H
 
-#ifdef __cpluslus
+#ifdef __cplusplus
 #include <cstdint>
 #else
 #include <stdint.h>
