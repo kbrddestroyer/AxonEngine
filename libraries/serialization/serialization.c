@@ -2,6 +2,41 @@
 #include <string.h>
 
 
+uint8_t extractMetadata(const char* serialized , size64_t size, size64_t *actualSize, TAG_T * tag) {
+    size64_t actual;
+    size64_t header_size = sizeof(actual);
+    do
+    {
+        actual = (*(size64_t*)(serialized));
+        actual &= (1ULL << --header_size * 8) - 1;
+    } while (size < actual && header_size > 0);
+
+    if (header_size == 0 || actual == 0) {
+        return 1;
+    }
+
+    /* Shrink header size */
+
+    size64_t shrunk = actual;
+    while (shrunk == actual != 0 && header_size > 0)
+    {
+        shrunk = actual & (1ULL << --header_size * 8) - 1;
+    }
+    header_size++;
+
+    if (header_size == 0)
+    {
+        return 1;
+    }
+
+    const size64_t footer_size = size - actual - header_size;
+    *tag = (*(uint64_t*) (serialized + actual + header_size)) & ((1ULL << footer_size * 8) - 1);
+    *actualSize = actual;
+
+    return 0;
+}
+
+
 char* serialize(const char* data, const size64_t size, const TAG_T tag, size64_t* totalSize)
 {
     *totalSize = 0;
@@ -28,7 +63,7 @@ char* serialize(const char* data, const size64_t size, const TAG_T tag, size64_t
 
 uint8_t deserialize(const char* serialized, const size64_t size, void** deserialized, size64_t* actualSize, TAG_T* tag)
 {
-    size64_t actual = size;
+    size64_t actual;
     size64_t header_size = sizeof(actual);
     do
     {

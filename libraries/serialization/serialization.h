@@ -4,13 +4,17 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+
+#include <custom_utility.h>
 #include "../AxonUtility.h"
 
 #define TAG_T uint16_t
 
-// Define alias for uint64_t to be used instead of size_t
-//  as size_t may have different size on different machines (i.e. x86 vs x64)
-typedef uint64_t size64_t;
+/**
+ *
+ */
+AXON_DECLSPEC uint8_t extractMetadata(const char* /* serialized */, size64_t /* size */, size64_t */* ssize */, TAG_T */* tag */);
+
 
 /**
 * Creates serialized string from data given

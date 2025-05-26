@@ -49,7 +49,7 @@ int32_t send_udp_message(const void*, size_t, SOCKET_T, const SOCKADDR_IN_T*);
 * @param max_size - max size of bytes that can be written in buffer
 * @return recvfrom result
 */
-int32_t recv_udp_message(void* const, size_t, SOCKET_T, SOCKADDR_IN_T*);
+int32_t recv_udp_message(void*, size_t, SOCKET_T, SOCKADDR_IN_T*);
 
 /**
 * Closes socket

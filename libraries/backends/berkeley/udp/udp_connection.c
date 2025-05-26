@@ -58,7 +58,7 @@ uint8_t create_udp_server(SOCKADDR_IN_T* server, SOCKET_T* server_socket, uint32
 	return SUCCESS;
 }
 
-int32_t send_udp_message(const void* message, size_t size, SOCKET_T from, const SOCKADDR_IN_T* to)
+int32_t send_udp_message(const void* message, const size_t size, const SOCKET_T from, const SOCKADDR_IN_T* to)
 {
 	return sendto(from, message, size, 0, (SOCKADDR_T*)to, sizeof(*to));
 }

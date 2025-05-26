@@ -12,8 +12,7 @@ add_library(networking SHARED ${SOURCES})
 set (LIB_HOME ${CMAKE_HOME_DIRECTORY}/libraries)
 
 target_compile_definitions(networking PUBLIC AXON_LIB)
-target_link_libraries(networking backends)
-target_link_libraries(networking events)
-target_link_libraries(networking serialization)
+target_link_libraries(networking events serialization backends)
+
 target_include_directories(networking PUBLIC "${LIB_HOME}")
 target_include_directories(networking PUBLIC "${LIB_HOME}/networking")
