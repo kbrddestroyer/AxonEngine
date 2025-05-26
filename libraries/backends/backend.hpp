@@ -14,12 +14,25 @@ extern "C" {
 }
 #endif
 
-template <uint8_t> int32_t send_message(const Socket& socket, const char* message, size_t size);
+template <uint8_t> int32_t send_message(const Socket& socket, const void* message, size_t size);
 
-template <uint8_t> int32_t recv_message(Socket& socket, char* buffer, size_t size_allocated);
+template <uint8_t> int32_t recv_message(Socket& socket, void* buffer, size_t size_allocated);
 
 template <uint8_t> uint8_t initialize_server(Socket& socket, uint32_t port);
 
 template <uint8_t> uint8_t initialize_client(Socket& socket, const char* hostname, uint32_t port);
 
 template <uint8_t> void finalize(Socket& socket);
+
+template <> int32_t send_message<SOCK_STREAM>(const Socket&, const void*, size_t);
+template <> int32_t send_message<SOCK_DGRAM>(const Socket&, const void*, size_t);
+
+template <> int32_t recv_message<SOCK_STREAM>(Socket&, void*, size_t);
+template <> int32_t recv_message<SOCK_DGRAM>(Socket&, void*, size_t);
+
+template <> uint8_t initialize_server<SOCK_STREAM>(Socket&, uint32_t);
+template <> uint8_t initialize_server<SOCK_DGRAM>(Socket&, uint32_t);
+
+
+template <> void finalize<SOCK_STREAM>(Socket &);
+template <> void finalize<SOCK_DGRAM>(Socket &);

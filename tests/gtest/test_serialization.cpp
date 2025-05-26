@@ -11,6 +11,16 @@ TEST(TEST_SERIALIZATION, TEST_SERIALIZATION_GENERAL)
 
     const char* serialized = const_cast<const char*>(serialize(const_cast<char *>(message), strlen(message), tag, &total));
 
+    TAG_T extracted;
+    size64_t size;
+
+    ASSERT_EQ(extractMetadata(
+            serialized, total, &size, &extracted
+            ), 0);
+
+    ASSERT_EQ(extracted, tag);
+    ASSERT_EQ(size, strlen(message));
+
     ASSERT_TRUE(total);
 
     size64_t deserialized_size = 0;
@@ -33,10 +43,7 @@ TEST(TEST_SERIALIZATION, TEST_MESSAGE) {
 
     Networking::SerializedAxonMessage serialized = message_.getSerialized();
 
-    Networking::AxonMessage deserialized(serialized.bitstream, serialized.size);
-
-    ASSERT_EQ(deserialized.getFlags(), message_.getFlags());
-    ASSERT_EQ(deserialized.getPartID(), message_.getPartID());
+    Networking::AxonMessage deserialized(serialized);
     ASSERT_EQ(deserialized.getSize(), message_.getSize());
 }
 
@@ -46,13 +53,12 @@ TEST(TEST_SERIALIZATION, TEST_MESSAGE_TAG) {
     Networking::AxonMessage message_( const_cast<char*> ( message ) , strlen(message) + 1, 0);
 
     message_.setPartID(1);
-    message_.setFlags(Networking::TAG_FLAGS::FINISH | Networking::TAG_FLAGS::ACKNOWLEDGE);
-
+    message_.setFlags(Networking::TAG_FLAGS::ACKNOWLEDGE);
     Networking::SerializedAxonMessage serialized = message_.getSerialized();
-    Networking::AxonMessage cpyMessage(serialized.bitstream, serialized.size);
 
-    ASSERT_EQ(cpyMessage.getPartID(), 1);
-    ASSERT_TRUE(~cpyMessage.getFlags() ^ (Networking::TAG_FLAGS::ACKNOWLEDGE | Networking::TAG_FLAGS::FINISH));
+    ASSERT_TRUE(message_.hasFlag(Networking::TAG_FLAGS::ACKNOWLEDGE));
+    Networking::AxonMessage cpyMessage(serialized);
+    ASSERT_TRUE(cpyMessage.hasFlag(Networking::TAG_FLAGS::ACKNOWLEDGE));
 }
 
 int main(int argc, char* argv[])

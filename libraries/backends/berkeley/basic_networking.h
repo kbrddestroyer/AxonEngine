@@ -16,8 +16,6 @@ struct Socket
 {
 	SOCKET_T		socket;
 	SOCKADDR_IN_T	conn;
-	uint8_t			socktype;
-	uint8_t			ai_family;
 };
 
 #endif

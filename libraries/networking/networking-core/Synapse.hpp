@@ -1,4 +1,6 @@
 #pragma once
+#include "BasicSynapse.hpp"
+
 #include <thread>
 #include <atomic>
 #include <string>
@@ -8,119 +10,65 @@
 #include <backends/backend.hpp>
 #include <networking/message/AxonMessage.hpp>
 #include <networking/utility/MessagePool.hpp>
+#include <message/AxonMessage.hpp>
+#include <utility/MessagePool.hpp>
+
+#include <networking-core/SynapseUtility.hpp>
+#include <networking-core/SynapseEvents.hpp>
 
 namespace Networking
 {
-	constexpr uint32_t SYNAPSE_MESSAGE_MAX_SIZE = 1024;
-
-	enum ConnectionMode
-	{
-		UDP = SOCK_DGRAM,
-		TCP = SOCK_STREAM
-	};
-
 	/**
-	* Low-level connection info for convenient storage
-	* TODO:
-	* - Research replacement
-	*/
-	struct ConnectionInfo
-	{
-		std::string	hostname;
-		uint32_t	port = 10432;
-	};
-
-	/**
-	* TODO: Documenting
-    	*/
-    	class AxonNetworkingInternalError : public std::exception
-	{
-		uint8_t err;
+	 *	Advanced connection handler with event system
+	 *
+	 * @tparam conn connection mode (TCP|UDP)
+	 * @tparam mode synapse mode (CLIENT|SERVER)
+	 */
+	template <ConnectionMode conn, SynapseMode mode>
+	class AXON_DECLSPEC Synapse : public BasicSynapse<conn, mode> {
 	public:
-		explicit AxonNetworkingInternalError(uint8_t err = 0) : err(err) {}
-		constexpr uint8_t code() const { return err; }
-	};
-
-	/**
-	* Synapse message when message is recieved from remote host
-	*
-	* Functions:
-	* getMessage() -> AxonMessage: get AxonMessage object
-	* getFrom() -> SOCKADDR_IN_T: get sender network info
-	*/
-	class AXON_DECLSPEC SynapseMessageReceivedEvent final : public EventSystem::AxonEvent
-	{
-	public:
-		SynapseMessageReceivedEvent(const AxonMessage& message, SOCKADDR_IN_T* from) : EventSystem::AxonEvent(), message(message)
-		{
-			this->from = from;
-		}
-
-		const AxonMessage& getMessage() const { return message; }
-		SOCKADDR_IN_T* getFrom() const { return from; }
-	private:
-		const AxonMessage&		message;
-		SOCKADDR_IN_T* from;
-	};
-
-	/**
-	* Axon connection handler
-	* Specifies connection handling to one remote host
-	*
-	* EventSystem API:
-	* WIP currently
-	*
-	* TODO:
-	*	- Documenting
-	*/
-	template <ConnectionMode> class AXON_DECLSPEC Synapse
-	{
-		const size_t MAX_MESSAGE = 1024;
-	public:
-		/** Default creation is restricted */
-		Synapse() = delete;
+#pragma region CONSTRUCTING
 		/** Initializes Synapse in server mode */
-		explicit Synapse(uint32_t);
+		explicit Synapse(uint32_t port) : BasicSynapse<conn, mode>(port) {}
 		/** Initialize Synapse in client mode */
-		explicit Synapse(const ConnectionInfo&);
+		explicit Synapse(const ConnectionInfo &info) : BasicSynapse<conn, mode>(info) {}
 
-		virtual ~Synapse();
+		~Synapse() override = default;
+#pragma endregion
 
-		bool alive() const { return isAlive.load(); };
+#pragma region INTERFACE
 
-		virtual void start();
-		virtual void send(const AxonMessage&);
-		virtual void sendTo(const AxonMessage&, const SOCKADDR_IN_T*) const;
-		virtual void listen();
-        virtual void update();
-		virtual void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*);
+		void update() override;
+		void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*) override;
 
 		EventSystem::AxonEventManager& getEventManager() { return events; }
-        void sendPooled(const AxonMessage&, const SOCKADDR_IN_T* = nullptr);
-    protected:
+		void sendPooled(const AxonMessage&, const SOCKADDR_IN_T* = nullptr) const;
+#pragma endregion
+	protected:
 		EventSystem::AxonEventManager events;
-		MessagePoolBase		pool;
-		std::atomic<bool>	isAlive = false;
-	private:
-		bool			    isServer;
-		ConnectionInfo		info;
-		Socket              socket;
+		std::unique_ptr<MessagePoolBase> pool = std::make_unique<MessagePoolBase>();
 	};
 
-	template <ConnectionMode mode>
-	class AXON_DECLSPEC AsyncSynapse : public Synapse<mode>
+	/**
+	 *	Synapse with listen() function in separated thread.
+	 *
+	 * @tparam conn connection mode (TCP|UDP)
+	 * @tparam mode synapse mode (CLIENT|SERVER)
+	 */
+	template <ConnectionMode conn, SynapseMode mode>
+	class AXON_DECLSPEC AsyncSynapse final : public Synapse<conn, mode>
 	{
 	public:
 		/** Initializes Synapse in server mode */
-		explicit AsyncSynapse(uint32_t port) : Synapse<mode>(port) {}
+		explicit AsyncSynapse(uint32_t port) : Synapse<conn, mode>(port) {}
 
 		/** Initialize Synapse in client mode */
-		explicit AsyncSynapse(const ConnectionInfo& info) : Synapse<mode>(info) {}
+		explicit AsyncSynapse(const ConnectionInfo& info) : Synapse<conn, mode>(info) {}
 
 		~AsyncSynapse() override;
 
-		void start() final;
-		void kill();
+		void start() override;
+		void kill() override;
 	private:
 		std::thread proc;
 	};

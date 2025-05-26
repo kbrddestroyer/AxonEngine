@@ -9,16 +9,29 @@
 #include <cstring>
 #include <iostream>
 
+#include <chrono>
+#include <sstream>
+
 
 int main()
 {
 	Networking::ConnectionInfo connection = { "localhost", 10423 };
 
-	Networking::AsyncSynapse<Networking::ConnectionMode::UDP> clientConnection(connection);
-	const char* message = "Hello World!";
+	Networking::Synapse<Networking::ConnectionMode::UDP, Networking::SynapseMode::CLIENT> clientConnection(connection);
 
-	clientConnection.start();
+    time_t startTimestamp = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
-	Networking::AxonMessage message_(const_cast<char*>( message ), strlen(message) + 1, 1);
-	clientConnection.send(message_);
+    for (uint8_t i = 0; i < 10; i++)
+    {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        std::stringstream sstream;
+
+        sstream <<
+            "Sending message on " <<
+            std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) - startTimestamp;
+        Networking::AxonMessage message_(const_cast<char*>(sstream.str().c_str()), sstream.str().length() + 1);
+
+        clientConnection.send(message_);
+    }
 }

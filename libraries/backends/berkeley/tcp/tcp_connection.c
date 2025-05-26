@@ -64,19 +64,19 @@ uint8_t create_tcp_server(SOCKADDR_IN_T* server, SOCKET_T* server_socket, uint32
 	return SUCCESS;
 }
 
-int32_t send_tcp_message(const char* message, size_t size, SOCKET_T from)
+int32_t send_tcp_message(const void* message, size_t size, SOCKET_T from)
 {
 	return send(from, message, size, 0);
 }
 
-int32_t recv_tcp_message(char* const message, size_t max_size, SOCKET_T c_sock)
+int32_t recv_tcp_message(void* const message, size_t max_size, SOCKET_T c_sock)
 {
 	return recv(c_sock, message, max_size, 0);
 }
 
 SOCKET_T accept_incoming(SOCKET_T server, SOCKADDR_IN_T* c_addr)
 {
-	SOCKLEN_T addr_s = (SOCKLEN_T) sizeof(*c_addr);
+	SOCKLEN_T addr_s = sizeof(*c_addr);
 	return accept(server, (SOCKADDR_T*) c_addr, &addr_s);
 }
 
