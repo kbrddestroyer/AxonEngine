@@ -7,40 +7,52 @@
 
 #pragma region SERIALIZED_AXON_MESSAGE
 
-
-Networking::AxonMessage::AxonMessage(void* message, size64_t size, uint8_t partID, uint8_t flags) :
-size(size)
-{
-    if (size == 0)
-        return;
-    bytes = new char[size];
-    memcpy(const_cast<char*>(bytes), raw, size);
-}
-
 Networking::SerializedAxonMessage::SerializedAxonMessage(const AxonMessage &message) : 
-size(message.size)
+    size(message.getSize())
 {
-    TAG_T tag = generateTag(message.getPartID(), message.getFlags());
+    const TAG_T tag = generateTag(partID, flags);
 
     bytes = serialize(static_cast<char*>(message.getMessage()), message.getSize(), tag, &size);
 }
 
-Networking::AxonMessage::AxonMessage(const char* bits, size64_t actualSize)
-  
+Networking::SerializedAxonMessage::SerializedAxonMessage(const char* bits, size64_t actualSize) :
+    size(actualSize)
 {
-    if (size > 0) {
+    if (actualSize > 0) {
+        bytes = new char[size];
+        memcpy(const_cast<char *>(bytes), bits, size);
+        TAG_T tag;
+        size64_t actual;
+
+        if (extractMetadata(
+                bits, actualSize, &actual, &tag
+        ) == 0) {
+            partID = tag >> 8;
+            flags = tag & ((1UL << 9) - 1);
+        }
+    }
+}
+
+Networking::SerializedAxonMessage::SerializedAxonMessage(const SerializedAxonMessage &message) :
+    size(message.size),
+    offset(message.offset),
+    partID(message.partID),
+    flags(message.flags)
+{
+    if (size > 0)
+    {
         bytes = new char[size];
         memcpy(const_cast<char*>(bytes), message.bytes, size);
     }
 }
 
 Networking::SerializedAxonMessage::SerializedAxonMessage(SerializedAxonMessage &message, const size_t newSize, uintptr_t offset, uint8_t nPartID, uint8_t flagSet, uint64_t id) :
-        size(newSize),
-        offset(offset),
-        bytes(message.bytes),
-        partID(nPartID),
-        flags(flagSet),
-        uniqueID(id)
+    size(newSize),
+    uniqueID(id),
+    offset(offset),
+    partID(nPartID),
+    flags(flagSet),
+    bytes(message.bytes)
 {
     message.owning = false;
 }
@@ -92,12 +104,12 @@ std::unique_ptr<Networking::SerializedAxonMessage> Networking::SerializedAxonMes
     }
 
     size_t leftSize = size - SYNAPSE_MESSAGE_SIZE_MAX;
-    size = SYNAPSE_MESSAGE_SIZE_MAX;
+    this->size = SYNAPSE_MESSAGE_SIZE_MAX;
     addFlag(PARTIAL);
 
     return std::make_unique<SerializedAxonMessage>(
             *this,
-            leftSize, offset, partID + 1, flags ^ PARTIAL, size
+            leftSize, offset, partID + 1, flags ^ PARTIAL, uniqueID
         );
 }
 
@@ -105,11 +117,10 @@ std::unique_ptr<Networking::SerializedAxonMessage> Networking::SerializedAxonMes
 
 #pragma region AxonMessage
 
-Networking::AxonMessage::AxonMessage(const void* message, size_t size, uint8_t partID, uint8_t flags) :
+Networking::AxonMessage::AxonMessage(const void* message, size64_t size, uint8_t partID, uint8_t flags) :
     size(size),
     partID(partID),
-    flags(flags),
-    uniqueID(getUniqueID())
+    flags(flags)
 {
 	if (message == nullptr || size == 0)
 		return;
@@ -119,8 +130,7 @@ Networking::AxonMessage::AxonMessage(const void* message, size_t size, uint8_t p
 }
 
 Networking::AxonMessage::AxonMessage(const SerializedAxonMessage &serialized) :
-    flags(),
-    uniqueID(getUniqueID())
+    flags()
 {
     TAG_T tag;
 
@@ -138,8 +148,7 @@ Networking::AxonMessage::AxonMessage(const SerializedAxonMessage &serialized) :
 Networking::AxonMessage::AxonMessage(const AxonMessage& message) :
     size(message.size),
     partID(message.partID),
-    flags(message.flags),
-    uniqueID(getUniqueID())
+    flags(message.flags)
 {
     if (!message.message || message.size == 0)
         return;
@@ -159,23 +168,8 @@ void Networking::AxonMessage::decompressTag(const TAG_T tag) {
     flags = tag & ((1UL << 9) - 1);
 }
 
-Networking::AxonMessage Networking::AxonMessage::split(const size64_t sendSize) {
-    if (sendSize >= size)
-        throw 1;
-    uintptr_t pMessage = reinterpret_cast<uintptr_t> (message);
-
-    uint8_t tag = TAG_FLAGS::PARTIAL;
-
-    return Networking::AxonMessage(reinterpret_cast<void*> (pMessage + sendSize), size - sendSize, TAG_FLAGS::FINISH);
-}
-
-Networking::SerializedAxonMessage Networking::AxonMessage::getSerialized() const {
+Networking::SerializedAxonMessage Networking::AxonMessage::getSerialized() const noexcept {
     return SerializedAxonMessage(*this);
-}
-
-uint64_t Networking::AxonMessage::getUniqueID() {
-    static uint64_t uniqueID;
-    return uniqueID++;
 }
 
 #pragma endregion
