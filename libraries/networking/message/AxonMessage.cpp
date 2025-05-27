@@ -132,7 +132,7 @@ Networking::AxonMessage::AxonMessage(Networking::AxonMessage &message, size64_t 
 
 Networking::AxonMessage::~AxonMessage()
 {
-	if (this->message and owning)
+	if (this->message && owning)
 		delete[] static_cast<char*>( message );
 }
 
@@ -164,7 +164,7 @@ Networking::AxonMessage::UniqueAxonMessagePtr Networking::AxonMessage::split(con
 }
 
 void Networking::AxonMessage::append(const Networking::AxonMessage &other) {
-    if (!other.getMessage() or other.size == 0)
+    if (!other.getMessage() || other.size == 0)
         return;
 
     void* tempBuffer = new char[other.size + size];
