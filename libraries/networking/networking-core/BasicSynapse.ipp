@@ -1,6 +1,4 @@
 #pragma once
-#include "BasicSynapse.hpp"
-
 #include "netconfig.h"
 
 namespace Networking {
@@ -64,9 +62,15 @@ void Networking::BasicSynapse<conn, mode>::start()
 }
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::BasicSynapse<conn, mode>::send(const AxonMessage& message)
+void Networking::BasicSynapse<conn, mode>::send(AxonMessage& message)
 {
-    sendTo(message.getSerialized(), &socketInfo.conn);
+    sendTo(message, &socketInfo.conn);
+}
+
+template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
+void Networking::BasicSynapse<conn, mode>::sendTo(AxonMessage& message, const SOCKADDR_IN_T* dest)
+{
+    sendTo(message.getSerialized(), dest);
 }
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
@@ -188,6 +192,4 @@ inline void Networking::BasicSynapse<Networking::ConnectionMode::UDP, Networking
 }
 
 #pragma endregion
-
 #pragma endregion
-

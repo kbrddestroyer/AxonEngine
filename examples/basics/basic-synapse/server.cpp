@@ -10,7 +10,11 @@
 
 void onMessageReceived(const Networking::SynapseMessageReceivedEvent& event)
 {
-	std::cout << static_cast<char*>(event.getMessage().getMessage()) << std::endl;
+	std::cout <<
+        static_cast<char*>(event.getMessage().getMessage()) << " " <<
+        static_cast<int>(event.getMessage().ID()) << " " <<
+        event.getMessage().hasFlag(Networking::PARTIAL)
+        << std::endl;
 }
 
 int main()

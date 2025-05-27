@@ -8,7 +8,7 @@
 #include <custom_utility.h>
 #include "../AxonUtility.h"
 
-#define TAG_T uint16_t
+#define TAG_T uint64_t
 
 /**
  *

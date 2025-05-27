@@ -50,16 +50,16 @@ namespace Networking
 
     	GETTER size_t getSize()  const { return size; }
     	GETTER const char* getBits() const { return bytes; }
-    	GETTER uint64_t getUniqueID() const { return uniqueID; }
+    	GETTER uint16_t getUniqueID() const { return uniqueID; }
 		GETTER bool getOwning() const { return owning; }
 
     	SerializedAxonMessage& operator=(const SerializedAxonMessage&);
     	SerializedAxonMessage& operator=(SerializedAxonMessage&&) noexcept;
     protected:
-    	static TAG_T generateTag(uint8_t, uint8_t);
+    	static TAG_T compressTag(uint8_t, uint8_t, uint16_t);
     private:
     	size64_t    size        = 0;
-    	uint64_t    uniqueID    = 0;
+    	uint16_t    uniqueID    = 0;
     	uintptr_t   offset      = 0;
     	bool        owning      = true;
     	const char* bytes       = nullptr;
@@ -73,6 +73,7 @@ namespace Networking
 	class AXON_DECLSPEC AxonMessage
 	{
 	public:
+        typedef std::unique_ptr<AxonMessage> UniqueAxonMessagePtr;
 		AxonMessage() = default;
 		/**
 		* Create new message from actual data (send mode)
@@ -85,11 +86,13 @@ namespace Networking
         explicit AxonMessage(const SerializedAxonMessage&);
 
 		AxonMessage(const AxonMessage&);
+		AxonMessage(AxonMessage&, size64_t, uint8_t, uint8_t, uint64_t, size64_t);
 		~AxonMessage();
 
         WGETTER(SerializedAxonMessage getSerialized());
-        WGETTER(void* getMessage()) { return message; }
+        WGETTER(void* getMessage()) { return static_cast<void*>(static_cast<uint8_t*>(message) + offset); }
         WGETTER(size64_t getSize()) { return size; }
+        WGETTER(uint16_t ID()) { return uniqueID; }
         GETTER uint8_t getFlags() const { return flags; }
         GETTER uint8_t getPartID() const { return partID; }
         GETTER bool hasFlag(const TAG_FLAGS flag) const { return flags & flag; }
@@ -102,17 +105,27 @@ namespace Networking
         void setFlags(const uint8_t flagSet) { this->flags = flagSet; }
         void addFlag(const TAG_FLAGS flag) { this->flags |= flag; }
         void removeFlag(const TAG_FLAGS flag) { this->flags ^= flag; }
+
+        UniqueAxonMessagePtr split(size64_t);
+        void append(const AxonMessage&);
     protected:
-        static uint64_t generateUniqueID() {
-            static uint64_t uniqueID = 0;
+        static uint16_t generateUniqueID() {
+            static uint16_t uniqueID = 0;
+
+            if (uniqueID == INT16_MAX - 1)
+                uniqueID = 0;
+
             return uniqueID++;
         }
-        static void decompressTag(TAG_T, uint8_t*, uint8_t*);
+        void decompressTag(TAG_T, uint8_t*, uint8_t*, uint16_t*);
 	private:
 		size64_t	size = 0;
 		void*		message = nullptr;
+        bool        owning  = true;
         uint8_t     partID = 0;
         uint8_t     flags = UNDEFINED;
+        size64_t    offset = 0;
+        uint16_t    uniqueID = generateUniqueID();
 	};
 }
 

@@ -2,6 +2,8 @@
 #include <serialization/serialization.hpp>
 #include <networking/message/AxonMessage.hpp>
 
+#include <cstring>
+
 TEST(TEST_SERIALIZATION, TEST_SERIALIZATION_GENERAL)
 {
     const char* message = "Hello World!";
@@ -39,7 +41,7 @@ TEST(TEST_SERIALIZATION, TEST_SERIALIZATION_GENERAL)
 TEST(TEST_SERIALIZATION, TEST_MESSAGE) {
     // Case from client-server example
     const char* message = "Hello World!";
-    Networking::AxonMessage message_( const_cast<char*> ( message ) , strlen(message) + 1, 1, 1);
+    Networking::AxonMessage message_( const_cast<char*> ( message ) , strlen(message), 1, 1);
 
     Networking::SerializedAxonMessage serialized = message_.getSerialized();
 
@@ -50,7 +52,7 @@ TEST(TEST_SERIALIZATION, TEST_MESSAGE) {
 TEST(TEST_SERIALIZATION, TEST_MESSAGE_TAG) {
     // Case from client-server example
     const char* message = "Hello World!";
-    Networking::AxonMessage message_( const_cast<char*> ( message ) , strlen(message) + 1, 0);
+    Networking::AxonMessage message_( const_cast<char*> ( message ) , strlen(message), 0);
 
     message_.setPartID(1);
     message_.setFlags(Networking::TAG_FLAGS::ACKNOWLEDGE);
@@ -59,6 +61,29 @@ TEST(TEST_SERIALIZATION, TEST_MESSAGE_TAG) {
     ASSERT_TRUE(message_.hasFlag(Networking::TAG_FLAGS::ACKNOWLEDGE));
     Networking::AxonMessage cpyMessage(serialized);
     ASSERT_TRUE(cpyMessage.hasFlag(Networking::TAG_FLAGS::ACKNOWLEDGE));
+}
+
+
+TEST(TEST_SERIALIZATION, TEST_MESSAGE_SPLIT) {
+    const char* message = "Hello World!";
+    Networking::AxonMessage message_( const_cast<char*> ( message ), strlen(message), 0);
+
+    Networking::AxonMessage::UniqueAxonMessagePtr ptr = message_.split(5);
+
+    ASSERT_TRUE(ptr.get());
+    ASSERT_EQ(ptr->getSize(), 7);
+    ASSERT_EQ(message_.getSize(), 5);
+
+    ASSERT_STREQ(static_cast<char*>(message_.getMessage()), "Hello World!");
+
+    ASSERT_TRUE(message_.hasFlag(Networking::PARTIAL));
+    ASSERT_FALSE(ptr->hasFlag(Networking::PARTIAL));
+
+    ASSERT_EQ(message_.ID(), ptr->ID());
+    ASSERT_EQ(message_.getPartID() + 1, ptr->getPartID());
+
+    message_.~AxonMessage();
+    ASSERT_STREQ(static_cast<char*>(ptr->getMessage()), " World!");
 }
 
 int main(int argc, char* argv[])

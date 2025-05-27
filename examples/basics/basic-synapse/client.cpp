@@ -17,8 +17,8 @@ int main()
 {
 	Networking::ConnectionInfo connection = { "localhost", 10423 };
 
-	Networking::Synapse<Networking::ConnectionMode::UDP, Networking::SynapseMode::CLIENT> clientConnection(connection);
-
+	Networking::AsyncSynapse<Networking::ConnectionMode::UDP, Networking::SynapseMode::CLIENT> clientConnection(connection);
+    clientConnection.start();
     time_t startTimestamp = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
     for (uint8_t i = 0; i < 10; i++)
