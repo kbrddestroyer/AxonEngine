@@ -21,7 +21,7 @@ int main()
     clientConnection.start();
     time_t startTimestamp = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
-    for (uint8_t i = 0; i < 10; i++)
+    for (uint8_t i = 0; i < 3; i++)
     {
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
@@ -34,4 +34,8 @@ int main()
 
         clientConnection.send(message_);
     }
+
+    Networking::AxonMessage message_(nullptr, 0);
+    message_.addFlag(Networking::ACKNOWLEDGE);
+    clientConnection.send(message_);
 }

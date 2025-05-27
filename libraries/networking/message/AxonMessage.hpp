@@ -50,8 +50,6 @@ namespace Networking
 
     	GETTER size_t getSize()  const { return size; }
     	GETTER const char* getBits() const { return bytes; }
-    	GETTER uint16_t getUniqueID() const { return uniqueID; }
-		GETTER bool getOwning() const { return owning; }
 
     	SerializedAxonMessage& operator=(const SerializedAxonMessage&);
     	SerializedAxonMessage& operator=(SerializedAxonMessage&&) noexcept;

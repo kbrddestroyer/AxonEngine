@@ -38,13 +38,49 @@ TEST(TEST_SERIALIZATION, TEST_SERIALIZATION_GENERAL)
     ASSERT_EQ(strlen(message), deserialized_size);
 }
 
+TEST(TEST_SERIALIZATION, TEST_SERIALIZATION_ZERO_DATA) {
+    size_t total;
+    char* serialized = serialize(nullptr, 0, 0, &total);
+
+    ASSERT_EQ(total, 0);
+    ASSERT_FALSE(serialized);
+
+    serialized = serialize(nullptr, 0, 1, &total);
+
+    ASSERT_EQ(total, 1);
+    ASSERT_TRUE(serialized);
+
+    char* deserialized;
+    size64_t size;
+    TAG_T tag;
+
+    deserialize(serialized, total, reinterpret_cast<void **>(&deserialized), &size, &tag);
+    ASSERT_EQ(size, 0);
+    ASSERT_EQ(tag, 1);
+
+    delete[] deserialized;
+}
+
+TEST(TEST_SERIALIZATION, TEST_SERIALIZATION_API_ZERO_DATA) {
+    Networking::AxonMessage message(nullptr, 0);
+    message.addFlag(Networking::ACKNOWLEDGE);
+    Networking::AxonMessage cpyMessage(message.getSerialized());
+
+    ASSERT_EQ(cpyMessage.getFlagSet(), Networking::ACKNOWLEDGE);
+    ASSERT_EQ(cpyMessage.getPartID(), 0);
+
+    Networking::AxonMessage message_(nullptr, 0);
+    message.addFlag(Networking::ACKNOWLEDGE);
+    Networking::AxonMessage cpyMessage_(message.getSerialized());
+
+    ASSERT_EQ(cpyMessage_.getFlagSet(), Networking::ACKNOWLEDGE);
+    ASSERT_EQ(cpyMessage_.getPartID(), 0);
+}
+
 TEST(TEST_SERIALIZATION, TEST_MESSAGE) {
-    // Case from client-server example
     const char* message = "Hello World!";
     Networking::AxonMessage message_( const_cast<char*> ( message ) , strlen(message), 1, 1);
-
     Networking::SerializedAxonMessage serialized = message_.getSerialized();
-
     Networking::AxonMessage deserialized(serialized);
     ASSERT_EQ(deserialized.getSize(), message_.getSize());
 }
