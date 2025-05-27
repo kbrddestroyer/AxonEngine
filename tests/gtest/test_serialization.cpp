@@ -58,7 +58,7 @@ TEST(TEST_SERIALIZATION, TEST_SERIALIZATION_ZERO_DATA) {
     ASSERT_EQ(size, 0);
     ASSERT_EQ(tag, 1);
 
-    delete[] deserialized;
+    delete[] serialized;
 }
 
 TEST(TEST_SERIALIZATION, TEST_SERIALIZATION_API_ZERO_DATA) {
@@ -102,12 +102,13 @@ TEST(TEST_SERIALIZATION, TEST_MESSAGE_TAG) {
 
 TEST(TEST_SERIALIZATION, TEST_MESSAGE_SPLIT) {
     const char* message = "Hello World!";
-    Networking::AxonMessage message_( const_cast<char*> ( message ), strlen(message), 0);
+    Networking::AxonMessage message_( const_cast<char*> ( message ), strlen(message) + 1, 0);
 
+    ASSERT_STREQ(static_cast<char*>(message_.getMessage()), "Hello World!");
     Networking::AxonMessage::UniqueAxonMessagePtr ptr = message_.split(5);
 
     ASSERT_TRUE(ptr.get());
-    ASSERT_EQ(ptr->getSize(), 7);
+    ASSERT_EQ(ptr->getSize(), 8);
     ASSERT_EQ(message_.getSize(), 5);
 
     ASSERT_STREQ(static_cast<char*>(message_.getMessage()), "Hello World!");
