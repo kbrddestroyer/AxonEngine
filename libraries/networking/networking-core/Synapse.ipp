@@ -44,11 +44,7 @@ void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& messa
     }
     if (message.hasFlag(ACKNOWLEDGE) and !message.hasFlag(PARTIAL))
     {
-        auto it = std::find(pendingValidation.begin(), pendingValidation.end(), message.ID());
-        if (it != pendingValidation.end())
-        {
-            pendingValidation.erase(it);
-        }
+ pendingValidation.erase(std::find(pendingValidation.begin(), pendingValidation.end(), message.ID()));
     }
     if (mmap->contains(message.ID()) || message.hasFlag(PARTIAL))
     {
