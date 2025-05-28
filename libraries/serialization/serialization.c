@@ -53,13 +53,14 @@ char* serialize(const char* data, const size64_t size, const TAG_T tag, size64_t
     if (*totalSize == 0)
         return NULL;
 
+    if (header_size == 0 && size == 0) {
+        header_size++;
+        *totalSize = *totalSize + 1;
+    }
     char* buffer = calloc(*totalSize, sizeof(char));
     
     if (buffer == NULL)
         return NULL;   // ERR_COULD_NOT_ALLOC
-
-    if (header_size == 0 && size == 0)
-        header_size++;
 
     if (header_size > 0)
         memcpy(buffer, &size, header_size);

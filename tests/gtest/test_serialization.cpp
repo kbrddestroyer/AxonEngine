@@ -47,7 +47,7 @@ TEST(TEST_SERIALIZATION, TEST_SERIALIZATION_ZERO_DATA) {
 
     serialized = serialize(nullptr, 0, 2, &total);
 
-    ASSERT_EQ(total, 1);
+    ASSERT_EQ(total, 2);
     ASSERT_TRUE(serialized);
 
     char* deserialized;
