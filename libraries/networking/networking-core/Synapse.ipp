@@ -1,6 +1,8 @@
 #pragma once
 #include "netconfig.h"
 
+#include <algorithm>
+
 #pragma region SYNAPSE
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
