@@ -80,23 +80,19 @@ uint8_t deserialize(const char* serialized, const size64_t size, void** deserial
     size64_t header_size = sizeof(actual);
     if (*serialized == 0)
     {
-        actual = 0;
-        header_size = 1;
-    }
-    else {
-        do {
-            actual = (*(size64_t *) (serialized));
-            actual &= (1ULL << --header_size * 8) - 1;
-        } while (size < actual && header_size > 0);
-    }
-    if (actual == 0) {
-        const size64_t footer_size = size - actual;
         *deserialized = NULL;
         *actualSize = 0;
-        *tag = (*(uint64_t*) (serialized + header_size)) & ((1ULL << (footer_size * 8 + 1)) - 1);
+
+        size64_t footer_size = size - 1;
+        *tag = *((TAG_T*) (serialized + 1)) & ((1ULL << footer_size * 8) - 1);
 
         return 0;
     }
+
+    do {
+        actual = (*(size64_t *) (serialized));
+        actual &= (1ULL << --header_size * 8) - 1;
+    } while (size < actual && header_size > 0);
 
     /* Shrink header size */
 

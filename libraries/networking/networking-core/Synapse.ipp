@@ -44,9 +44,9 @@ void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& messa
     {
         sendPooled(AxonMessage(message, 0), from);
     }
-    if (message.hasFlag(ACKNOWLEDGE) and !message.hasFlag(PARTIAL))
+    if (message.hasFlag(ACKNOWLEDGE) && !message.hasFlag(PARTIAL))
     {
- pendingValidation.erase(std::find(pendingValidation.begin(), pendingValidation.end(), message.ID()));
+        pendingValidation.erase(std::find(pendingValidation.begin(), pendingValidation.end(), message.ID()));
     }
     if (mmap->contains(message.ID()) || message.hasFlag(PARTIAL))
     {
@@ -56,7 +56,7 @@ void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& messa
         {
             // Fini
             std::shared_ptr<AxonMessage> res = mmap->collapse(message.ID());
-            if (!res.get())
+            if (!res)
                 return;
 
             SynapseMessageReceivedEvent event_ = SynapseMessageReceivedEvent(*res, from);
