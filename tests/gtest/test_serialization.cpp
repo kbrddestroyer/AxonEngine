@@ -45,7 +45,7 @@ TEST(TEST_SERIALIZATION, TEST_SERIALIZATION_ZERO_DATA) {
     ASSERT_EQ(total, 0);
     ASSERT_FALSE(serialized);
 
-    serialized = serialize(nullptr, 0, 1, &total);
+    serialized = serialize(nullptr, 0, 2, &total);
 
     ASSERT_EQ(total, 1);
     ASSERT_TRUE(serialized);
@@ -56,7 +56,7 @@ TEST(TEST_SERIALIZATION, TEST_SERIALIZATION_ZERO_DATA) {
 
     deserialize(serialized, total, reinterpret_cast<void **>(&deserialized), &size, &tag);
     ASSERT_EQ(size, 0);
-    ASSERT_EQ(tag, 1);
+    ASSERT_EQ(tag, 2);
 
     delete[] serialized;
 }
