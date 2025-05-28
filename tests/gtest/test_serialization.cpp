@@ -39,7 +39,7 @@ TEST(TEST_SERIALIZATION, TEST_SERIALIZATION_GENERAL)
 }
 
 TEST(TEST_SERIALIZATION, TEST_SERIALIZATION_ZERO_DATA) {
-    size_t total;
+    size64_t total;
     char* serialized = serialize(nullptr, 0, 0, &total);
 
     ASSERT_EQ(total, 0);
