@@ -35,11 +35,15 @@ void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& messa
 {
     if (mmap->contains(message.ID()) || message.hasFlag(PARTIAL))
     {
-        std::shared_ptr<AxonMessage> res = mmap->push(message);
+        mmap->append(message);
 
         if (!message.hasFlag(PARTIAL))
         {
             // Fini
+            std::shared_ptr<AxonMessage> res = mmap->collapse(message.ID());
+            if (!res.get())
+                return;
+
             SynapseMessageReceivedEvent event_ = SynapseMessageReceivedEvent(*res, from);
             events.invoke(&event_);
         }

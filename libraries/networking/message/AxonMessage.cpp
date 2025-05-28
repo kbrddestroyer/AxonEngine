@@ -2,7 +2,6 @@
 #include <utility>
 #include <memory.h>
 
-#include "netconfig.h"
 #include "backends/berkeley/basic_networking.h"
 
 #pragma region SERIALIZED_AXON_MESSAGE
@@ -134,6 +133,7 @@ Networking::AxonMessage::~AxonMessage()
 {
 	if (this->message && owning)
 		delete[] static_cast<char*>( message );
+    message = nullptr;
 }
 
 Networking::SerializedAxonMessage Networking::AxonMessage::getSerialized() const noexcept {
@@ -164,18 +164,24 @@ Networking::AxonMessage::UniqueAxonMessagePtr Networking::AxonMessage::split(con
 }
 
 void Networking::AxonMessage::append(const Networking::AxonMessage &other) {
-    if (!other.getMessage() || other.size == 0)
+    if (!other.getMessage() || other.size == 0 || other.partID == partID + 1)
         return;
 
-    void* tempBuffer = new char[other.size + size];
+    char* tempBuffer = new char[other.size + size];
+
+    // assert((uintptr_t) &size < (uintptr_t) tempBuffer || (uintptr_t) &size > (uintptr_t) tempBuffer + other.size + size);
+
     if (message) {
         memcpy(tempBuffer, getMessage(), size);
-        delete[] static_cast<char*>(message);
+        if (owning)
+            delete[] static_cast<char*>(message);
+        message = nullptr;
     }
     memcpy((static_cast<char*>(tempBuffer) + size), other.getMessage(), other.size);
 
     message = tempBuffer;
     size += other.size;
+    partID = other.partID;
 }
 
 #pragma endregion

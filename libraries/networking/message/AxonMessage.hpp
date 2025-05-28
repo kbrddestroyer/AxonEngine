@@ -88,7 +88,7 @@ namespace Networking
 		~AxonMessage();
 
         WGETTER(SerializedAxonMessage getSerialized());
-        WGETTER(void* getMessage()) { return static_cast<void*>(static_cast<uint8_t*>(message) + offset); }
+        WGETTER(void* getMessage()) { return (message) ? static_cast<void*>(static_cast<uint8_t*>(message) + offset) : message; }
         WGETTER(size64_t getSize()) { return size; }
         WGETTER(uint16_t ID()) { return uniqueID; }
         GETTER uint8_t getFlags() const { return flags; }
