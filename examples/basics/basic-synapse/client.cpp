@@ -12,14 +12,39 @@
 #include <chrono>
 #include <sstream>
 
+void onMessageReceived(const Networking::SynapseMessageReceivedEvent& event)
+{
+    if (!event.getMessage().getMessage())
+    {
+        std::cout << "PING! --> " << std::endl <<
+                  event.getMessage().ID() << " " <<
+                  event.getMessage().getSize() << " " <<
+                  event.getMessage().getFlagSet() << " " <<
+                  static_cast<uint16_t>(event.getMessage().getPartID()) << std::endl;
+        return;
+    }
+
+    std::cout << "BODY: " << std::endl <<
+              static_cast<char*>(event.getMessage().getMessage()) << " " <<
+              event.getMessage().ID() << " " <<
+              event.getMessage().getSize() << " " <<
+              event.getMessage().getFlagSet()
+              << std::endl;
+}
 
 int main()
 {
 	Networking::ConnectionInfo connection = { "localhost", 10423 };
 
 	Networking::AsyncSynapse<Networking::ConnectionMode::UDP, Networking::SynapseMode::CLIENT> clientConnection(connection);
+    clientConnection.getEventManager().subscribe<Networking::SynapseMessageReceivedEvent>(onMessageReceived);
+
     clientConnection.start();
     time_t startTimestamp = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+
+    Networking::AxonMessage msg(nullptr, 0);
+    msg.addFlag(Networking::VALIDATE);
+    clientConnection.send(msg);
 
     for (uint8_t i = 0; i < 3; i++)
     {
@@ -30,12 +55,8 @@ int main()
         sstream <<
             "Sending message on " <<
             std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) - startTimestamp;
-        Networking::AxonMessage message_(const_cast<char*>(sstream.str().c_str()), sstream.str().length() + 1);
+        Networking::AxonMessage message_(const_cast<char*>(sstream.str().c_str()), sstream.str().length() + 1, 0, Networking::TAG_FLAGS::VALIDATE);
 
         clientConnection.send(message_);
     }
-
-    Networking::AxonMessage message_(nullptr, 0);
-    message_.addFlag(Networking::ACKNOWLEDGE);
-    clientConnection.send(message_);
 }

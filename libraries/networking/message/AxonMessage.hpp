@@ -83,6 +83,11 @@ namespace Networking
          */
         explicit AxonMessage(const SerializedAxonMessage&);
 
+        /**
+         * Create acknowledge message with empty buffer
+         */
+        AxonMessage(const AxonMessage&, uint8_t);
+
 		AxonMessage(const AxonMessage&);
 		AxonMessage(AxonMessage&, size64_t, uint8_t, uint8_t, uint64_t, size64_t);
 		~AxonMessage();

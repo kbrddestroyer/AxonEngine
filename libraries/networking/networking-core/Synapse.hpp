@@ -47,6 +47,8 @@ namespace Networking
 #pragma endregion
 	protected:
 		EventSystem::AxonEventManager events;
+
+        std::vector<uint64_t> pendingValidation;
 		std::unique_ptr<MessagePoolBase> pool = std::make_unique<MessagePoolBase>();
 		std::unique_ptr<MessageMapBase> mmap = std::make_unique<MessageMapBase>();
 	};

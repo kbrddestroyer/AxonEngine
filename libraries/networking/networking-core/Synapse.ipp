@@ -20,6 +20,11 @@ void Networking::Synapse<conn, mode>::sendTo(AxonMessage &message, const SOCKADD
         sendPooled(*ptr.get(), dest);
     }
 
+    if (message.hasFlag(VALIDATE))
+    {
+        pendingValidation.push_back(message.ID());
+    }
+
     BasicSynapse<conn, mode>::sendTo(message, dest);
 }
 
@@ -33,6 +38,18 @@ void Networking::Synapse<conn, mode>::sendPooled(const AxonMessage& message, con
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
 void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& message, SOCKADDR_IN_T* from)
 {
+    if (message.hasFlag(VALIDATE))
+    {
+        sendPooled(AxonMessage(message, 0), from);
+    }
+    if (message.hasFlag(ACKNOWLEDGE) and !message.hasFlag(PARTIAL))
+    {
+        auto it = std::find(pendingValidation.begin(), pendingValidation.end(), message.ID());
+        if (it != pendingValidation.end())
+        {
+            pendingValidation.erase(it);
+        }
+    }
     if (mmap->contains(message.ID()) || message.hasFlag(PARTIAL))
     {
         mmap->append(message);

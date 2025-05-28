@@ -184,6 +184,13 @@ void Networking::AxonMessage::append(const Networking::AxonMessage &other) {
     partID = other.partID;
 }
 
+Networking::AxonMessage::AxonMessage(const AxonMessage &message, uint8_t additionalFlags) :
+    flags(additionalFlags),
+    uniqueID(message.uniqueID)
+{
+    addFlag(ACKNOWLEDGE);
+}
+
 #pragma endregion
 
 /* AxonMessage.cpp */

@@ -82,7 +82,7 @@ uint8_t deserialize(const char* serialized, const size64_t size, void** deserial
 
     if (actual == 0) {
         const size64_t footer_size = size - actual;
-        deserialized = NULL;
+        *deserialized = NULL;
         *actualSize = 0;
         *tag = (*(uint64_t*) (serialized + actual)) & ((1ULL << footer_size * 8) - 1);
 
@@ -102,7 +102,7 @@ uint8_t deserialize(const char* serialized, const size64_t size, void** deserial
         if (header_size == 0)
             actual = 0;
         const size64_t footer_size = size - actual - header_size;
-        deserialized = NULL;
+        *deserialized = NULL;
         *actualSize = 0;
         *tag = (*(uint64_t*) (serialized + actual + header_size)) & ((1ULL << footer_size * 8) - 1);
 
