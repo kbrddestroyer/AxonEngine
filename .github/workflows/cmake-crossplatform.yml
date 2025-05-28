@@ -66,7 +66,7 @@ jobs:
 
       - name: Test
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
-        run: ctest --build-config ${{ inputs.build_type }}
+        run: ctest --extra-verbose --build-config ${{ inputs.build_type }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

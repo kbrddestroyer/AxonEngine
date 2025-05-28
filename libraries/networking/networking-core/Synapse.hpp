@@ -42,19 +42,23 @@ namespace Networking
 		void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*) override;
 
 		EventSystem::AxonEventManager& getEventManager() { return events; }
+        void sendTo(AxonMessage&, const SOCKADDR_IN_T*) override;
 		void sendPooled(const AxonMessage&, const SOCKADDR_IN_T* = nullptr) const;
 #pragma endregion
 	protected:
 		EventSystem::AxonEventManager events;
+
+        std::vector<uint64_t> pendingValidation;
 		std::unique_ptr<MessagePoolBase> pool = std::make_unique<MessagePoolBase>();
+		std::unique_ptr<MessageMapBase> mmap = std::make_unique<MessageMapBase>();
 	};
 
-	/**
-	 *	Synapse with listen() function in separated thread.
-	 *
-	 * @tparam conn connection mode (TCP|UDP)
-	 * @tparam mode synapse mode (CLIENT|SERVER)
-	 */
+    /**
+     *	Synapse with listen() function in separated thread.
+     *
+     * @tparam conn connection mode (TCP|UDP)
+     * @tparam mode synapse mode (CLIENT|SERVER)
+     */
 	template <ConnectionMode conn, SynapseMode mode>
 	class AXON_DECLSPEC AsyncSynapse final : public Synapse<conn, mode>
 	{

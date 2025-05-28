@@ -37,7 +37,8 @@ namespace Networking {
         virtual void kill() { isAlive.store(false); }
 
         virtual void start();
-        virtual void send(const AxonMessage&);
+        virtual void send(AxonMessage&);
+        virtual void sendTo(AxonMessage&, const SOCKADDR_IN_T*);
         virtual void sendTo(const SerializedAxonMessage&, const SOCKADDR_IN_T*) const;
 
         // This function should be instanced for each connection type

@@ -44,7 +44,6 @@ namespace Networking {
     public:
         explicit AxonNetworkingInternalError(const uint8_t err = 0) : err(err) {}
         GETTER  constexpr uint8_t code() const { return err; }
-
-        const char* what() const noexcept override;
+        GETTER const char* what() const noexcept override;
     };
 }
