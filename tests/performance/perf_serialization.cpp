@@ -33,21 +33,17 @@ int main () {
         std::cout << std::setw(15) << std::bitset<8>( result[i] ) << std::setw(5) << result[i] << std::setw(5) << static_cast<uint16_t>(result[i]) << std::endl;
     }
     ENABLE_GUARD;
-    free((void*) result);
     return 0;
 }
 
 __attribute__((destructor))
 void destroy() {
     if (!MemoryGuard::Singleton()->empty()) {
-        std::cout << "Guard detected memory leak!" << std::endl;
-
-        GuardNode* node = MemoryGuard::Singleton()->getHead();
+        std::cout << std::endl;
+        std::cerr << "MemoryGuard detected memory leak!" << std::endl;
         MemoryGuard::Singleton()->disableGuard();
-
-        while (node) {
-            std::cout << node->ptr << " " << node->size_allocated << std::endl;
-            node = node->next;
-        }
-    }
+        std::cerr << "Leaked " << MemoryGuard::Singleton()->allocated() << " bytes of memory :c" << std::endl;
+        std::cerr << "For more information, add breakpoint into guard hook functions and see, what causes memory leak"
+                    << std::endl;
+     }
 }
