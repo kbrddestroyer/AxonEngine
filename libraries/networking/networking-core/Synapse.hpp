@@ -39,7 +39,7 @@ namespace Networking
 #pragma region INTERFACE
 
 		void update() override;
-		void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*) override;
+		void onMessageReceived(const AxonMessage&, const Socket&) override;
 
 		EventSystem::AxonEventManager& getEventManager() { return events; }
         void sendTo(AxonMessage&, const SOCKADDR_IN_T*) override;

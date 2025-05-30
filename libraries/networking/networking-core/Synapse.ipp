@@ -38,11 +38,11 @@ void Networking::Synapse<conn, mode>::sendPooled(const AxonMessage& message, con
 }
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& message, SOCKADDR_IN_T* from)
+void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& message, const Socket &from)
 {
     if (message.hasFlag(VALIDATE))
     {
-        sendPooled(AxonMessage(message, 0), from);
+        sendPooled(AxonMessage(message, 0), &from.conn);
     }
     if (message.hasFlag(ACKNOWLEDGE) && !message.hasFlag(PARTIAL))
     {
@@ -71,7 +71,7 @@ void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& messa
 
 #pragma endregion
 
-#pragma region ASYNC_SYNAPS
+#pragma region ASYNC_SYNAPSE
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
 void Networking::AsyncSynapse<conn, mode>::kill()

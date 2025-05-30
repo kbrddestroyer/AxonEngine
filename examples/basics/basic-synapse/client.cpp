@@ -36,10 +36,8 @@ int main()
 {
 	Networking::ConnectionInfo connection = { "localhost", 10423 };
 
-	Networking::AsyncSynapse<Networking::ConnectionMode::UDP, Networking::SynapseMode::CLIENT> clientConnection(connection);
+	Networking::Synapse<Networking::ConnectionMode::TCP, Networking::SynapseMode::CLIENT> clientConnection(connection);
     clientConnection.getEventManager().subscribe<Networking::SynapseMessageReceivedEvent>(onMessageReceived);
-
-    clientConnection.start();
     time_t startTimestamp = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
     Networking::AxonMessage msg(nullptr, 0);

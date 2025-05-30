@@ -44,9 +44,9 @@ namespace Networking {
         // This function should be instanced for each connection type
         virtual void listen() {}
         virtual void update() {}
-        virtual void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*) {};
+        virtual void onMessageReceived(const AxonMessage&, const Socket&) {};
 
-        void processIncomingMessage(const SerializedAxonMessage&, SOCKADDR_IN_T*);
+        void processIncomingMessage(const SerializedAxonMessage&, const Socket&);
     protected:
         std::atomic<bool>	isAlive = false;  // TODO: move this from here
         ConnectionInfo		connectionInfo;
