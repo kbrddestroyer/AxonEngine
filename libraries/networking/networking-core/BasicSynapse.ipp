@@ -49,7 +49,7 @@ template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
 Networking::BasicSynapse<conn, mode>::~BasicSynapse()
 {
     isAlive = false;
-    finalize_udp(socketInfo.socket);
+    finalize<conn>(socketInfo);
 }
 
 #pragma endregion
@@ -80,7 +80,7 @@ void Networking::BasicSynapse<conn, mode>::sendTo(const SerializedAxonMessage& s
 }
 
 template<Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::BasicSynapse<conn, mode>::processIncomingMessage(SerializedAxonMessage message, SOCKADDR_IN_T *host) {
+void Networking::BasicSynapse<conn, mode>::processIncomingMessage(const SerializedAxonMessage &message, SOCKADDR_IN_T *host) {
     onMessageReceived(AxonMessage(message), host);
 }
 

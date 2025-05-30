@@ -24,7 +24,7 @@ namespace Testing {
         while (head) {
             MemoryNode *dummy = head;
             head = head->next;
-            real_free(head);
+            real_free(dummy);
         }
     }
 
