@@ -11,11 +11,11 @@ void Networking::Synapse<conn, mode>::update() {
     if (!pNode.get())
         return;
 
-    this->sendTo(pNode->message, &pNode->destination);
+    this->sendTo(pNode->message, pNode->destination);
 }
 
 template<Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::Synapse<conn, mode>::sendTo(AxonMessage &message, const SOCKADDR_IN_T *dest) {
+void Networking::Synapse<conn, mode>::sendTo(AxonMessage &message, const Socket &dest) {
     Networking::AxonMessage::UniqueAxonMessagePtr ptr = message.split(SYNAPSE_PAYLOAD_SIZE_MAX);
     if (ptr)
     {
@@ -31,10 +31,8 @@ void Networking::Synapse<conn, mode>::sendTo(AxonMessage &message, const SOCKADD
 }
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::Synapse<conn, mode>::sendPooled(const AxonMessage& message, const SOCKADDR_IN_T* dest) const {
-    if (!dest)
-        dest = &this->socketInfo.conn;
-    pool->push( { message, *dest } );
+void Networking::Synapse<conn, mode>::sendPooled(const AxonMessage& message, const Socket &dest) const {
+    pool->push( { message, dest } );
 }
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
@@ -42,7 +40,7 @@ void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& messa
 {
     if (message.hasFlag(VALIDATE))
     {
-        sendPooled(AxonMessage(message, 0), &from.conn);
+        sendPooled(AxonMessage(message, 0), from);
     }
     if (message.hasFlag(ACKNOWLEDGE) && !message.hasFlag(PARTIAL))
     {

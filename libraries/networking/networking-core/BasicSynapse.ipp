@@ -64,19 +64,19 @@ void Networking::BasicSynapse<conn, mode>::start()
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
 void Networking::BasicSynapse<conn, mode>::send(AxonMessage& message)
 {
-    sendTo(message, &socketInfo.conn);
+    sendTo(message, socketInfo);
 }
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::BasicSynapse<conn, mode>::sendTo(AxonMessage& message, const SOCKADDR_IN_T* dest)
+void Networking::BasicSynapse<conn, mode>::sendTo(AxonMessage& message, const Socket& dest)
 {
     sendTo(message.getSerialized(), dest);
 }
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::BasicSynapse<conn, mode>::sendTo(const SerializedAxonMessage& serialized, const SOCKADDR_IN_T* dest) const
+void Networking::BasicSynapse<conn, mode>::sendTo(const SerializedAxonMessage& serialized, const Socket& dest) const
 {
-    send_message<conn>({ socketInfo.socket, *dest }, serialized.getBits(), serialized.getSize());
+    send_message<conn>(dest, serialized.getBits(), serialized.getSize());
 }
 
 template<Networking::ConnectionMode conn, Networking::SynapseMode mode>

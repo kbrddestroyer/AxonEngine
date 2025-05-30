@@ -1,5 +1,6 @@
 #pragma once
 #include <networking/message/AxonMessage.hpp>
+#include <backends/backend.hpp>
 #include <queue>
 #include <map>
 #include <memory>
@@ -12,7 +13,7 @@ namespace Networking {
     struct AXON_DECLSPEC MessagePoolNode
     {
         AxonMessage     message;
-        SOCKADDR_IN_T   destination;
+        Socket          destination;
     };
 
     typedef std::shared_ptr<MessagePoolNode> MessagePoolNodePtr;

@@ -42,8 +42,8 @@ namespace Networking
 		void onMessageReceived(const AxonMessage&, const Socket&) override;
 
 		EventSystem::AxonEventManager& getEventManager() { return events; }
-        void sendTo(AxonMessage&, const SOCKADDR_IN_T*) override;
-		void sendPooled(const AxonMessage&, const SOCKADDR_IN_T* = nullptr) const;
+        void sendTo(AxonMessage&, const Socket&) override;
+		void sendPooled(const AxonMessage&, const Socket &) const;
 #pragma endregion
 	protected:
 		EventSystem::AxonEventManager events;
