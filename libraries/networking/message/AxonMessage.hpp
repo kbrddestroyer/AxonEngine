@@ -1,5 +1,7 @@
 /* AxonMessage.hpp */
 
+// TODO: Code styling, remove all shit pls
+
 #pragma once
 #include <serialization/serialization.hpp>
 
@@ -59,7 +61,7 @@ namespace Networking
     	size64_t    size        = 0;
     	uint16_t    uniqueID    = 0;
     	uintptr_t   offset      = 0;
-    	bool        owning      = true;
+    	bool        owning      = true;     // todo: `uint16_t _refcnt;` or shared_ptr around bytes array
     	const char* bytes       = nullptr;
 
         friend class AxonMessage;
@@ -114,10 +116,8 @@ namespace Networking
     protected:
         static uint16_t generateUniqueID() {
             static uint16_t uniqueID = 0;
-
             if (uniqueID == INT16_MAX - 1)
                 uniqueID = 0;
-
             return uniqueID++;
         }
         void decompressTag(TAG_T, uint8_t*, uint8_t*, uint16_t*);
