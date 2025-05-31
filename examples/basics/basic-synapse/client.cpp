@@ -55,7 +55,10 @@ int main()
         sstream <<
             "Sending message on " <<
             std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) - startTimestamp;
-        Networking::AxonMessage message_(const_cast<char*>(sstream.str().c_str()), sstream.str().length() + 1, 0, Networking::TAG_FLAGS::VALIDATE);
+
+        std::cout << "Sending: " << sstream.str() << std::endl;
+
+        Networking::AxonMessage message_(const_cast<char*>(sstream.str().c_str()), sstream.str().length() + 2, 0, Networking::TAG_FLAGS::VALIDATE);
 
         clientConnection.send(message_);
     }

@@ -56,6 +56,9 @@ void memguard_report() {                                                        
     }                                                                                               \
 }
 #else
+#pragma message( __FILE__ " MemoryGuard is not supported on current platform" )
+#pragma message( "MemoryGuard is disabled" )
+
 #define ENABLE_MEMGUARD
 #define DISABLE_MEMGUARD
 #define MEMGUARD_REPORT

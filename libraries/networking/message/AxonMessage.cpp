@@ -164,7 +164,7 @@ Networking::AxonMessage::UniqueAxonMessagePtr Networking::AxonMessage::split(con
 }
 
 void Networking::AxonMessage::append(const Networking::AxonMessage &other) {
-    if (!other.getMessage() || other.size == 0 || other.partID == partID + 1)
+    if (!other.getMessage() || other.size == 0 || other.partID != partID + 1)
         return;
 
     char* tempBuffer = new char[other.size + size];

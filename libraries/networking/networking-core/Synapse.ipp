@@ -16,7 +16,7 @@ void Networking::Synapse<conn, mode>::update() {
 
 template<Networking::ConnectionMode conn, Networking::SynapseMode mode>
 void Networking::Synapse<conn, mode>::sendTo(AxonMessage &message, const Socket &dest) {
-    Networking::AxonMessage::UniqueAxonMessagePtr ptr = message.split(SYNAPSE_PAYLOAD_SIZE_MAX);
+    const AxonMessage::UniqueAxonMessagePtr ptr = message.split(SYNAPSE_PAYLOAD_SIZE_MAX);
     if (ptr)
     {
         sendPooled(*ptr.get(), dest);
