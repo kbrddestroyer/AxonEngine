@@ -1,5 +1,6 @@
 #include "serialization.h"
 #include <string.h>
+#include <stdlib.h>
 
 
 uint8_t extractMetadata(const char* serialized , size64_t size, size64_t *actualSize, TAG_T * tag) {

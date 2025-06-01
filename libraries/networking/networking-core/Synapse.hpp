@@ -1,20 +1,5 @@
 #pragma once
-#include "BasicSynapse.hpp"
 
-#include <thread>
-#include <atomic>
-#include <string>
-
-#include <AxonUtility.h>
-#include <events/AxonEvent.hpp>
-#include <backends/backend.hpp>
-#include <networking/message/AxonMessage.hpp>
-#include <networking/utility/MessagePool.hpp>
-#include <message/AxonMessage.hpp>
-#include <utility/MessagePool.hpp>
-
-#include <networking-core/SynapseUtility.hpp>
-#include <networking-core/SynapseEvents.hpp>
 
 namespace Networking
 {

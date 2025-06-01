@@ -7,11 +7,7 @@
  */
 
 #pragma once
-#include <backends/backend.hpp>
-#include <networking/networking-core/SynapseUtility.hpp>
-#include <networking/message/AxonMessage.hpp>
 
-#include <atomic>
 
 namespace Networking {
     /**

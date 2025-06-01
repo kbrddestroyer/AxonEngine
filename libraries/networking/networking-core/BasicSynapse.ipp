@@ -1,5 +1,5 @@
 #pragma once
-#include "netconfig.h"
+
 
 namespace Networking {
     template<>
