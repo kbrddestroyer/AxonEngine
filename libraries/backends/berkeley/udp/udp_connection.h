@@ -4,17 +4,10 @@
 #include <stdint.h>
 #include <backends/berkeley/master_include.h>
 
-#pragma region UDP_UTILS
-#pragma region CLIENT_UTILS
 uint8_t connect_udp_client(SOCKADDR_IN_T*, SOCKET_T*, const char*, uint32_t);
-#pragma endregion /* CLIENT UTILITY FUNCTIONS */
-
-#pragma region SERVER_UTILS
 uint8_t create_udp_server(SOCKADDR_IN_T*, SOCKET_T*, uint32_t);
-#pragma endregion /* SERVER UTILITY FUNCTIONS */
 int32_t send_udp_message(const void*, size_t, SOCKET_T, const SOCKADDR_IN_T*);
 int32_t recv_udp_message(void*, size_t, SOCKET_T, SOCKADDR_IN_T*);
 void finalize_udp(SOCKET_T);
 
-#pragma endregion /* UDP UTILS */
 #endif
