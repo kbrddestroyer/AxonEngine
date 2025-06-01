@@ -93,7 +93,6 @@ Networking::AxonMessage::AxonMessage(const void* message, size64_t size, uint8_t
 Networking::AxonMessage::AxonMessage(const SerializedAxonMessage &serialized)
 {
     TAG_T tag;
-
     deserialize(
             serialized.bytes,
             serialized.size,
@@ -101,8 +100,14 @@ Networking::AxonMessage::AxonMessage(const SerializedAxonMessage &serialized)
             &this->size,
             &tag
     );
-
     decompressTag(tag, &partID, &flags, &this->uniqueID);
+}
+
+Networking::AxonMessage::AxonMessage(const AxonMessage &message, const uint8_t additionalFlags) :
+    flags(additionalFlags),
+    uniqueID(message.uniqueID)
+{
+    addFlag(ACKNOWLEDGE);
 }
 
 Networking::AxonMessage::AxonMessage(const AxonMessage& message) :
@@ -118,7 +123,7 @@ Networking::AxonMessage::AxonMessage(const AxonMessage& message) :
 	memcpy(this->message, message.getMessage(), this->size);
 }
 
-Networking::AxonMessage::AxonMessage(Networking::AxonMessage &message, size64_t size, uint8_t partID, uint8_t flags, uint64_t uniqueID, size64_t offset) :
+Networking::AxonMessage::AxonMessage(AxonMessage &message, size64_t size, uint8_t partID, uint8_t flags, uint64_t uniqueID, size64_t offset) :
     size(size),
     message(message.message),
     partID(partID),
@@ -182,13 +187,6 @@ void Networking::AxonMessage::append(const Networking::AxonMessage &other) {
     message = tempBuffer;
     size += other.size;
     partID = other.partID;
-}
-
-Networking::AxonMessage::AxonMessage(const AxonMessage &message, uint8_t additionalFlags) :
-    flags(additionalFlags),
-    uniqueID(message.uniqueID)
-{
-    addFlag(ACKNOWLEDGE);
 }
 
 #pragma endregion

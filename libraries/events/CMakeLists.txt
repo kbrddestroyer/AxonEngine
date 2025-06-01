@@ -1,4 +1,4 @@
-project ("AxonEngine.libraries")
+project ("AxonEngine.libraries.events")
 
 file(GLOB_RECURSE SOURCES "*.c" "*.h" "*.cpp" "*.hpp" "*.ipp")
 add_library(events STATIC ${SOURCES})

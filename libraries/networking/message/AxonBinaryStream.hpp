@@ -17,8 +17,8 @@ namespace Networking {
         /* API */
 
         void append(const char*, size_t);
-        inline const char* data() const noexcept { return containerPtr; }
-        inline size_t size() const noexcept { return containerSize; }
+        const char* data() const noexcept { return containerPtr; }
+        size_t size() const noexcept { return containerSize; }
         void clear();
     private:
         char* containerPtr = nullptr;
