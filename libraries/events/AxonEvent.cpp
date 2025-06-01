@@ -24,6 +24,6 @@ void EventSystem::AxonEventManager::invoke(AxonEvent* event)
 
 EventSystem::GlobalEventManager& EventSystem::GlobalEventManager::Instance()
 {
-    static EventSystem::GlobalEventManager instance;
+    static GlobalEventManager instance;
 	return instance;
 }
