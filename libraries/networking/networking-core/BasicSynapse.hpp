@@ -21,7 +21,7 @@ namespace Networking {
     class AXON_DECLSPEC SynapseInterface {
     public:
         SynapseInterface() = default;
-        virtual ~SynapseInterface();
+        virtual ~SynapseInterface() = default;
 
         WGETTER ( bool alive() ) { return isAlive.load(); }
         virtual void kill() { isAlive.store(false); }

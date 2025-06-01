@@ -4,7 +4,7 @@ namespace Networking {
     AxonNetworkPointerBase::AxonNetworkPointerBase(SynapseInterfacePtr synapse) :
         synapse(synapse) {
         synapse->getEventManager().subscribe<AxonNetworkPointerBase, SynapseMessageReceivedEvent>(
-            onSynapseDispatchedMessageReceiveEvent,
+            &AxonNetworkPointerBase::onSynapseDispatchedMessageReceiveEvent,
             this
             );
     }
