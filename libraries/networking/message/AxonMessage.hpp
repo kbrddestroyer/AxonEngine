@@ -77,7 +77,6 @@ namespace Networking
         typedef std::unique_ptr<AxonMessage> UniqueAxonMessagePtr;
 		AxonMessage() = default;
 
-	protected:
 		/**
 		* Create new message from actual data (send mode)
 		* @param message data pointer
@@ -87,7 +86,6 @@ namespace Networking
 		*/
 		AxonMessage(const void* message, size64_t size, uint8_t partID=0, uint8_t flags=0);
 
-	public:
         /**
          * Create new message from serialized.
          * @param serialized SerializedAxonMessage object, containing compressed data
@@ -105,9 +103,7 @@ namespace Networking
          * Copy constructor
          */
         AxonMessage(const AxonMessage &);
-	private:
 		AxonMessage(AxonMessage&, size64_t, uint8_t, uint8_t, uint64_t, size64_t);
-	public:
 		~AxonMessage();
 
         WGETTER(SerializedAxonMessage getSerialized());
