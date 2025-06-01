@@ -1,8 +1,9 @@
 /*
-* This example shows basic connection, using Axon internal tools
-* Synapse provides connection between two points
+* This example shows basic client connection, using Axon internal tools.
+* Synapse provides connection between two points, this one is created in client mode.
 * 
-* This file defined basic client logic, with AxonMessage forming and sending with Synapse tool
+* This file defined basic client logic. It creates Message package and sends it to server. Also, it is capable of
+* server messages handling, displaying response packages.
 */
 
 #include <networking/AxonNetwork.hpp>
@@ -50,15 +51,15 @@ int main()
     {
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        std::stringstream sstream;
+        std::stringstream stream;
 
-        sstream <<
+        stream <<
             "Sending message on " <<
             std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) - startTimestamp;
 
-        std::cout << "Sending: " << sstream.str() << std::endl;
+        std::cout << "Sending: " << stream.str() << std::endl;
 
-        Networking::AxonMessage message_(const_cast<char*>(sstream.str().c_str()), sstream.str().length() + 2, 0, Networking::TAG_FLAGS::VALIDATE);
+        Networking::AxonMessage message_(const_cast<char*>(stream.str().c_str()), stream.str().length() + 2, 0, Networking::TAG_FLAGS::VALIDATE);
 
         clientConnection.send(message_);
     }

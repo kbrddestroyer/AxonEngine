@@ -1,8 +1,8 @@
 /*
-* This example shows basic connection, using Axon internal tools
-* Synapse provides connection between two points
+* This example shows basic server, using Axon internal tools.
+* Synapse provides connection between two points, this one is created in server mode.
 * 
-* This file defines basic server logic, with message handling using Synapse event system
+* This file shows basic server logic and message handling using asynchronous Synapse with event system.
 */
 
 #include <networking/AxonNetwork.hpp>
