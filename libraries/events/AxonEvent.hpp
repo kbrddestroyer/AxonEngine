@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <typeindex>
+#include <unordered_map>
 
 
 namespace EventSystem
