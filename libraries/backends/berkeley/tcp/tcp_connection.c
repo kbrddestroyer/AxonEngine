@@ -91,7 +91,7 @@ uint8_t create_tcp_server(SOCKADDR_IN_T* server, SOCKET_T* server_socket, uint32
 }
 
 /**
-* Sends data over UDP
+* Sends data over TCP
 * @param message data to send, sequence of bytes
 * @param size size of message, bytes. Most of the time can be strlen(message), but we cannot be sure in case, when message is serialized data
 * @param from source socket
@@ -103,7 +103,7 @@ int32_t send_tcp_message(const void* message, const size_t size, const SOCKET_T 
 }
 
 /**
-* Handles message receiving over UDP
+* Handles message receiving over TCP
 * @param message data buffer, must be either a static array or pre-allocated
 * @param max_size max size of bytes that can be written in buffer
 * @param c_sock client socket to receive message from
