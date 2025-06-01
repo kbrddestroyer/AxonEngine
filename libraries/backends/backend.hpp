@@ -9,6 +9,7 @@
 extern "C" {
 #endif
 #include "berkeley/basic_networking.h"
+#include "custom_utility.h"
 #ifdef __cplusplus
 }
 #endif
