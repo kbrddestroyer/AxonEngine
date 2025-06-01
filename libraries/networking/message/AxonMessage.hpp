@@ -3,8 +3,6 @@
 #pragma once
 #include <serialization/serialization.hpp>
 
-#include "netconfig.h"
-
 #include <memory>
 #include <bitset>
 

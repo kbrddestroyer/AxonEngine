@@ -2,10 +2,11 @@
 #include <networking/message/AxonMessage.hpp>
 #include <queue>
 #include <map>
-#include <memory>
+//#include <memory>
 #include <mutex>
-#include <functional>
-#include <vector>
+//#include <functional>
+//#include <vector>
+#include <AxonUtility.h>
 
 
 namespace Networking {

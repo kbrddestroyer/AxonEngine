@@ -1,6 +1,6 @@
 #include "AxonBinaryStream.hpp"
-#include <utility>
-#include <memory.h>
+
+#include <cstring>
 
 namespace Networking {
     AxonBinaryStreamBase::AxonBinaryStreamBase(const AxonBinaryStreamBase & other) {

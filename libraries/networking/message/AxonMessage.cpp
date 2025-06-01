@@ -1,8 +1,6 @@
 #include "AxonMessage.hpp"
 #include <utility>
-#include <memory.h>
-
-#include "backends/berkeley/basic_networking.h"
+#include <cstring>
 
 #pragma region SERIALIZED_AXON_MESSAGE
 

@@ -1,9 +1,7 @@
 #pragma once
-#include <vector>
-#include <unordered_map>
+
 #include <functional>
 #include <typeindex>
-#include <cstdint>
 
 
 namespace EventSystem

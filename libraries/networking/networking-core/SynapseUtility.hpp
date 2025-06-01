@@ -1,6 +1,6 @@
 #pragma once
-#include <string>
 
+#include <string>
 #include <backends/backend.hpp>
 #include <AxonUtility.h>
 

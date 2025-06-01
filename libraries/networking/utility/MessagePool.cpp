@@ -1,5 +1,4 @@
 #include "MessagePool.hpp"
-#include <networking/networking-core/Synapse.hpp>
 
 
 void Networking::MessagePoolBase::push(const MessagePoolNode &message) {

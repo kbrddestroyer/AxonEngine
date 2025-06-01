@@ -1,10 +1,6 @@
 #ifndef AXONENGINE_SERIALIZATION_H
 #define AXONENGINE_SERIALIZATION_H
 
-
-#include <stdlib.h>
-#include <stdint.h>
-
 #include <custom_utility.h>
 #include "../AxonUtility.h"
 
