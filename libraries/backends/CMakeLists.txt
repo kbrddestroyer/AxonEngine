@@ -1,4 +1,4 @@
-project ("AxonEngine.libraries")
+project ("AxonEngine.libraries.backends")
 
 file(GLOB_RECURSE SOURCES "*.c" "*.h" "*.cpp" "*.hpp")
 add_library(backends STATIC ${SOURCES})

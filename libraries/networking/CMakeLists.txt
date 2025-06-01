@@ -1,4 +1,4 @@
-project ("AxonEngine.libraries")
+project ("AxonEngine.libraries.networking")
 
 file(GLOB_RECURSE SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
