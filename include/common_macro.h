@@ -1,3 +1,7 @@
+/**
+ *
+ */
+
 #ifndef AXONENGINE_COMMON_MACRO_H
 #define AXONENGINE_COMMON_MACRO_H
 
