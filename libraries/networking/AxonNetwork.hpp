@@ -6,6 +6,9 @@
 
 namespace Networking
 {
+    class AXON_DECLSPEC AxonNetworkManager {
+
+    };
 }
 
 /* AxonNetwork.hpp */

@@ -9,12 +9,12 @@ void Networking::Synapse<conn, mode>::update() {
     if (!pNode.get())
         return;
 
-    this->sendTo(pNode->message, &pNode->destination);
+    this->sendTo(pNode->message, pNode->destination);
 }
 
 template<Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::Synapse<conn, mode>::sendTo(AxonMessage &message, const SOCKADDR_IN_T *dest) {
-    Networking::AxonMessage::UniqueAxonMessagePtr ptr = message.split(SYNAPSE_PAYLOAD_SIZE_MAX);
+void Networking::Synapse<conn, mode>::sendTo(AxonMessage &message, const Socket &dest) {
+    const AxonMessage::UniqueAxonMessagePtr ptr = message.split(SYNAPSE_PAYLOAD_SIZE_MAX);
     if (ptr)
     {
         sendPooled(*ptr.get(), dest);
@@ -29,14 +29,12 @@ void Networking::Synapse<conn, mode>::sendTo(AxonMessage &message, const SOCKADD
 }
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::Synapse<conn, mode>::sendPooled(const AxonMessage& message, const SOCKADDR_IN_T* dest) const {
-    if (!dest)
-        dest = &this->socketInfo.conn;
-    pool->push( { message, *dest } );
+void Networking::Synapse<conn, mode>::sendPooled(const AxonMessage& message, const Socket &dest) const {
+    pool->push( { message, dest } );
 }
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& message, SOCKADDR_IN_T* from)
+void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& message, const Socket &from)
 {
     if (message.hasFlag(VALIDATE))
     {
@@ -57,19 +55,19 @@ void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& messa
             if (!res)
                 return;
 
-            SynapseMessageReceivedEvent event_ = SynapseMessageReceivedEvent(*res, from);
-            events.invoke(&event_);
+            SynapseMessageReceivedEvent event_(*res, from);
+            this->events.invoke(&event_);
         }
         return;
     }
 
     SynapseMessageReceivedEvent event_ = SynapseMessageReceivedEvent(message, from);
-    events.invoke(&event_);
+    this->events.invoke(&event_);
 }
 
 #pragma endregion
 
-#pragma region ASYNC_SYNAPS
+#pragma region ASYNC_SYNAPSE
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
 void Networking::AsyncSynapse<conn, mode>::kill()

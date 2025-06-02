@@ -1,5 +1,6 @@
 #pragma once
 #include <networking/message/AxonMessage.hpp>
+#include <backends/backend.hpp>
 #include <queue>
 #include <map>
 //#include <memory>
@@ -13,7 +14,7 @@ namespace Networking {
     struct AXON_DECLSPEC MessagePoolNode
     {
         AxonMessage     message;
-        SOCKADDR_IN_T   destination;
+        Socket          destination;
     };
 
     typedef std::shared_ptr<MessagePoolNode> MessagePoolNodePtr;
@@ -36,7 +37,7 @@ namespace Networking {
         class MessageMapComparator
         {
         public:
-            bool operator() ( const AxonMessagePtr& l, const AxonMessagePtr& r ) { return l->getPartID() < r->getPartID(); }
+            bool operator() ( const AxonMessagePtr& l, const AxonMessagePtr& r ) const { return l->getPartID() < r->getPartID(); }
         };
         typedef std::priority_queue<AxonMessagePtr, std::vector<AxonMessagePtr>, MessageMapComparator> MessageMapNode;
     public:
@@ -48,7 +49,7 @@ namespace Networking {
             auto it = messagePool.find(message.ID());
             if (it != messagePool.end())
             {
-                if (message.getPartID() == it->second.top()->getPartID() + 1)
+                if (!it->second.empty() && message.getPartID() == it->second.top()->getPartID() + 1)
                 {
                     it->second.top()->append(message);
                     return it->second.top();
@@ -80,7 +81,6 @@ namespace Networking {
         bool contains(uint16_t id) {
             return messagePool.find(id) != messagePool.end();
         }
-    protected:
     private:
         std::map<uint16_t, MessageMapNode> messagePool;
     };

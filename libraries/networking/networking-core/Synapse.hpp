@@ -1,5 +1,14 @@
 #pragma once
 
+#include <AxonUtility.h>
+#include <events/AxonEvent.hpp>
+#include <backends/backend.hpp>
+#include <networking/message/AxonMessage.hpp>
+#include <networking/utility/MessagePool.hpp>
+#include <message/AxonMessage.hpp>
+#include <utility/MessagePool.hpp>
+
+#include <networking-core/SynapseUtility.hpp>
 
 namespace Networking
 {
@@ -22,17 +31,13 @@ namespace Networking
 #pragma endregion
 
 #pragma region INTERFACE
-
 		void update() override;
-		void onMessageReceived(const AxonMessage&, SOCKADDR_IN_T*) override;
+		void onMessageReceived(const AxonMessage&, const Socket&) override;
 
-		EventSystem::AxonEventManager& getEventManager() { return events; }
-        void sendTo(AxonMessage&, const SOCKADDR_IN_T*) override;
-		void sendPooled(const AxonMessage&, const SOCKADDR_IN_T* = nullptr) const;
+        void sendTo(AxonMessage&, const Socket&) override;
+		void sendPooled(const AxonMessage&, const Socket &) const;
 #pragma endregion
 	protected:
-		EventSystem::AxonEventManager events;
-
         std::vector<uint64_t> pendingValidation;
 		std::unique_ptr<MessagePoolBase> pool = std::make_unique<MessagePoolBase>();
 		std::unique_ptr<MessageMapBase> mmap = std::make_unique<MessageMapBase>();
