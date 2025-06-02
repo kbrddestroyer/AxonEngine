@@ -57,8 +57,8 @@ void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& messa
             if (!res)
                 return;
 
-            SynapseMessageReceivedEvent event_ = SynapseMessageReceivedEvent(*res, from);
-            events.invoke(&event_);
+            SynapseMessageReceivedEvent event_(*res, from);
+            this->events.invoke(&event_);
         }
         return;
     }
