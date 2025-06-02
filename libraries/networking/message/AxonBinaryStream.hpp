@@ -1,7 +1,6 @@
 #pragma once
-#include <cstdint>
+
 #include <AxonUtility.h>
-#include <cstddef>
 
 namespace Networking {
     class AXON_DECLSPEC AxonBinaryStreamBase {

@@ -7,7 +7,6 @@
 */
 
 #include <networking/AxonNetwork.hpp>
-#include <cstring>
 #include <iostream>
 
 #include <chrono>

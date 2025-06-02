@@ -1,7 +1,6 @@
 #pragma once
-#include "netconfig.h"
-
 #include <algorithm>
+
 
 #pragma region SYNAPSE
 
