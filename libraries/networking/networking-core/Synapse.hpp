@@ -14,7 +14,6 @@
 #include <utility/MessagePool.hpp>
 
 #include <networking-core/SynapseUtility.hpp>
-#include <networking-core/SynapseEvents.hpp>
 
 namespace Networking
 {
@@ -37,17 +36,13 @@ namespace Networking
 #pragma endregion
 
 #pragma region INTERFACE
-
 		void update() override;
 		void onMessageReceived(const AxonMessage&, const Socket&) override;
 
-		EventSystem::AxonEventManager& getEventManager() { return events; }
         void sendTo(AxonMessage&, const Socket&) override;
 		void sendPooled(const AxonMessage&, const Socket &) const;
 #pragma endregion
 	protected:
-		EventSystem::AxonEventManager events;
-
         std::vector<uint64_t> pendingValidation;
 		std::unique_ptr<MessagePoolBase> pool = std::make_unique<MessagePoolBase>();
 		std::unique_ptr<MessageMapBase> mmap = std::make_unique<MessageMapBase>();
