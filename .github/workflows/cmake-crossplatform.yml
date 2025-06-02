@@ -59,6 +59,7 @@ jobs:
           -DCMAKE_CXX_COMPILER=${{ inputs.cpp_compiler }}
           -DCMAKE_C_COMPILER=${{ inputs.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ inputs.build_type }}
+          -DBUILD_TESTS=ON -DBUILD_EXAMPLES=ON
           -S ${{ github.workspace }}
 
       - name: Build

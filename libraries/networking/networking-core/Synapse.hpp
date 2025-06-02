@@ -1,5 +1,6 @@
 #pragma once
-
+#include <networking-core/BasicSynapse.hpp>
+#include <utility/MessagePool.hpp>
 
 namespace Networking
 {
