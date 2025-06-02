@@ -1,5 +1,6 @@
 #pragma once
 
+#include <thread>
 
 #pragma region SYNAPSE
 
