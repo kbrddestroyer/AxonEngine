@@ -64,7 +64,7 @@ void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& messa
     }
 
     SynapseMessageReceivedEvent event_ = SynapseMessageReceivedEvent(message, from);
-    events.invoke(&event_);
+    this->events.invoke(&event_);
 }
 
 #pragma endregion
