@@ -1,7 +1,5 @@
 #pragma once
 
-#include <thread>
-
 #pragma region SYNAPSE
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
