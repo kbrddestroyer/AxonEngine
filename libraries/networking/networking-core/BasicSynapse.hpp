@@ -7,6 +7,7 @@
  */
 
 #pragma once
+#include <atomic>
 
 
 namespace Networking {
