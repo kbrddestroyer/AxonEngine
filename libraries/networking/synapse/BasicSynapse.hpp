@@ -8,9 +8,9 @@
 
 #pragma once
 #include <atomic>
-#include <networking/networking-core/SynapseUtility.hpp>
-#include <networking/message/AxonMessage.hpp>
-#include <networking-core/SynapseEvents.hpp>
+#include "networking/synapse/utils/SynapseUtility.hpp"
+#include "messages/AxonMessage.hpp"
+#include "networking/synapse/utils/SynapseEvents.hpp"
 
 
 namespace Networking {

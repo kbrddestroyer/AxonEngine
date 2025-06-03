@@ -1,6 +1,6 @@
 #pragma once
 
-#include <AxonUtility.h>
+#include "AxonUtility.h"
 
 namespace Networking {
     class AXON_DECLSPEC AxonBinaryStreamBase {

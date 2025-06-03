@@ -1,5 +1,5 @@
 #pragma once
-
+#include "networking/synapse/utils/SynapseUtility.hpp"
 
 namespace Networking {
     template<>
@@ -20,13 +20,12 @@ template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
 Networking::BasicSynapse<conn, mode>::BasicSynapse(uint32_t port)
 {
     connectionInfo.port = port;
-
     socketInfo = {};
 
     uint8_t result = initialize_server<conn>(socketInfo, port);
 
     if (result != SUCCESS) {
-        throw AxonNetworkingInternalError(result);
+        throw Networking::AxonNetworkingInternalError(result);
     }
 }
 
@@ -41,7 +40,7 @@ Networking::BasicSynapse<conn, mode>::BasicSynapse(const ConnectionInfo& connect
     uint8_t result = initialize_client<conn>(socketInfo, connection.hostname.c_str(), connection.port);
 
     if (result != SUCCESS) {
-        throw AxonNetworkingInternalError(result);
+        throw Networking::AxonNetworkingInternalError(result);
     }
 }
 

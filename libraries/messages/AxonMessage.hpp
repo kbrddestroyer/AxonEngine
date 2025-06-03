@@ -3,7 +3,7 @@
 // TODO: Code styling, remove all shit pls
 
 #pragma once
-#include <serialization/serialization.hpp>
+#include "serialization/serialization.hpp"
 
 #include <memory>
 #include <bitset>

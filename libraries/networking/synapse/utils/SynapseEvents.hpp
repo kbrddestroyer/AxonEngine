@@ -1,7 +1,7 @@
 #pragma once
-#include <events/AxonEvent.hpp>
-#include <networking/message/AxonMessage.hpp>
-#include <AxonUtility.h>
+#include "events/AxonEvent.hpp"
+#include "messages/AxonMessage.hpp"
+#include "AxonUtility.h"
 
 struct Socket;
 

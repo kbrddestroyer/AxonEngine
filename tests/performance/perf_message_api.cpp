@@ -1,4 +1,4 @@
-#include <networking/message/AxonMessage.hpp>
+#include "messages/AxonMessage.hpp"
 #include <MemoryGuard/MemoryGuard.hpp>
 
 int main() {
