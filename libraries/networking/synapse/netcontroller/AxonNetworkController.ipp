@@ -18,7 +18,8 @@ namespace Networking {
         owningSynapse(owner)
     {
         static_assert(mode == SynapseMode::SERVER);
-        if (uint8_t ret = initialize_server<conn> ( connection, port ); ret != SUCCESS) {
+        uint8_t ret = initialize_server<conn> ( connection, port );
+        if ( ret != SUCCESS ) {
             throw Networking::AxonNetworkingInternalError(ret);
         }
     }
@@ -30,7 +31,8 @@ namespace Networking {
             owningSynapse(owner)
     {
         static_assert(mode == SynapseMode::CLIENT);
-        if (uint8_t ret = initialize_client<conn> ( connection, info.hostname.c_str(), info.port ); ret != SUCCESS) {
+        uint8_t ret = initialize_client<conn> ( connection, info.hostname.c_str(), info.port );
+        if ( ret != SUCCESS ) {
             throw Networking::AxonNetworkingInternalError(ret);
         }
     }
