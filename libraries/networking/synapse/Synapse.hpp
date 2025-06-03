@@ -1,12 +1,12 @@
 #pragma once
-#include <networking-core/BasicSynapse.hpp>
-#include <utility/MessagePool.hpp>
+#include "BasicSynapse.hpp"
+#include "networking/utility/MessagePool.hpp"
 
 #include <thread>
-#include <AxonUtility.h>
-#include <networking/message/AxonMessage.hpp>
+#include "AxonUtility.h"
+#include "messages/AxonMessage.hpp"
 
-#include <networking-core/SynapseUtility.hpp>
+#include "networking/synapse/utils/SynapseUtility.hpp"
 
 namespace Networking
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include <networking/message/AxonMessage.hpp>
+#include "messages/AxonMessage.hpp"
 #include <backends/backend.hpp>
 #include <queue>
 #include <map>

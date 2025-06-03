@@ -1,5 +1,5 @@
 #pragma once
-#include <networking/networking-core/SynapseEvents.hpp>
+#include "networking/synapse/utils/SynapseEvents.hpp"
 
 
 namespace Networking {
