@@ -41,6 +41,9 @@ namespace Networking {
 
         ~BasicSynapse() override;
 
+        GETTER bool alive() const { return this->controller->isAlive(); }
+
+        void kill() override { this->controller->kill(); }
         void start() override;
         void send(AxonMessage&) override;
         void sendTo(AxonMessage&, const Socket&) override;
@@ -52,9 +55,6 @@ namespace Networking {
 
         void processIncomingMessage(const SerializedAxonMessage&, const Socket&) override;
     protected:
-        ConnectionInfo		connectionInfo;
-        Socket              socketInfo;
-
         std::unique_ptr<BerkeleyAxonNetworkController<conn, mode>> controller;
     };
 }

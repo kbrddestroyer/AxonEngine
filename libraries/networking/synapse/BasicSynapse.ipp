@@ -6,24 +6,18 @@
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
 Networking::BasicSynapse<conn, mode>::BasicSynapse(uint32_t port) :
-    connectionInfo({"", port}),
-    socketInfo(),
     controller(std::make_unique<BerkeleyAxonNetworkController<conn, mode>>(this, port))
 {}
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
 Networking::BasicSynapse<conn, mode>::BasicSynapse(const ConnectionInfo& connection) :
-    connectionInfo(connection),
-    socketInfo(),
     controller(std::make_unique<BerkeleyAxonNetworkController<conn, mode>>(this, connection))
 {}
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
 Networking::BasicSynapse<conn, mode>::~BasicSynapse()
 {
-    isAlive = false;
     controller->kill();
-    finalize<conn>(socketInfo);
 }
 
 #pragma endregion
@@ -31,7 +25,6 @@ Networking::BasicSynapse<conn, mode>::~BasicSynapse()
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
 void Networking::BasicSynapse<conn, mode>::start()
 {
-    isAlive.store(true);
     controller->start();
     listen();
 }

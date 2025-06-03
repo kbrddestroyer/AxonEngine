@@ -51,7 +51,6 @@ void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& messa
 
         if (!message.hasFlag(PARTIAL))
         {
-            // Fini
             std::shared_ptr<AxonMessage> res = mmap->collapse(message.ID());
             if (!res)
                 return;
@@ -73,10 +72,9 @@ void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& messa
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
 void Networking::AsyncSynapse<conn, mode>::kill()
 {
-    if (!this->isAlive)
+    if (!this->controller->isAlive())
         return;
 
-    this->isAlive = false;
     this->controller->kill();
     proc.join();
 }
@@ -90,7 +88,6 @@ Networking::AsyncSynapse<conn, mode>::~AsyncSynapse()
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
 void Networking::AsyncSynapse<conn, mode>::start()
 {
-    this->isAlive = true;
     this->controller->start();
     proc = std::thread(&AsyncSynapse::listen, this);
 }
