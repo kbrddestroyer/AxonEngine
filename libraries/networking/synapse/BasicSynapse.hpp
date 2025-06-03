@@ -11,36 +11,11 @@
 #include "networking/synapse/utils/SynapseUtility.hpp"
 #include "messages/AxonMessage.hpp"
 #include "networking/synapse/utils/SynapseEvents.hpp"
+#include "SynapseInterface.hpp"
+#include <synapse/netcontroller/AxonNetworkController.hpp>
 
 
 namespace Networking {
-    /**
-     * Non-template class that can be used as Synapse pointer
-     */
-    class AXON_DECLSPEC SynapseInterface {
-    public:
-        SynapseInterface() = default;
-        virtual ~SynapseInterface() = default;
-
-        WGETTER ( bool alive() ) { return isAlive.load(); }
-        virtual void kill() { isAlive.store(false); }
-
-        virtual void start() = 0;
-        virtual void send(AxonMessage &) = 0;
-        virtual void sendTo(AxonMessage&, const Socket&) = 0;
-        virtual void sendTo(const SerializedAxonMessage&, const Socket&) const = 0;
-
-        EventSystem::AxonEventManager& getEventManager() { return events; }
-        virtual void listen() = 0;
-        virtual void update() = 0;
-        virtual void onMessageReceived(const AxonMessage&, const Socket&) = 0;
-    protected:
-        std::atomic<bool>	isAlive = false;
-		EventSystem::AxonEventManager events;
-    };
-
-    typedef SynapseInterface* SynapseInterfacePtr;
-
     /**
     * Basic connection handler
     * Specifies one-to-one connection for client and one-to-many for server.
@@ -48,7 +23,8 @@ namespace Networking {
     * @tparam conn connection mode (TCP|UDP)
     * @tparam mode synapse mode (CLIENT|SERVER)
     */
-    template <ConnectionMode conn, SynapseMode mode> class AXON_DECLSPEC BasicSynapse : public SynapseInterface
+    template <ConnectionMode conn, SynapseMode mode>
+    class AXON_DECLSPEC BasicSynapse : public SynapseInterface
     {
     public:
         /** Default creation is restricted */
@@ -58,25 +34,30 @@ namespace Networking {
         /** Initialize Synapse in client mode */
         explicit BasicSynapse(const ConnectionInfo&);
 
+        explicit BasicSynapse(const BasicSynapse&) = delete;
+        BasicSynapse(BasicSynapse&&) noexcept = delete;
+        BasicSynapse& operator=(const BasicSynapse&) = delete;
+        BasicSynapse& operator=(BasicSynapse&&) noexcept = delete;
+
         ~BasicSynapse() override;
 
         void start() override;
         void send(AxonMessage&) override;
         void sendTo(AxonMessage&, const Socket&) override;
-        void sendTo(const SerializedAxonMessage&, const Socket&) const override;
 
         // This function should be instanced for each connection type
-        void listen() override {}
+        void listen() override;
         void update() override {}
         void onMessageReceived(const AxonMessage&, const Socket&) override {};
 
-        void processIncomingMessage(const SerializedAxonMessage&, const Socket&);
+        void processIncomingMessage(const SerializedAxonMessage&, const Socket&) override;
     protected:
         ConnectionInfo		connectionInfo;
         Socket              socketInfo;
+
+        std::unique_ptr<BerkeleyAxonNetworkController<conn, mode>> controller;
     };
 }
 
 #include "BasicSynapse.ipp"
-
 // BasicSynapse.hpp

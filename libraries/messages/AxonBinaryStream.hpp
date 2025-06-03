@@ -16,11 +16,16 @@ namespace Networking {
         /* API */
 
         void append(const char*, size_t);
-        const char* data() const noexcept { return containerPtr; }
-        size_t size() const noexcept { return containerSize; }
+        GETTER const char* data() const noexcept { return containerPtr; }
+        GETTER size_t size() const noexcept { return containerSize; }
         void clear();
-    private:
+    protected:
         char* containerPtr = nullptr;
         size_t containerSize = 0;
+    };
+
+    class AXON_DECLSPEC AxonBinaryStream : public AxonBinaryStreamBase {
+    public:
+        AxonBinaryStream() = default;
     };
 }

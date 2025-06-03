@@ -77,6 +77,7 @@ void Networking::AsyncSynapse<conn, mode>::kill()
         return;
 
     this->isAlive = false;
+    this->controller->kill();
     proc.join();
 }
 
@@ -90,6 +91,7 @@ template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
 void Networking::AsyncSynapse<conn, mode>::start()
 {
     this->isAlive = true;
+    this->controller->start();
     proc = std::thread(&AsyncSynapse::listen, this);
 }
 
