@@ -9,7 +9,7 @@ file(GLOB_RECURSE SOURCES
 )
 
 add_library(messages STATIC ${SOURCES})
-set (LIB_HOME ${CMAKE_HOME_DIRECTORY}/libraries)
+
 target_compile_definitions(messages PUBLIC AXON_LIB)
 target_link_libraries(messages events serialization backends)
-target_include_directories(messages PUBLIC "${LIB_HOME}")
+target_include_directories(messages PUBLIC "${LIBS_DIR}")

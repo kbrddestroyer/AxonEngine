@@ -10,10 +10,9 @@ file(GLOB_RECURSE SOURCES
 )
 
 add_library(networking SHARED ${SOURCES})
-set (LIB_HOME ${CMAKE_HOME_DIRECTORY}/libraries)
 
 target_compile_definitions(networking PUBLIC AXON_LIB)
 target_link_libraries(networking events serialization backends messages)
 
-target_include_directories(networking PUBLIC "${LIB_HOME}")
-target_include_directories(networking PUBLIC "${LIB_HOME}/networking")
+target_include_directories(networking PUBLIC "${LIBS_DIR}")
+target_include_directories(networking PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
