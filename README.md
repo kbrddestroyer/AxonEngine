@@ -34,7 +34,7 @@ cd conan/
 
 ```bash
 mkdir cmake-build && cd cmake-build
-cmake .. -DCMAKE-TOOLCHAIN-FILE=../conan/build/Debug/conan_toolchain.cmake
+cmake .. -DCMAKE-TOOLCHAIN-FILE=../conan/build/Debug/conan_toolchain.cmake -DBUILD_TESTS=ON -DBUILD_EXAMPLES=ON
 ```
 
 2. CLion
