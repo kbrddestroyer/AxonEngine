@@ -9,4 +9,4 @@ file(GLOB_RECURSE SOURCES
 add_library(testutils STATIC ${SOURCES})
 set (LIB_HOME ${CMAKE_HOME_DIRECTORY}/test/utils/testutils)
 
-target_include_directories(networking PUBLIC "${LIB_HOME}")
+target_include_directories(testutils PUBLIC "${LIB_HOME}")

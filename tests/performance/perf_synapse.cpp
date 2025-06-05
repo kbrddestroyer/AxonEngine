@@ -19,7 +19,7 @@ int main() {
 
     ENABLE_MEMGUARD
 
-    for (uint8_t i = 0; i < 0; i++)
+    for (uint8_t i = 0; i < 4; i++)
     {
         DISABLE_MEMGUARD
         std::this_thread::sleep_for(std::chrono::milliseconds (100));

@@ -16,9 +16,9 @@ namespace Networking {
 
         explicit AxonNetworkControllerBase(SynapseInterface *);
 
-        virtual ~AxonNetworkControllerBase() = default;
+        virtual ~AxonNetworkControllerBase() { kill(); };
 
-        GETTER bool isAlive() { return alive; }
+        GETTER bool isAlive() { return alive.load(); }
 
         virtual void start();
         void kill();

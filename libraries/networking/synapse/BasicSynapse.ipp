@@ -6,12 +6,12 @@
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode, class NetworkController>
 Networking::BasicSynapse<conn, mode, NetworkController>::BasicSynapse(uint32_t port) :
-    controller(std::make_unique<BerkeleyAxonNetworkController<conn, mode>>(this, port))
+    controller(std::make_unique<NetworkController>(this, port))
 {}
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode, class NetworkController>
 Networking::BasicSynapse<conn, mode, NetworkController>::BasicSynapse(const ConnectionInfo& connection) :
-    controller(std::make_unique<BerkeleyAxonNetworkController<conn, mode>>(this, connection))
+    controller(std::make_unique<NetworkController>(this, connection))
 {}
 
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode, class NetworkController>

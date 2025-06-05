@@ -1,8 +1,5 @@
-#include "FakeNetworkController.hpp"
-#include <networking/synapse/netcontroller/AxonNetworkController.hpp>
-
 void TestUtils::FakeNetwork::sendto(const Networking::SerializedAxonMessage &serialized, uint32_t socket, uint32_t from) {
-    messagePool[socket].push({serialized, from});
+    messagePool[socket].push({std::make_shared<Networking::SerializedAxonMessage>(serialized), from});
 }
 
 bool TestUtils::FakeNetwork::recv(uint32_t socket, Networking::SerializedAxonMessage &buffer, uint32_t &from) {
@@ -10,7 +7,7 @@ bool TestUtils::FakeNetwork::recv(uint32_t socket, Networking::SerializedAxonMes
         return false;
     MessageNode node = messagePool[socket].front();
 
-    buffer = node.msg;
+    buffer = *node.msg;
     from = node.from;
 
     messagePool[socket].pop();
@@ -28,10 +25,6 @@ uint32_t TestUtils::FakeNetwork::create(
 
 uint32_t TestUtils::FakeNetwork::connect(const std::string &hostname, uint32_t port) {
     return this->nodes[hostname][port];
-}
-
-void TestUtils::FakeNetworkController::start() {
-    listen();
 }
 
 void TestUtils::FakeNetworkController::listen() {

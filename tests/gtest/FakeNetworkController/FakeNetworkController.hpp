@@ -1,16 +1,19 @@
 #pragma once
-#include <networking/synapse/netcontroller/AxonNetworkController.hpp>
 #include <networking/synapse/BasicSynapse.hpp>
 #include <queue>
 #include <map>
 #include <unordered_map>
 #include <string>
 
+namespace Networking {
+    class AxonNetworkControllerBase;
+}
+
 namespace TestUtils {
     class FakeNetwork {
-    public:
+    private:
         FakeNetwork() = default;
-
+    public:
         static FakeNetwork & Instance () {
             static FakeNetwork gInstance;
             return gInstance;
@@ -28,7 +31,7 @@ namespace TestUtils {
         }
     public:
         struct MessageNode {
-            Networking::SerializedAxonMessage msg;
+            std::shared_ptr<Networking::SerializedAxonMessage> msg;
             uint32_t from;
         };
     private:
@@ -43,20 +46,16 @@ namespace TestUtils {
         explicit FakeNetworkController(Networking::SynapseInterface * owner, uint32_t);
         explicit FakeNetworkController(Networking::SynapseInterface * owner, const Networking::ConnectionInfo&);
 
-        void start() override;
         void listen() override;
         void send(Networking::AxonMessage&) override;
         void sendTo(Networking::AxonMessage&, const Networking::NetworkNodeInfo&) override;
     protected:
         void sendSerializedTo(const Networking::SerializedAxonMessage&, const Networking::NetworkNodeInfo&) override;
     protected:
-        static uint32_t getID() {
-            static uint32_t gID = 0;
-            return ++gID;
-        }
-
         uint32_t connectedNode;
         uint32_t self;
         FakeNetwork &instance;
     };
 }
+
+#include "FakeNetworkController.ipp"

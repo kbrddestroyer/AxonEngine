@@ -5,11 +5,11 @@
 
 namespace Networking {
     void AxonNetworkControllerBase::start() {
-        this->alive = true;
+        this->alive.store(true);
     }
 
     void AxonNetworkControllerBase::kill() {
-        this->alive = false;
+        this->alive.store(false);
     }
 
     AxonNetworkControllerBase::AxonNetworkControllerBase(SynapseInterface *owner) :
