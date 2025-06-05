@@ -11,7 +11,6 @@ namespace Networking {
 
 namespace TestUtils {
     class FakeNetwork {
-    private:
         FakeNetwork() = default;
     public:
         static FakeNetwork & Instance () {
@@ -35,6 +34,8 @@ namespace TestUtils {
             uint32_t from;
         };
     private:
+        std::mutex g_mutex = {};
+
         std::map<uint32_t, std::queue<MessageNode>> messagePool = {};
         std::map<std::string, std::unordered_map<uint32_t, uint32_t>> nodes = {};
     };
@@ -51,7 +52,7 @@ namespace TestUtils {
         void sendTo(Networking::AxonMessage&, const Networking::NetworkNodeInfo&) override;
     protected:
         void sendSerializedTo(const Networking::SerializedAxonMessage&, const Networking::NetworkNodeInfo&) override;
-    protected:
+
         uint32_t connectedNode;
         uint32_t self;
         FakeNetwork &instance;

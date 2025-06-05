@@ -17,7 +17,7 @@ namespace Networking
 	 * @tparam mode synapse mode (CLIENT|SERVER)
      * @tparam controller derived from AxonNetworkControllerBase class
 	 */
-    template <Networking::ConnectionMode conn, Networking::SynapseMode mode, class controller>
+    template <ConnectionMode conn, SynapseMode mode, typename controller>
 	class AXON_DECLSPEC Synapse : public BasicSynapse<conn, mode, controller> {
 	public:
 #pragma region CONSTRUCTING
@@ -36,7 +36,7 @@ namespace Networking
         void sendTo(AxonMessage&, const Socket&) override;
 		void sendPooled(const AxonMessage&, const Socket &) const;
 
-        GETTER bool alive() { return this->controller->isAlive(); }
+        GETTER bool alive() { return this->networkController->isAlive(); }
 #pragma endregion
 	protected:
         std::vector<uint64_t> pendingValidation;
@@ -59,7 +59,7 @@ namespace Networking
 		explicit AsyncSynapse(uint32_t port) : Synapse<conn, mode, controller>(port) {}
 
 		/** Initialize Synapse in client mode */
-		explicit AsyncSynapse(const ConnectionInfo& info) : Synapse<conn, mode, controller>(info) {}
+		explicit AsyncSynapse(const ConnectionInfo &info) : Synapse<conn, mode, controller>(info) {}
 
 		~AsyncSynapse() override;
 

@@ -22,7 +22,7 @@ namespace Networking {
     *
     * @tparam conn connection mode (TCP|UDP)
     * @tparam mode synapse mode (CLIENT|SERVER)
-    * @tparam controller derived from AxonNetworkControllerBase class
+    * @tparam NetworkController derived from AxonNetworkControllerBase class
     */
     template <ConnectionMode conn, SynapseMode mode, class NetworkController>
     class AXON_DECLSPEC BasicSynapse : public SynapseInterface
@@ -44,7 +44,7 @@ namespace Networking {
 
         ~BasicSynapse() override;
 
-        void kill() override { this->controller->kill(); }
+        void kill() override { this->networkController->kill(); }
         void start() override;
         void send(AxonMessage&) override;
         void sendTo(AxonMessage&, const Socket&) override;
@@ -55,7 +55,7 @@ namespace Networking {
 
         void processIncomingMessage(const SerializedAxonMessage&, const Socket&) override;
     protected:
-        std::unique_ptr<NetworkController> controller;
+        std::unique_ptr<NetworkController> networkController;
     };
 }
 

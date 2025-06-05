@@ -43,7 +43,9 @@ void Networking::Synapse<conn, mode, controller>::onMessageReceived(const AxonMe
     }
     if (message.hasFlag(ACKNOWLEDGE) && !message.hasFlag(PARTIAL))
     {
-        pendingValidation.erase(std::find(pendingValidation.begin(), pendingValidation.end(), message.ID()));
+        auto it = std::find(pendingValidation.begin(), pendingValidation.end(), message.ID());
+        if (it != pendingValidation.end())
+            pendingValidation.erase(it);
     }
     if (mmap->contains(message.ID()) || message.hasFlag(PARTIAL))
     {
@@ -72,10 +74,10 @@ void Networking::Synapse<conn, mode, controller>::onMessageReceived(const AxonMe
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode, class controller>
 void Networking::AsyncSynapse<conn, mode, controller>::kill()
 {
-    if (!this->controller->isAlive())
+    if (!this->networkController->isAlive())
         return;
 
-    this->controller->kill();
+    this->networkController->kill();
     proc.join();
 }
 
@@ -88,7 +90,7 @@ Networking::AsyncSynapse<conn, mode, controller>::~AsyncSynapse()
 template <Networking::ConnectionMode conn, Networking::SynapseMode mode, class controller>
 void Networking::AsyncSynapse<conn, mode, controller>::start()
 {
-    this->controller->start();
+    this->networkController->start();
     proc = std::thread(&AsyncSynapse::listen, this);
 }
 

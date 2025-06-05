@@ -1,20 +1,28 @@
-void TestUtils::FakeNetwork::sendto(const Networking::SerializedAxonMessage &serialized, uint32_t socket, uint32_t from) {
+#pragma once
+
+inline void TestUtils::FakeNetwork::sendto(const Networking::SerializedAxonMessage &serialized, uint32_t socket, uint32_t from) {
+    g_mutex.lock();
     messagePool[socket].push({std::make_shared<Networking::SerializedAxonMessage>(serialized), from});
+    g_mutex.unlock();
 }
 
-bool TestUtils::FakeNetwork::recv(uint32_t socket, Networking::SerializedAxonMessage &buffer, uint32_t &from) {
-    if (messagePool[socket].empty())
+inline bool TestUtils::FakeNetwork::recv(uint32_t socket, Networking::SerializedAxonMessage &buffer, uint32_t &from) {
+    g_mutex.lock();
+    if (messagePool[socket].empty()) {
+        g_mutex.unlock();
         return false;
+    }
     MessageNode node = messagePool[socket].front();
 
     buffer = *node.msg;
     from = node.from;
 
     messagePool[socket].pop();
+    g_mutex.unlock();
     return true;
 }
 
-uint32_t TestUtils::FakeNetwork::create(
+inline uint32_t TestUtils::FakeNetwork::create(
         const std::string &hostname,
         uint32_t port
         ) {
@@ -23,45 +31,45 @@ uint32_t TestUtils::FakeNetwork::create(
     return desc;
 }
 
-uint32_t TestUtils::FakeNetwork::connect(const std::string &hostname, uint32_t port) {
+inline uint32_t TestUtils::FakeNetwork::connect(const std::string &hostname, uint32_t port) {
     return this->nodes[hostname][port];
 }
 
-void TestUtils::FakeNetworkController::listen() {
+inline void TestUtils::FakeNetworkController::listen() {
     while (this->isAlive()) {
         Networking::SerializedAxonMessage message(nullptr, 0);
         uint32_t from = 0;
         if (instance.recv(connectedNode, message, from)) {
             owningSynapse->processIncomingMessage(
-                    message, {(int32_t) from, {}}
+                    message, {(uintptr_t) from, {}}
                     );
         }
     }
 }
 
-void TestUtils::FakeNetworkController::send(Networking::AxonMessage &message) {
-    this->sendTo(message, {(int32_t) connectedNode, {}});
+inline void TestUtils::FakeNetworkController::send(Networking::AxonMessage &message) {
+    this->sendTo(message, {(uintptr_t) connectedNode, {}});
 }
 
-void TestUtils::FakeNetworkController::sendTo(Networking::AxonMessage &message, const Networking::NetworkNodeInfo &node) {
+inline void TestUtils::FakeNetworkController::sendTo(Networking::AxonMessage &message, const Networking::NetworkNodeInfo &node) {
     this->sendSerializedTo(message.getSerialized(), node);
 }
 
-void TestUtils::FakeNetworkController::sendSerializedTo(const Networking::SerializedAxonMessage &serialized,
+inline void TestUtils::FakeNetworkController::sendSerializedTo(const Networking::SerializedAxonMessage &serialized,
                                                         const Networking::NetworkNodeInfo &node) {
     instance.sendto(serialized, node.socket, self);
 }
 
-TestUtils::FakeNetworkController::FakeNetworkController(Networking::SynapseInterface *owner, uint32_t port) :
-    Networking::AxonNetworkControllerBase(owner),
+inline TestUtils::FakeNetworkController::FakeNetworkController(Networking::SynapseInterface *owner, uint32_t port) :
+    AxonNetworkControllerBase(owner),
     instance(FakeNetwork::Instance())
     {
         connectedNode = self = instance.create("test-nodes-fake-host", port);
     }
 
-TestUtils::FakeNetworkController::FakeNetworkController(Networking::SynapseInterface *owner,
+inline TestUtils::FakeNetworkController::FakeNetworkController(Networking::SynapseInterface *owner,
                                                         const Networking::ConnectionInfo &info) :
-        Networking::AxonNetworkControllerBase(owner),
+        AxonNetworkControllerBase(owner),
         instance(FakeNetwork::Instance()) {
     self = instance.create("test-nodes-fake-clients", info.port);
     connectedNode = instance.connect(info.hostname, info.port);
