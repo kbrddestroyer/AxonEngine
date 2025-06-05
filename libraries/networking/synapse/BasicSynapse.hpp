@@ -22,6 +22,7 @@ namespace Networking {
     *
     * @tparam conn connection mode (TCP|UDP)
     * @tparam mode synapse mode (CLIENT|SERVER)
+    * @tparam controller derived from AxonNetworkControllerBase class
     */
     template <ConnectionMode conn, SynapseMode mode, class NetworkController>
     class AXON_DECLSPEC BasicSynapse : public SynapseInterface

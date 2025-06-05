@@ -15,6 +15,7 @@ namespace Networking
 	 *
 	 * @tparam conn connection mode (TCP|UDP)
 	 * @tparam mode synapse mode (CLIENT|SERVER)
+     * @tparam controller derived from AxonNetworkControllerBase class
 	 */
     template <Networking::ConnectionMode conn, Networking::SynapseMode mode, class controller>
 	class AXON_DECLSPEC Synapse : public BasicSynapse<conn, mode, controller> {
@@ -48,6 +49,7 @@ namespace Networking
      *
      * @tparam conn connection mode (TCP|UDP)
      * @tparam mode synapse mode (CLIENT|SERVER)
+     * @tparam controller derived from AxonNetworkControllerBase class
      */
 	template <ConnectionMode conn, SynapseMode mode, class controller>
 	class AXON_DECLSPEC AsyncSynapse final : public Synapse<conn, mode, controller>
