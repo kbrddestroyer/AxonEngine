@@ -49,7 +49,6 @@ namespace Networking {
         void send(AxonMessage&) override;
         void sendTo(AxonMessage&, const Socket&) override;
 
-        // This function should be instanced for each connection type
         void listen() override;
         void update() override {}
         void onMessageReceived(const AxonMessage&, const Socket&) override {};
