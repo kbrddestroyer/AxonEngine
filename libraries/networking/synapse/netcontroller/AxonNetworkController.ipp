@@ -1,6 +1,7 @@
 #pragma once
 #include <backends/backend.hpp>
-#include <synapse/BasicSynapse.hpp>
+#include <networking/synapse/BasicSynapse.hpp>
+
 
 namespace Networking {
     void AxonNetworkControllerBase::start() {
@@ -11,11 +12,14 @@ namespace Networking {
         this->alive = false;
     }
 
+    AxonNetworkControllerBase::AxonNetworkControllerBase(SynapseInterface *owner) :
+        owningSynapse(owner) {}
+
     template<ConnectionMode conn, SynapseMode mode>
     BerkeleyAxonNetworkController<conn, mode>::BerkeleyAxonNetworkController(SynapseInterface *owner, uint32_t port) :
         meta({ "", port }),
         connection(),
-        owningSynapse(owner)
+        AxonNetworkControllerBase(owner)
     {
         static_assert(mode == SynapseMode::SERVER);
         uint8_t ret = initialize_server<conn> ( connection, port );
@@ -28,7 +32,7 @@ namespace Networking {
     BerkeleyAxonNetworkController<conn, mode>::BerkeleyAxonNetworkController(SynapseInterface *owner, const ConnectionInfo info) :
             meta(info),
             connection(),
-            owningSynapse(owner)
+            AxonNetworkControllerBase(owner)
     {
         static_assert(mode == SynapseMode::CLIENT);
         uint8_t ret = initialize_client<conn> ( connection, info.hostname.c_str(), info.port );

@@ -12,7 +12,7 @@
 #include "messages/AxonMessage.hpp"
 #include "networking/synapse/utils/SynapseEvents.hpp"
 #include "SynapseInterface.hpp"
-#include <synapse/netcontroller/AxonNetworkController.hpp>
+#include <networking/synapse/netcontroller/AxonNetworkController.hpp>
 
 
 namespace Networking {
