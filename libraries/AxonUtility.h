@@ -12,7 +12,11 @@
 #if defined(WINDOWS_PLATFORM)
 #define GETTER
 #if defined(AXON_LIB)
+#if defined(AXON_STATIC)
+#define AXON_DECLSPEC
+#else
 #define AXON_DECLSPEC __declspec(dllexport)
+#endif
 #else
 #define AXON_DECLSPEC __declspec(dllimport)
 #endif

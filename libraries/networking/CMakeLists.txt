@@ -9,7 +9,12 @@ file(GLOB_RECURSE SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/*.ipp"
 )
 
-add_library(networking SHARED ${SOURCES})
+if (AXON_STATIC)
+    add_library(networking STATIC ${SOURCES})
+    add_compile_definitions(AXON_STATIC)
+else()
+    add_library(networking SHARED ${SOURCES})
+endif()
 
 target_compile_definitions(networking PUBLIC AXON_LIB)
 target_link_libraries(networking events serialization backends messages)
