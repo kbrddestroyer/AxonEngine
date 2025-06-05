@@ -36,7 +36,11 @@ int main()
 {
 	Networking::ConnectionInfo connection = { "localhost", 10423 };
 
-	Networking::AsyncSynapse<Networking::ConnectionMode::TCP, Networking::SynapseMode::CLIENT> clientConnection(connection);
+	Networking::AsyncSynapse<
+	        Networking::ConnectionMode::TCP,
+            Networking::SynapseMode::CLIENT,
+            Networking::BerkeleyAxonNetworkController<Networking::TCP, Networking::SynapseMode::CLIENT>
+            > clientConnection(connection);
     clientConnection.getEventManager().subscribe<Networking::SynapseMessageReceivedEvent>(onMessageReceived);
     clientConnection.start();
 

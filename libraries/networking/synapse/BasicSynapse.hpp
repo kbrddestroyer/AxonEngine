@@ -23,9 +23,11 @@ namespace Networking {
     * @tparam conn connection mode (TCP|UDP)
     * @tparam mode synapse mode (CLIENT|SERVER)
     */
-    template <ConnectionMode conn, SynapseMode mode>
+    template <ConnectionMode conn, SynapseMode mode, class NetworkController>
     class AXON_DECLSPEC BasicSynapse : public SynapseInterface
     {
+        static_assert(std::is_base_of<AxonNetworkControllerBase, NetworkController>());
+        static_assert(!std::is_abstract<NetworkController>());
     public:
         /** Default creation is restricted */
         BasicSynapse() = delete;
@@ -41,8 +43,6 @@ namespace Networking {
 
         ~BasicSynapse() override;
 
-        GETTER bool alive() const { return this->controller->isAlive(); }
-
         void kill() override { this->controller->kill(); }
         void start() override;
         void send(AxonMessage&) override;
@@ -55,7 +55,7 @@ namespace Networking {
 
         void processIncomingMessage(const SerializedAxonMessage&, const Socket&) override;
     protected:
-        std::unique_ptr<BerkeleyAxonNetworkController<conn, mode>> controller;
+        std::unique_ptr<NetworkController> controller;
     };
 }
 
