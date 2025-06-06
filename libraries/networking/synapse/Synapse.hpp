@@ -13,8 +13,6 @@ namespace Networking
 	/**
 	 *	Advanced connection handler with event system
 	 *
-	 * @tparam conn connection mode (TCP|UDP)
-	 * @tparam mode synapse mode (CLIENT|SERVER)
      * @tparam controller derived from AxonNetworkControllerBase class
 	 */
     template<class controller>
@@ -47,8 +45,6 @@ namespace Networking
     /**
      *	Synapse with listen() function in separated thread.
      *
-     * @tparam conn connection mode (TCP|UDP)
-     * @tparam mode synapse mode (CLIENT|SERVER)
      * @tparam controller derived from AxonNetworkControllerBase class
      */
 	template <class controller>

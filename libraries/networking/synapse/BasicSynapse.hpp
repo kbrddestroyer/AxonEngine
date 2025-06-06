@@ -20,8 +20,6 @@ namespace Networking {
     * Basic connection handler
     * Specifies one-to-one connection for client and one-to-many for server.
     *
-    * @tparam conn connection mode (TCP|UDP)
-    * @tparam mode synapse mode (CLIENT|SERVER)
     * @tparam NetworkController derived from AxonNetworkControllerBase class
     */
     template <class NetworkController>
