@@ -41,14 +41,14 @@ inline void TestUtils::FakeNetworkController::listen() {
         uint32_t from = 0;
         if (instance.recv(connectedNode, message, from)) {
             owningSynapse->processIncomingMessage(
-                    message, {(uintptr_t) from, {}}
+                    message, {static_cast<SOCKET_T>(connectedNode), {}}
                     );
         }
     }
 }
 
 inline void TestUtils::FakeNetworkController::send(Networking::AxonMessage &message) {
-    this->sendTo(message, {(uintptr_t) connectedNode, {}});
+    this->sendTo(message, {static_cast<SOCKET_T>(connectedNode), {}});
 }
 
 inline void TestUtils::FakeNetworkController::sendTo(Networking::AxonMessage &message, const Networking::NetworkNodeInfo &node) {
