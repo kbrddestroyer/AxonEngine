@@ -2,23 +2,23 @@
 #include <networking/AxonNetwork.hpp>
 #include "FakeNetworkController/FakeNetworkController.hpp"
 #include <atomic>
+#include <mutex>
 
-std::atomic<bool> hasVisited = false;
+bool hasVisited = false;
 
 void onMessageReceived(const Networking::SynapseMessageReceivedEvent& event) {
+    static std::mutex f_mutex;
+    f_mutex.lock();
     ASSERT_STREQ(static_cast<char*>(event.getMessage().getMessage()), "Hello World!");
     hasVisited = true;
+    f_mutex.unlock();
 }
 
 TEST(TEST_SYNAPSE, TEST_SYNAPSE_COMMON_UDP) {
     Networking::AsyncSynapse<
-            Networking::UDP,
-            Networking::SynapseMode::SERVER,
             Networking::BerkeleyAxonNetworkController<Networking::UDP, Networking::SynapseMode::SERVER>
             > server(10435);
     Networking::AsyncSynapse<
-            Networking::UDP,
-            Networking::SynapseMode::CLIENT,
             Networking::BerkeleyAxonNetworkController<Networking::UDP, Networking::SynapseMode::CLIENT>
     > client({"localhost", 10435});
 
@@ -37,13 +37,9 @@ TEST(TEST_SYNAPSE, TEST_SYNAPSE_COMMON_UDP) {
 
 TEST(TEST_SYNAPSE, TEST_SYNAPSE_COMMON_TCP) {
     Networking::AsyncSynapse<
-            Networking::TCP,
-            Networking::SynapseMode::SERVER,
             Networking::BerkeleyAxonNetworkController<Networking::TCP, Networking::SynapseMode::SERVER>
     > server(10435);
     Networking::AsyncSynapse<
-            Networking::TCP,
-            Networking::SynapseMode::CLIENT,
             Networking::BerkeleyAxonNetworkController<Networking::TCP, Networking::SynapseMode::CLIENT>
     > client({"localhost", 10435});
 
@@ -61,14 +57,10 @@ TEST(TEST_SYNAPSE, TEST_SYNAPSE_COMMON_TCP) {
  }
 
 TEST(TEST_SYNAPSE, TEST_FAKE_NETWORK) {
-    Networking::AsyncSynapse<
-            Networking::UDP,
-            Networking::SynapseMode::SERVER,
+    Networking::Synapse<
             TestUtils::FakeNetworkController
     > server(10435);
-    Networking::AsyncSynapse<
-            Networking::UDP,
-            Networking::SynapseMode::CLIENT,
+    Networking::Synapse<
             TestUtils::FakeNetworkController
     > client({"test-nodes-fake-host", 10435});
 
@@ -78,9 +70,6 @@ TEST(TEST_SYNAPSE, TEST_FAKE_NETWORK) {
 
     Networking::AxonMessage msg("Hello World!", sizeof("Hello World!"));
     client.send(msg);
-
-    while (!hasVisited);
-
     ASSERT_TRUE(hasVisited);
     hasVisited = false;
 }

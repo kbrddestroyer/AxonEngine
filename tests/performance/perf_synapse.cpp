@@ -5,13 +5,9 @@
 
 int main() {
     Networking::AsyncSynapse<
-            Networking::UDP,
-            Networking::SynapseMode::SERVER,
             Networking::BerkeleyAxonNetworkController<Networking::UDP, Networking::SynapseMode::SERVER>
             > server(10432);
     Networking::AsyncSynapse<
-            Networking::UDP,
-            Networking::SynapseMode::CLIENT,
             Networking::BerkeleyAxonNetworkController<Networking::UDP, Networking::SynapseMode::CLIENT>
             > client({"localhost", 10432});
     server.start();

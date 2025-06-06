@@ -32,8 +32,6 @@ void onMessageReceived(const Networking::SynapseMessageReceivedEvent& event)
 int main()
 {
 	Networking::Synapse<
-	        Networking::ConnectionMode::TCP,
-            Networking::SynapseMode::SERVER,
             Networking::BerkeleyAxonNetworkController<Networking::ConnectionMode::TCP, Networking::SynapseMode::SERVER>
             > serverConnection(10423);
 	serverConnection.getEventManager().subscribe<Networking::SynapseMessageReceivedEvent>(onMessageReceived);

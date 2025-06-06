@@ -24,7 +24,7 @@ namespace Networking {
     * @tparam mode synapse mode (CLIENT|SERVER)
     * @tparam NetworkController derived from AxonNetworkControllerBase class
     */
-    template <ConnectionMode conn, SynapseMode mode, class NetworkController>
+    template <class NetworkController>
     class AXON_DECLSPEC BasicSynapse : public SynapseInterface
     {
         static_assert(std::is_base_of<AxonNetworkControllerBase, NetworkController>());

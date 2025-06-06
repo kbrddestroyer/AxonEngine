@@ -1,25 +1,7 @@
 #pragma once
 
 inline void TestUtils::FakeNetwork::sendto(const Networking::SerializedAxonMessage &serialized, uint32_t socket, uint32_t from) {
-    g_mutex.lock();
-    messagePool[socket].push({std::make_shared<Networking::SerializedAxonMessage>(serialized), from});
-    g_mutex.unlock();
-}
-
-inline bool TestUtils::FakeNetwork::recv(uint32_t socket, Networking::SerializedAxonMessage &buffer, uint32_t &from) {
-    g_mutex.lock();
-    if (messagePool[socket].empty()) {
-        g_mutex.unlock();
-        return false;
-    }
-    MessageNode node = messagePool[socket].front();
-
-    buffer = *node.msg;
-    from = node.from;
-
-    messagePool[socket].pop();
-    g_mutex.unlock();
-    return true;
+    pool[socket]->owner()->processIncomingMessage(serialized, { static_cast<SOCKET_T>( socket ), {} });
 }
 
 inline uint32_t TestUtils::FakeNetwork::create(
@@ -35,17 +17,11 @@ inline uint32_t TestUtils::FakeNetwork::connect(const std::string &hostname, uin
     return this->nodes[hostname][port];
 }
 
-inline void TestUtils::FakeNetworkController::listen() {
-    while (this->isAlive()) {
-        Networking::SerializedAxonMessage message(nullptr, 0);
-        uint32_t from = 0;
-        if (instance.recv(connectedNode, message, from)) {
-            owningSynapse->processIncomingMessage(
-                    message, {static_cast<SOCKET_T>(connectedNode), {}}
-                    );
-        }
-    }
+void TestUtils::FakeNetwork::bind(uint32_t desc, TestUtils::FakeNetworkController *controller) {
+    pool[desc] = controller;
 }
+
+inline void TestUtils::FakeNetworkController::listen() {}
 
 inline void TestUtils::FakeNetworkController::send(Networking::AxonMessage &message) {
     this->sendTo(message, {static_cast<SOCKET_T>(connectedNode), {}});
@@ -65,6 +41,7 @@ inline TestUtils::FakeNetworkController::FakeNetworkController(Networking::Synap
     instance(FakeNetwork::Instance())
     {
         connectedNode = self = instance.create("test-nodes-fake-host", port);
+        instance.bind(connectedNode, this);
     }
 
 inline TestUtils::FakeNetworkController::FakeNetworkController(Networking::SynapseInterface *owner,
@@ -73,4 +50,5 @@ inline TestUtils::FakeNetworkController::FakeNetworkController(Networking::Synap
         instance(FakeNetwork::Instance()) {
     self = instance.create("test-nodes-fake-clients", info.port);
     connectedNode = instance.connect(info.hostname, info.port);
+    instance.bind(self, this);
 }

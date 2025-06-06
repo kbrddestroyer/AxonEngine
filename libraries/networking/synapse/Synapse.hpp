@@ -17,14 +17,14 @@ namespace Networking
 	 * @tparam mode synapse mode (CLIENT|SERVER)
      * @tparam controller derived from AxonNetworkControllerBase class
 	 */
-    template <ConnectionMode conn, SynapseMode mode, typename controller>
-	class AXON_DECLSPEC Synapse : public BasicSynapse<conn, mode, controller> {
+    template<class controller>
+	class AXON_DECLSPEC Synapse : public BasicSynapse<controller> {
 	public:
 #pragma region CONSTRUCTING
 		/** Initializes Synapse in server mode */
-		explicit Synapse(uint32_t port) : BasicSynapse<conn, mode, controller>(port) {}
+		explicit Synapse(uint32_t port) : BasicSynapse<controller>(port) {}
 		/** Initialize Synapse in client mode */
-		explicit Synapse(const ConnectionInfo &info) : BasicSynapse<conn, mode, controller>(info) {}
+		explicit Synapse(const ConnectionInfo &info) : BasicSynapse<controller>(info) {}
 
 		~Synapse() override = default;
 #pragma endregion
@@ -51,15 +51,15 @@ namespace Networking
      * @tparam mode synapse mode (CLIENT|SERVER)
      * @tparam controller derived from AxonNetworkControllerBase class
      */
-	template <ConnectionMode conn, SynapseMode mode, class controller>
-	class AXON_DECLSPEC AsyncSynapse final : public Synapse<conn, mode, controller>
+	template <class controller>
+	class AXON_DECLSPEC AsyncSynapse final : public Synapse<controller>
 	{
 	public:
 		/** Initializes Synapse in server mode */
-		explicit AsyncSynapse(uint32_t port) : Synapse<conn, mode, controller>(port) {}
+		explicit AsyncSynapse(uint32_t port) : Synapse<controller>(port) {}
 
 		/** Initialize Synapse in client mode */
-		explicit AsyncSynapse(const ConnectionInfo &info) : Synapse<conn, mode, controller>(info) {}
+		explicit AsyncSynapse(const ConnectionInfo &info) : Synapse<controller>(info) {}
 
 		~AsyncSynapse() override;
 

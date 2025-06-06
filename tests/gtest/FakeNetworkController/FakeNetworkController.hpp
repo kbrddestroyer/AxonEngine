@@ -10,6 +10,8 @@ namespace Networking {
 }
 
 namespace TestUtils {
+    class FakeNetworkController;
+
     class FakeNetwork {
         FakeNetwork() = default;
     public:
@@ -21,8 +23,9 @@ namespace TestUtils {
         uint32_t create(const std::string &, uint32_t);
         uint32_t connect(const std::string &, uint32_t);
 
+        void bind(uint32_t, FakeNetworkController *);
+
         void sendto(const Networking::SerializedAxonMessage&, uint32_t, uint32_t);
-        bool recv(uint32_t socket, Networking::SerializedAxonMessage &, uint32_t &);
     private:
         static uint32_t getDesc() {
             static uint32_t desc = 0;
@@ -36,7 +39,7 @@ namespace TestUtils {
     private:
         std::mutex g_mutex = {};
 
-        std::map<uint32_t, std::queue<MessageNode>> messagePool = {};
+        std::map<uint32_t, FakeNetworkController *> pool = {};
         std::map<std::string, std::unordered_map<uint32_t, uint32_t>> nodes = {};
     };
 
@@ -50,6 +53,9 @@ namespace TestUtils {
         void listen() override;
         void send(Networking::AxonMessage&) override;
         void sendTo(Networking::AxonMessage&, const Networking::NetworkNodeInfo&) override;
+
+
+        GETTER Networking::SynapseInterface * owner() { return owningSynapse; }
     protected:
         void sendSerializedTo(const Networking::SerializedAxonMessage&, const Networking::NetworkNodeInfo&) override;
 
