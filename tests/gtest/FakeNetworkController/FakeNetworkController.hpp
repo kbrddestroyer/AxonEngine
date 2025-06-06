@@ -31,14 +31,7 @@ namespace TestUtils {
             static uint32_t desc = 0;
             return ++desc;
         }
-    public:
-        struct MessageNode {
-            std::shared_ptr<Networking::SerializedAxonMessage> msg;
-            uint32_t from;
-        };
     private:
-        std::mutex g_mutex = {};
-
         std::map<uint32_t, FakeNetworkController *> pool = {};
         std::map<std::string, std::unordered_map<uint32_t, uint32_t>> nodes = {};
     };
