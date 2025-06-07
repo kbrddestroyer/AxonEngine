@@ -19,7 +19,7 @@ namespace Networking {
         GETTER const AxonMessage& getMessage() const { return message; }
         GETTER const Socket& getFrom() const { return from; }
     private:
-        const AxonMessage&	message;
+        const AxonMessage& message;
         const Socket& from;
     };
 }

@@ -7,6 +7,7 @@
 #include "messages/AxonMessage.hpp"
 
 #include "networking/synapse/utils/SynapseUtility.hpp"
+#include <networking/utility/MessageProcessor.hpp>
 
 namespace Networking
 {
@@ -37,10 +38,9 @@ namespace Networking
         GETTER bool alive() { return this->networkController->isAlive(); }
 #pragma endregion
 	protected:
-        std::vector<uint64_t> pendingValidation;
-		std::unique_ptr<MessagePoolBase> pool = std::make_unique<MessagePoolBase>();
-		std::unique_ptr<MessageMapBase> mmap = std::make_unique<MessageMapBase>();
-	};
+		ADD_MODULE(MessageProcessor, msgproc, this);
+    	friend MessageProcessor;
+    };
 
     /**
      *	Synapse with listen() function in separated thread.

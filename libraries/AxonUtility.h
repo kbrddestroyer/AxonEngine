@@ -34,3 +34,4 @@
 
 #define WGETTER GETTER_WNE
 #endif
+

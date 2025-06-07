@@ -1,18 +1,17 @@
 #pragma once
 #include <backends/backend.hpp>
-#include <networking/synapse/BasicSynapse.hpp>
 
 
 namespace Networking {
-    void AxonNetworkControllerBase::start() {
+    inline void AxonNetworkControllerBase::start() {
         this->alive.store(true);
     }
 
-    void AxonNetworkControllerBase::kill() {
+    inline void AxonNetworkControllerBase::kill() {
         this->alive.store(false);
     }
 
-    AxonNetworkControllerBase::AxonNetworkControllerBase(SynapseInterface *owner) :
+    inline AxonNetworkControllerBase::AxonNetworkControllerBase(SynapseInterface *owner) :
         owningSynapse(owner) {}
 
     template<ConnectionMode conn, SynapseMode mode>
@@ -24,7 +23,7 @@ namespace Networking {
         static_assert(mode == SynapseMode::SERVER);
         uint8_t ret = initialize_server<conn> ( connection, port );
         if ( ret != SUCCESS ) {
-            throw Networking::AxonNetworkingInternalError(ret);
+            throw AxonNetworkingInternalError(ret);
         }
     }
 
@@ -35,9 +34,9 @@ namespace Networking {
             AxonNetworkControllerBase(owner)
     {
         static_assert(mode == SynapseMode::CLIENT);
-        uint8_t ret = initialize_client<conn> ( connection, info.hostname.c_str(), info.port );
+        const uint8_t ret = initialize_client<conn> ( connection, info.hostname.c_str(), info.port );
         if ( ret != SUCCESS ) {
-            throw Networking::AxonNetworkingInternalError(ret);
+            throw AxonNetworkingInternalError(ret);
         }
     }
 
@@ -67,7 +66,7 @@ namespace Networking {
 #pragma region SERVER_FUNCTIONS
 
     template<>
-    inline void Networking::BerkeleyAxonNetworkController<Networking::ConnectionMode::TCP, Networking::SynapseMode::SERVER>::listen()
+    inline void BerkeleyAxonNetworkController<TCP, SynapseMode::SERVER>::listen()
     {
         fd_set master;
         FD_ZERO(&master);
@@ -118,7 +117,7 @@ namespace Networking {
     }
 
     template<>
-    inline void Networking::BerkeleyAxonNetworkController<Networking::ConnectionMode::UDP, Networking::SynapseMode::SERVER>::listen()
+    inline void BerkeleyAxonNetworkController<UDP, SynapseMode::SERVER>::listen()
     {
         while (this->isAlive()) {
             char buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
@@ -136,7 +135,7 @@ namespace Networking {
 #pragma region CLIENT_FUNCTIONS
 
     template<>
-    inline void Networking::BerkeleyAxonNetworkController<Networking::ConnectionMode::TCP, Networking::SynapseMode::CLIENT>::listen() {
+    inline void BerkeleyAxonNetworkController<TCP, SynapseMode::CLIENT>::listen() {
         SOCKET_T client = connection.socket;
 
         while (this->isAlive())
@@ -153,12 +152,12 @@ namespace Networking {
     }
 
     template<>
-    inline void Networking::BerkeleyAxonNetworkController<Networking::ConnectionMode::UDP, Networking::SynapseMode::CLIENT>::listen() {
+    inline void BerkeleyAxonNetworkController<UDP, SynapseMode::CLIENT>::listen() {
         SOCKADDR_IN_T host = {};
 
         while (this->isAlive()) {
             char buffer[SYNAPSE_MESSAGE_SIZE_MAX] = {};
-            int32_t size = recv_udp_message(reinterpret_cast<char *> (buffer), SYNAPSE_MESSAGE_SIZE_MAX, connection.socket,
+            const int32_t size = recv_udp_message(buffer, SYNAPSE_MESSAGE_SIZE_MAX, connection.socket,
                                             &host);
             if (size > 0) {
                 owningSynapse->processIncomingMessage(SerializedAxonMessage(buffer, size), connection);

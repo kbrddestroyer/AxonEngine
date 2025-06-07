@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <networking/AxonNetwork.hpp>
+#include <networking/AxonLibrary.hpp>
 #include "FakeNetworkController/FakeNetworkController.hpp"
 #include <atomic>
 
@@ -26,10 +26,4 @@ TEST(TEST_SYNAPSE, TEST_FAKE_NETWORK) {
     client.send(msg);
     ASSERT_TRUE(hasVisited);
     hasVisited = false;
-}
-
-int main(int argc, char* argv[])
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

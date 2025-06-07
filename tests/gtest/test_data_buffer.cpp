@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <networking/AxonNetwork.hpp>
+#include <networking/AxonLibrary.hpp>
 #include <cstring>
 
 TEST(TEST_BINARY_STREAM, TEST_COMMON)
@@ -19,10 +19,4 @@ TEST(TEST_BINARY_STREAM, TEST_COMMON)
     delete newlyCreatedStream;
     ASSERT_NE(newStream.size(), 0);
     ASSERT_NE(newStream.data(), nullptr);
-}
-
-int main(int argc, char* argv[])
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

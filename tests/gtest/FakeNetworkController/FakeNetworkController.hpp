@@ -31,7 +31,7 @@ namespace TestUtils {
             static uint32_t desc = 0;
             return ++desc;
         }
-    private:
+
         std::map<uint32_t, FakeNetworkController *> pool = {};
         std::map<std::string, std::unordered_map<uint32_t, uint32_t>> nodes = {};
     };

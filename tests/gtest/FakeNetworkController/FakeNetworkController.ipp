@@ -17,7 +17,7 @@ inline uint32_t TestUtils::FakeNetwork::connect(const std::string &hostname, uin
     return this->nodes[hostname][port];
 }
 
-void TestUtils::FakeNetwork::bind(uint32_t desc, TestUtils::FakeNetworkController *controller) {
+inline void TestUtils::FakeNetwork::bind(uint32_t desc, TestUtils::FakeNetworkController *controller) {
     pool[desc] = controller;
 }
 

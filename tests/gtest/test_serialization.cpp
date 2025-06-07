@@ -122,9 +122,3 @@ TEST(TEST_SERIALIZATION, TEST_MESSAGE_SPLIT) {
     message_.~AxonMessage();
     ASSERT_STREQ(static_cast<char*>(ptr->getMessage()), " World!");
 }
-
-int main(int argc, char* argv[])
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
