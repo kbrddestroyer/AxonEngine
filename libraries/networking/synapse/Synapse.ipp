@@ -6,7 +6,7 @@
 
 template<class controller>
 void Networking::Synapse<controller>::update() {
-    MessagePoolNodePtr pNode = pool->pop();
+    MessagePoolNodePtr pNode = this->msgproc->processPool();
     if (!pNode.get())
         return;
 
@@ -23,7 +23,7 @@ void Networking::Synapse<controller>::sendTo(AxonMessage &message, const Socket 
 
     if (message.hasFlag(VALIDATE))
     {
-        pendingValidation.push_back(message.ID());
+        this->msgproc->awaitValidation(message.ID());
     }
 
     BasicSynapse<controller>::sendTo(message, dest);
@@ -31,37 +31,13 @@ void Networking::Synapse<controller>::sendTo(AxonMessage &message, const Socket 
 
 template<class controller>
 void Networking::Synapse<controller>::sendPooled(const AxonMessage& message, const Socket &dest) const {
-    pool->push( { message, dest } );
+    this->msgproc->poolMessage( { message, dest } );
 }
 
 template<class controller>
 void Networking::Synapse<controller>::onMessageReceived(const AxonMessage& message, const Socket &from)
 {
-    if (message.hasFlag(VALIDATE))
-    {
-        sendPooled(AxonMessage(message, 0), from);
-    }
-    if (message.hasFlag(ACKNOWLEDGE) && !message.hasFlag(PARTIAL))
-    {
-        auto it = std::find(pendingValidation.begin(), pendingValidation.end(), message.ID());
-        if (it != pendingValidation.end())
-            pendingValidation.erase(it);
-    }
-    if (mmap->contains(message.ID()) || message.hasFlag(PARTIAL))
-    {
-        mmap->append(message);
-
-        if (!message.hasFlag(PARTIAL))
-        {
-            std::shared_ptr<AxonMessage> res = mmap->collapse(message.ID());
-            if (!res)
-                return;
-
-            SynapseMessageReceivedEvent event_(*res, from);
-            this->events.invoke(&event_);
-        }
-        return;
-    }
+    this->msgproc->process(message, from);
 
     SynapseMessageReceivedEvent event_ = SynapseMessageReceivedEvent(message, from);
     this->events.invoke(&event_);

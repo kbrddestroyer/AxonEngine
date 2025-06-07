@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <networking/AxonNetwork.hpp>
+#include <networking/AxonLibrary.hpp>
 #include "FakeNetworkController/FakeNetworkController.hpp"
 #include <atomic>
 

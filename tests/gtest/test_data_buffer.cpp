@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <networking/AxonNetwork.hpp>
+#include <networking/AxonLibrary.hpp>
 #include <cstring>
 
 TEST(TEST_BINARY_STREAM, TEST_COMMON)

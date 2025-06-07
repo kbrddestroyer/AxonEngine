@@ -4,8 +4,6 @@
 #include <synapse/utils/SynapseEvents.hpp>
 #include <events/AxonEvent.hpp>
 
-#include <utility>
-
 namespace Networking {
     template<typename T>
     class AXON_DECLSPEC AxonNetworkPtr {

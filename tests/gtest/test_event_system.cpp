@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <networking/AxonNetwork.hpp>
+#include <networking/AxonLibrary.hpp>
 
 class TestEvent : public EventSystem::AxonEvent
 {
