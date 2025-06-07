@@ -20,9 +20,3 @@ TEST(TEST_BINARY_STREAM, TEST_COMMON)
     ASSERT_NE(newStream.size(), 0);
     ASSERT_NE(newStream.data(), nullptr);
 }
-
-int main(int argc, char* argv[])
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}

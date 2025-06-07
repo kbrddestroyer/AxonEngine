@@ -23,10 +23,3 @@ TEST(TEST_MESSAGE_POOL, TEST_REGULAR)
     ASSERT_FALSE(pool.getPoolSize());
     ASSERT_NE(pNode1.get(), pNode2.get());
 }
-
-
-int main(int argc, char* argv[])
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}

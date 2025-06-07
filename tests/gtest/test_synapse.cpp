@@ -27,9 +27,3 @@ TEST(TEST_SYNAPSE, TEST_FAKE_NETWORK) {
     ASSERT_TRUE(hasVisited);
     hasVisited = false;
 }
-
-int main(int argc, char* argv[])
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
