@@ -1,5 +1,5 @@
 #include "SynapseUtility.hpp"
-#include <common_macro.h>
+#include "common_macro.h"
 
 namespace Networking {
     const char * AxonNetworkingInternalError::what() const noexcept {
@@ -10,7 +10,7 @@ namespace Networking {
 #if defined(WINDOWS_PLATFORM)
                 return "C WSAStartup function failed.";
 #else
-                return "That shouln't be here. Check your code";
+                return "That shouldn't be here. Check your code";
 #endif
             case ERR_INVALID:
                 return "Got invalid socket value";

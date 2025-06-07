@@ -1,7 +1,7 @@
 #pragma once
 
 template<typename T>
-inline void EventSystem::AxonEventManager::subscribe(std::function<void(const T&)> callback)
+void EventSystem::AxonEventManager::subscribe(std::function<void(const T&)> callback)
 {
 	std::type_index type = std::type_index(typeid(T));
 
@@ -16,7 +16,7 @@ inline void EventSystem::AxonEventManager::subscribe(std::function<void(const T&
 }
 
 template<class C, typename T>
-inline void EventSystem::AxonEventManager::subscribe(void(C::* callback)(const T&), C* instance)
+void EventSystem::AxonEventManager::subscribe(void(C::* callback)(const T&), C* instance)
 {
 	std::type_index type = std::type_index(typeid(T));
 

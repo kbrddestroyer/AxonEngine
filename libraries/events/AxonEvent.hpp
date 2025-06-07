@@ -7,11 +7,25 @@
 
 namespace EventSystem
 {
+	/**
+	 * Base class for any AxonEvent. Provides convenient interface (or will do some day).
+	 */
 	class AxonEvent {
 	public:
 		virtual ~AxonEvent() = default;
- 	};
+	};
 
+
+	/**
+	 * EventManager class is capable of dispatching triggered events.\n
+	 * <b> Usage: </b>
+	 * EventManager could be created literally anywhere.
+	 * Callback method can be attached with <b>subscribe()</b> method. It will be dispatched when
+	 * <b>invoke()</b> message is called.
+	 *
+	 * @note see GlobalEventManager
+	 * @note see client-server example
+	 */
 	class AxonEventManager
 	{
 	public:
@@ -20,23 +34,22 @@ namespace EventSystem
 
 		template<typename T>
 		void subscribe(std::function<void(const T&)>);
-
 		template<class C, typename T>
-		void subscribe(void (C::* method)(const T&), C* instance);
+		void subscribe(void (C::* callback)(const T&), C *instance);
 		
-		void invoke(AxonEvent*);
+		void invoke(AxonEvent *);
 	private:
 		std::unordered_map<std::type_index, std::vector<std::function<void(AxonEvent*)>>> subscribers;
-	
-		friend class GlobalEventManager;
 	};
 
-	class GlobalEventManager : public AxonEventManager
+	/**
+	 * GlobalEventManager cannot be constructed, only accessed via Instance() method
+	 */
+	class GlobalEventManager final : public AxonEventManager
 	{
-	private:
 		GlobalEventManager() = default;
 	public:
-		static GlobalEventManager& Instance();
+		static GlobalEventManager& Instance() noexcept;
 	};
 }
 

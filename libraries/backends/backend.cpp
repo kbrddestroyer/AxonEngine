@@ -30,12 +30,12 @@ template <> uint8_t initialize_server<SOCK_DGRAM>(Socket& socket, uint32_t port)
     return create_udp_server(&socket.conn, &socket.socket, port);
 }
 
-template <> uint8_t initialize_client<SOCK_STREAM>(Socket& socket, const char* hostname, uint32_t port)
+template <> uint8_t initialize_client<SOCK_STREAM>(Socket& socket, const char* hostname, const uint32_t port)
 {
     return connect_tcp_client(&socket.conn, &socket.socket, hostname, port);
 }
 
-template <> uint8_t initialize_client<SOCK_DGRAM>(Socket& socket, const char* hostname, uint32_t port)
+template <> uint8_t initialize_client<SOCK_DGRAM>(Socket& socket, const char* hostname, const uint32_t port)
 {
     return connect_udp_client(&socket.conn, &socket.socket, hostname, port);
 }

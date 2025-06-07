@@ -5,6 +5,15 @@
 
 #pragma region UDP_UTILS
 
+/**
+* Connects to the remote host via UDP. Uses `getaddrinfo`.
+* @param [out] server server info (SOCKADDR_IN_T structure)
+* @param client client socket
+* @param hostname ip/hostname of a node to connect to
+* @param port port of a node to connect to
+* @returns 0
+* @returns ERR_CODE (defined in basic_networking.h)
+*/
 uint8_t connect_udp_client(SOCKADDR_IN_T* server, SOCKET_T* client, const char* hostname, uint32_t port)
 {
 	SOCKET_HEAD_INIT
@@ -12,9 +21,7 @@ uint8_t connect_udp_client(SOCKADDR_IN_T* server, SOCKET_T* client, const char* 
 		if (!CHECK_VALID(*client = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)))
 			return ERR_INVALID;
 
-	ADDRINFO_T hints;
-
-	memset(&hints, 0, sizeof(hints));
+	ADDRINFO_T hints = {0};
 
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_DGRAM;
@@ -38,7 +45,14 @@ uint8_t connect_udp_client(SOCKADDR_IN_T* server, SOCKET_T* client, const char* 
 	return SUCCESS;
 }
 
-
+/**
+* Initializes server socket with UDP protocol.
+* @param [out] server server info (SOCKADDR_IN_T structure)
+* @param [out] server_socket server socket that will be initialized
+* @param port port to create server onto
+* @returns 0
+* @returns ERR_CODE (defined in basic_networking.h)
+*/
 uint8_t create_udp_server(SOCKADDR_IN_T* server, SOCKET_T* server_socket, uint32_t port)
 {
 	SOCKET_HEAD_INIT
@@ -58,17 +72,37 @@ uint8_t create_udp_server(SOCKADDR_IN_T* server, SOCKET_T* server_socket, uint32
 	return SUCCESS;
 }
 
+/**
+* Sends data over UDP
+* @param message data to send, sequence of bytes
+* @param size size of message, bytes. Most of the time can be strlen(message), but we cannot be sure in case, when message is serialized data
+* @param from source
+* @param to destination
+* @return sendto function result
+*/
 int32_t send_udp_message(const void* message, const size_t size, const SOCKET_T from, const SOCKADDR_IN_T* to)
 {
 	return sendto(from, message, size, 0, (SOCKADDR_T*)to, sizeof(*to));
 }
 
+/**
+* Handles message receiving over UDP
+* @param message data buffer
+* @param max_size max size of bytes that can be written in buffer
+* @param to destination node
+* @param from client information
+* @return recvfrom function result
+*/
 int32_t recv_udp_message(void* const message, size_t max_size, SOCKET_T to, SOCKADDR_IN_T* from)
 {
-	SOCKLEN_T len = (SOCKLEN_T) sizeof(*from);
-	return recvfrom(to, message, max_size, 0, (SOCKADDR_T*)from, &len);
+	SOCKLEN_T len = sizeof(*from);
+	return recvfrom(to, message, max_size, 0, (SOCKADDR_T *) from, &len);
 }
 
+/**
+* Closes socket
+* @param socket
+*/
 void finalize_udp(SOCKET_T socket)
 {
 	CLOSESOCKET(socket);

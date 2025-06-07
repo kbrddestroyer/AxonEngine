@@ -1,3 +1,7 @@
+/**
+ *	Defines some useful macro, mostly for C code and backends.
+ */
+
 #ifndef AXONENGINE_COMMON_MACRO_H
 #define AXONENGINE_COMMON_MACRO_H
 

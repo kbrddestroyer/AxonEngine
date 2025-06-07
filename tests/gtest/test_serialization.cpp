@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <serialization/serialization.hpp>
-#include <networking/message/AxonMessage.hpp>
+#include "messages/AxonMessage.hpp"
 
 #include <cstring>
 
