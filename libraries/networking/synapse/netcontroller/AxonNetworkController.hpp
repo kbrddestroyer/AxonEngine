@@ -1,20 +1,24 @@
 #pragma once
 #include <atomic>
 
-#include <synapse/SynapseInterface.hpp>
+#include <networking/synapse/SynapseInterface.hpp>
 
 #include <AxonUtility.h>
 #include <messages/AxonMessage.hpp>
-#include <synapse/utils/SynapseUtility.hpp>
+#include <networking/synapse/utils/SynapseUtility.hpp>
 
 namespace Networking {
     typedef Socket NetworkNodeInfo;
 
     class AXON_DECLSPEC AxonNetworkControllerBase {
     public:
-        virtual ~AxonNetworkControllerBase() = default;
+        AxonNetworkControllerBase() = delete;
 
-        GETTER bool isAlive() { return alive; }
+        explicit AxonNetworkControllerBase(SynapseInterface *);
+
+        virtual ~AxonNetworkControllerBase() { kill(); };
+
+        GETTER bool isAlive() { return alive.load(); }
 
         virtual void start();
         void kill();
@@ -26,6 +30,8 @@ namespace Networking {
         virtual void sendSerializedTo(const SerializedAxonMessage&, const NetworkNodeInfo&) = 0;
     private:
         std::atomic<bool> alive = false;
+    protected:
+        SynapseInterface *owningSynapse;
     };
 
     template <ConnectionMode conn, SynapseMode mode>
@@ -46,8 +52,6 @@ namespace Networking {
     private:
         ConnectionInfo  meta;
         NetworkNodeInfo connection; // Client-only feature, server will store nothing
-    protected:
-        SynapseInterface *owningSynapse;
     };
 }
 

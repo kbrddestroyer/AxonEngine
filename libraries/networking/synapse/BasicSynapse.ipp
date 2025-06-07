@@ -4,51 +4,51 @@
 #pragma region BASIC_SYNAPSE
 #pragma region CONTRUCTING
 
-template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-Networking::BasicSynapse<conn, mode>::BasicSynapse(uint32_t port) :
-    controller(std::make_unique<BerkeleyAxonNetworkController<conn, mode>>(this, port))
+template <class NetworkController>
+Networking::BasicSynapse<NetworkController>::BasicSynapse(uint32_t port) :
+    networkController(std::make_unique<NetworkController>(this, port))
 {}
 
-template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-Networking::BasicSynapse<conn, mode>::BasicSynapse(const ConnectionInfo& connection) :
-    controller(std::make_unique<BerkeleyAxonNetworkController<conn, mode>>(this, connection))
+template <class NetworkController>
+Networking::BasicSynapse<NetworkController>::BasicSynapse(const ConnectionInfo& connection) :
+    networkController(std::make_unique<NetworkController>(this, connection))
 {}
 
-template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-Networking::BasicSynapse<conn, mode>::~BasicSynapse()
+template <class NetworkController>
+Networking::BasicSynapse<NetworkController>::~BasicSynapse()
 {
-    controller->kill();
+    networkController->kill();
 }
 
 #pragma endregion
 
-template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::BasicSynapse<conn, mode>::start()
+template <class NetworkController>
+void Networking::BasicSynapse<NetworkController>::start()
 {
-    controller->start();
+    networkController->start();
     listen();
 }
 
-template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::BasicSynapse<conn, mode>::send(AxonMessage& message)
+template <class NetworkController>
+void Networking::BasicSynapse<NetworkController>::send(AxonMessage& message)
 {
-    controller->send(message);
+    networkController->send(message);
 }
 
-template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::BasicSynapse<conn, mode>::sendTo(AxonMessage& message, const Socket& dest)
+template <class NetworkController>
+void Networking::BasicSynapse<NetworkController>::sendTo(AxonMessage& message, const Socket& dest)
 {
-    controller->sendTo(message, dest);
+    networkController->sendTo(message, dest);
 }
 
-template<Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::BasicSynapse<conn, mode>::processIncomingMessage(const SerializedAxonMessage &message, const Socket& from) {
+template <class NetworkController>
+void Networking::BasicSynapse<NetworkController>::processIncomingMessage(const SerializedAxonMessage &message, const Socket& from) {
     onMessageReceived(AxonMessage(message), from);
 }
 
-template<Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::BasicSynapse<conn, mode>::listen() {
-    controller->listen();
+template <class NetworkController>
+void Networking::BasicSynapse<NetworkController>::listen() {
+    networkController->listen();
 }
 
 #pragma endregion

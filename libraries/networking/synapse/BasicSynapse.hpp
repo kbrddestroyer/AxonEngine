@@ -12,7 +12,7 @@
 #include "messages/AxonMessage.hpp"
 #include "networking/synapse/utils/SynapseEvents.hpp"
 #include "SynapseInterface.hpp"
-#include <synapse/netcontroller/AxonNetworkController.hpp>
+#include <networking/synapse/netcontroller/AxonNetworkController.hpp>
 
 
 namespace Networking {
@@ -20,12 +20,13 @@ namespace Networking {
     * Basic connection handler
     * Specifies one-to-one connection for client and one-to-many for server.
     *
-    * @tparam conn connection mode (TCP|UDP)
-    * @tparam mode synapse mode (CLIENT|SERVER)
+    * @tparam NetworkController derived from AxonNetworkControllerBase class
     */
-    template <ConnectionMode conn, SynapseMode mode>
+    template <class NetworkController>
     class AXON_DECLSPEC BasicSynapse : public SynapseInterface
     {
+        static_assert(std::is_base_of<AxonNetworkControllerBase, NetworkController>());
+        static_assert(!std::is_abstract<NetworkController>());
     public:
         /** Default creation is restricted */
         BasicSynapse() = delete;
@@ -41,21 +42,18 @@ namespace Networking {
 
         ~BasicSynapse() override;
 
-        GETTER bool alive() const { return this->controller->isAlive(); }
-
-        void kill() override { this->controller->kill(); }
+        void kill() override { this->networkController->kill(); }
         void start() override;
         void send(AxonMessage&) override;
         void sendTo(AxonMessage&, const Socket&) override;
 
-        // This function should be instanced for each connection type
         void listen() override;
         void update() override {}
         void onMessageReceived(const AxonMessage&, const Socket&) override {};
 
         void processIncomingMessage(const SerializedAxonMessage&, const Socket&) override;
     protected:
-        std::unique_ptr<BerkeleyAxonNetworkController<conn, mode>> controller;
+        std::unique_ptr<NetworkController> networkController;
     };
 }
 

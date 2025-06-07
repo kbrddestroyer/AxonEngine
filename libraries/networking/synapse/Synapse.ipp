@@ -4,8 +4,8 @@
 
 #pragma region SYNAPSE
 
-template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::Synapse<conn, mode>::update() {
+template<class controller>
+void Networking::Synapse<controller>::update() {
     MessagePoolNodePtr pNode = pool->pop();
     if (!pNode.get())
         return;
@@ -13,8 +13,8 @@ void Networking::Synapse<conn, mode>::update() {
     this->sendTo(pNode->message, pNode->destination);
 }
 
-template<Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::Synapse<conn, mode>::sendTo(AxonMessage &message, const Socket &dest) {
+template<class controller>
+void Networking::Synapse<controller>::sendTo(AxonMessage &message, const Socket &dest) {
     const AxonMessage::UniqueAxonMessagePtr ptr = message.split(SYNAPSE_PAYLOAD_SIZE_MAX);
     if (ptr)
     {
@@ -26,16 +26,16 @@ void Networking::Synapse<conn, mode>::sendTo(AxonMessage &message, const Socket 
         pendingValidation.push_back(message.ID());
     }
 
-    BasicSynapse<conn, mode>::sendTo(message, dest);
+    BasicSynapse<controller>::sendTo(message, dest);
 }
 
-template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::Synapse<conn, mode>::sendPooled(const AxonMessage& message, const Socket &dest) const {
+template<class controller>
+void Networking::Synapse<controller>::sendPooled(const AxonMessage& message, const Socket &dest) const {
     pool->push( { message, dest } );
 }
 
-template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& message, const Socket &from)
+template<class controller>
+void Networking::Synapse<controller>::onMessageReceived(const AxonMessage& message, const Socket &from)
 {
     if (message.hasFlag(VALIDATE))
     {
@@ -43,7 +43,9 @@ void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& messa
     }
     if (message.hasFlag(ACKNOWLEDGE) && !message.hasFlag(PARTIAL))
     {
-        pendingValidation.erase(std::find(pendingValidation.begin(), pendingValidation.end(), message.ID()));
+        auto it = std::find(pendingValidation.begin(), pendingValidation.end(), message.ID());
+        if (it != pendingValidation.end())
+            pendingValidation.erase(it);
     }
     if (mmap->contains(message.ID()) || message.hasFlag(PARTIAL))
     {
@@ -69,26 +71,26 @@ void Networking::Synapse<conn, mode>::onMessageReceived(const AxonMessage& messa
 
 #pragma region ASYNC_SYNAPSE
 
-template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::AsyncSynapse<conn, mode>::kill()
+template<class controller>
+void Networking::AsyncSynapse<controller>::kill()
 {
-    if (!this->controller->isAlive())
+    if (!this->networkController->isAlive())
         return;
 
-    this->controller->kill();
+    this->networkController->kill();
     proc.join();
 }
 
-template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-Networking::AsyncSynapse<conn, mode>::~AsyncSynapse()
+template<class controller>
+Networking::AsyncSynapse<controller>::~AsyncSynapse()
 {
     kill();
 }
 
-template <Networking::ConnectionMode conn, Networking::SynapseMode mode>
-void Networking::AsyncSynapse<conn, mode>::start()
+template<class controller>
+void Networking::AsyncSynapse<controller>::start()
 {
-    this->controller->start();
+    this->networkController->start();
     proc = std::thread(&AsyncSynapse::listen, this);
 }
 
