@@ -38,9 +38,6 @@ template<class controller>
 void Networking::Synapse<controller>::onMessageReceived(const AxonMessage& message, const Socket &from)
 {
     this->msgproc->process(message, from);
-
-    SynapseMessageReceivedEvent event_ = SynapseMessageReceivedEvent(message, from);
-    this->events.invoke(&event_);
 }
 
 #pragma endregion

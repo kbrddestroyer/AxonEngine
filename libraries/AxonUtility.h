@@ -3,14 +3,13 @@
 
 #include <common_macro.h>
 
-#if defined(MSVC) || defined(__GNUC__) || defined(__clang__)
+#if defined(MSVC) || defined(__GNUC__) || defined(__clang__) || defined(WINDOWS_PLATFORM)
 #define GETTER [[nodiscard("Ignoring getter return value is not allowed. For god's sake, have some respect!")]]
 #else
 #define GETTER
 #endif
 
 #if defined(WINDOWS_PLATFORM)
-#define GETTER
 #if defined(AXON_LIB)
 #if defined(AXON_STATIC)
 #define AXON_DECLSPEC

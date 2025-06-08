@@ -48,7 +48,7 @@ namespace TestUtils {
         void sendTo(Networking::AxonMessage&, const Networking::NetworkNodeInfo&) override;
 
 
-        GETTER Networking::SynapseInterface * owner() { return owningSynapse; }
+        GETTER Networking::SynapseInterface * owner() const { return owningSynapse; }
     protected:
         void sendSerializedTo(const Networking::SerializedAxonMessage&, const Networking::NetworkNodeInfo&) override;
 

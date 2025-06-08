@@ -48,3 +48,30 @@ TEST(TEST_EVENT_SYSTEM, TEST_EVENT_SYSTEM_GENERAL)
 
     g_manager.invoke(&event);
 }
+
+TEST(TEST_EVENT_SYSTEM, TEST_EVENT_SYSTEM_W_CLASS_OBJ)
+{
+    /* Local events */
+    TestEvent event(3);
+    EventSystem::GlobalEventManager& g_manager = EventSystem::GlobalEventManager::Instance();
+
+    class TestEventCheckClass {
+    public:
+        TestEventCheckClass() {
+            EventSystem::GlobalEventManager::Instance().subscribe<
+                TestEventCheckClass, TestEvent
+                >(&TestEventCheckClass::callback, this);
+        }
+
+        void callback(const TestEvent &) {
+            call = true;
+        }
+
+        bool check() const { return call; }
+    private:
+        bool call = false;
+    } instance;
+
+    g_manager.invoke(&event);
+    ASSERT_TRUE(instance.check());
+}

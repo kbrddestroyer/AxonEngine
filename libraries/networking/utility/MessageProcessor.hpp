@@ -11,9 +11,19 @@ namespace Networking {
 
 class AXON_DECLSPEC MessageProcessor {
 public:
+    struct RequestUniqueIDProto {
+        uint32_t clientSideID = 0;
+        uint64_t serverSideID = 0;
+
+        static uint32_t generateID() {
+            static uint32_t uniqueID = 0;
+            return ++uniqueID;
+        }
+    };
+
     MessageProcessor() = delete;
 
-    MessageProcessor(SynapseInterface *);
+    explicit MessageProcessor(SynapseInterface *);
 
     MessageProcessor & operator= (const MessageProcessor &) = delete;
     MessageProcessor & operator= (MessageProcessor&&) = delete;
@@ -21,8 +31,13 @@ public:
     void process(const AxonMessage &, const Socket &);
     void awaitValidation(uint64_t id) { pendingValidation.push_back(id); }
 
-    MessagePoolNodePtr processPool() const { return pool->pop(); }
+    GETTER MessagePoolNodePtr processPool() const { return pool->pop(); }
     void poolMessage(const MessagePoolNode &node) const { pool->push(node); }
+protected:
+    GETTER static uint64_t getObjectID() {
+        static uint64_t lastID = 0;
+        return ++lastID;
+    }
 private:
     SynapseInterface *owner;
 

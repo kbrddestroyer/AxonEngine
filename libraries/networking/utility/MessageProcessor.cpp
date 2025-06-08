@@ -1,4 +1,5 @@
 #include "MessageProcessor.hpp"
+#include <cassert>
 
 namespace Networking {
     MessageProcessor::MessageProcessor(SynapseInterface *owner) : owner(owner) {
@@ -7,7 +8,19 @@ namespace Networking {
     void MessageProcessor::process(const AxonMessage &message, const Socket &from) {
         if (message.hasFlag(VALIDATE))
         {
-            AxonMessage reply = AxonMessage(message, 0);
+            AxonMessage reply(message, 0);
+            owner->sendTo(reply, from);
+        }
+        if (message.hasFlag(NETOBJ_INI)) {
+            RequestUniqueIDProto proto = * static_cast<RequestUniqueIDProto *>( message.getMessage() );
+
+            assert (!message.hasFlag(VALIDATE));
+            assert (message.getSize() == sizeof(RequestUniqueIDProto));
+
+            proto.serverSideID = getObjectID();
+
+            AxonMessage reply(&proto, sizeof(proto), 0, NETOBJ_REPL);
+
             owner->sendTo(reply, from);
         }
         if (message.hasFlag(ACKNOWLEDGE) && !message.hasFlag(PARTIAL))
@@ -30,7 +43,11 @@ namespace Networking {
                 SynapseMessageReceivedEvent event_(*res, from);
                 this->owner->getEventManager().invoke(&event_);
             }
+
             return;
         }
+
+        SynapseMessageReceivedEvent event_(message, from);
+        this->owner->getEventManager().invoke(&event_);
     }
 } // Networking
