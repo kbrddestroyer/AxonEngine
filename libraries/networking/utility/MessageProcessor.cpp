@@ -1,6 +1,8 @@
 #include "MessageProcessor.hpp"
 #include <cassert>
 
+#include <algorithm>
+
 namespace Networking {
     MessageProcessor::MessageProcessor(SynapseInterface *owner) : owner(owner) {
     }
