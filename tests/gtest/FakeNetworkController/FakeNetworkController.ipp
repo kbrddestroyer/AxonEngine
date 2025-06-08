@@ -1,7 +1,7 @@
 #pragma once
 
 inline void TestUtils::FakeNetwork::sendto(const Networking::SerializedAxonMessage &serialized, uint32_t socket, uint32_t from) {
-    pool[socket]->owner()->processIncomingMessage(serialized, { static_cast<SOCKET_T>( socket ), {} });
+    pool[socket]->owner()->processIncomingMessage(serialized, { static_cast<SOCKET_T>( from ), {} });
 }
 
 inline uint32_t TestUtils::FakeNetwork::create(
@@ -17,7 +17,7 @@ inline uint32_t TestUtils::FakeNetwork::connect(const std::string &hostname, uin
     return this->nodes[hostname][port];
 }
 
-void TestUtils::FakeNetwork::bind(uint32_t desc, TestUtils::FakeNetworkController *controller) {
+inline void TestUtils::FakeNetwork::bind(uint32_t desc, FakeNetworkController *controller) {
     pool[desc] = controller;
 }
 

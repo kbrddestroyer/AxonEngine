@@ -5,7 +5,7 @@
 * This file shows basic server logic and message handling using asynchronous Synapse with event system.
 */
 
-#include <networking/AxonNetwork.hpp>
+#include <networking/AxonLibrary.hpp>
 #include <iostream>
 #include <iomanip>
 

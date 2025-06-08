@@ -31,7 +31,7 @@ namespace TestUtils {
             static uint32_t desc = 0;
             return ++desc;
         }
-    private:
+
         std::map<uint32_t, FakeNetworkController *> pool = {};
         std::map<std::string, std::unordered_map<uint32_t, uint32_t>> nodes = {};
     };
@@ -48,7 +48,7 @@ namespace TestUtils {
         void sendTo(Networking::AxonMessage&, const Networking::NetworkNodeInfo&) override;
 
 
-        GETTER Networking::SynapseInterface * owner() { return owningSynapse; }
+        GETTER Networking::SynapseInterface * owner() const { return owningSynapse; }
     protected:
         void sendSerializedTo(const Networking::SerializedAxonMessage&, const Networking::NetworkNodeInfo&) override;
 
