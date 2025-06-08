@@ -30,10 +30,13 @@ namespace Networking
 		PARTIAL		= 1 << 2,   ///< set if message bits are part of a partial delivery
 		NETOBJ_INI	= 1 << 3,
 		NETOBJ_REPL = 1 << 4,
-		ALL = UNDEFINED | VALIDATE | ACKNOWLEDGE | PARTIAL | NETOBJ_INI | NETOBJ_REPL
+		TO_ALL		= 1 << 5,
+		SERV_STORE	= 1 << 6,
+
+		ALL = UNDEFINED | VALIDATE | ACKNOWLEDGE | PARTIAL | NETOBJ_INI | NETOBJ_REPL | TO_ALL | SERV_STORE
 	};
 
-	static_assert(ALL == 0b11111, "Flag set is incorrect. Check ALL value or manually edit this assert");
+	static_assert(ALL == 0b1111111, "Flag set is incorrect. Check ALL value or manually edit this assert");
     class AxonMessage;
 
     /**

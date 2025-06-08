@@ -8,15 +8,9 @@
 namespace Networking {
     template<typename T>
     AxonNetworkPtr<T>::AxonNetworkPtr(SynapseInterface * synapse, T * ptrTo) :
-    synapse(synapse),
+    AxonNetworkObject(synapse),
     ptr(ptrTo)
-    {
-        synapse->getEventManager().subscribe<
-                AxonNetworkPtr, SynapseMessageReceivedEvent
-            >(&AxonNetworkPtr::onRepl, this);
-
-        initialize();
-    }
+    {}
 
     template <typename T>
     void AxonNetworkPtr<T>::set(T val) {
@@ -35,27 +29,6 @@ namespace Networking {
         return ptr;
     }
 
-    template<typename T>
-    void AxonNetworkPtr<T>::onRepl(const SynapseMessageReceivedEvent & event) {
-        const AxonMessage & message = event.getMessage();
-
-        if (!message.hasFlag(NETOBJ_REPL)) return;
-
-        MessageProcessor::RequestUniqueIDProto repl = * static_cast < MessageProcessor::RequestUniqueIDProto * >( message.getMessage() );
-        if (repl.clientSideID != this->clientID) return;
-
-        this->serverID = repl.serverSideID;
-
-        if (shouldUpdateSelf) {
-            dispatchValueChangeEvent();
-            shouldUpdateSelf = false;
-
-            synapse->getEventManager().subscribe<
-                    AxonNetworkPtr, SynapseMessageReceivedEvent
-                >(&AxonNetworkPtr::onRepl, this);
-        }
-    }
-
     template <typename T>
     void AxonNetworkPtr<T>::onValueChanged() {
 
@@ -67,20 +40,7 @@ namespace Networking {
             shouldUpdateSelf = true;
             return;
         }
-
-        synapse->sendTo(this->toMessage(), connected);
-    }
-
-    template<typename T>
-    void AxonNetworkPtr<T>::initialize() {
-        this->clientID = MessageProcessor::RequestUniqueIDProto::generateID();
-
-        MessageProcessor::RequestUniqueIDProto request = {
-            clientID, 0
-        };
-
-        AxonMessage msg(&request, sizeof(request), 0, NETOBJ_INI);
-        synapse->send(msg);
+        synapse->send(this->toMessage());
     }
 
     template<typename T>
