@@ -40,7 +40,8 @@ namespace Networking {
             shouldUpdateSelf = true;
             return;
         }
-        synapse->send(this->toMessage());
+        AxonMessage _tmp = this->toMessage();
+        synapse->send(_tmp);
     }
 
     template<typename T>
