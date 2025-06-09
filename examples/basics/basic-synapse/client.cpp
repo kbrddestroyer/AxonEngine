@@ -34,11 +34,9 @@ void onMessageReceived(const Networking::SynapseMessageReceivedEvent& event)
 
 int main()
 {
-	Networking::ConnectionInfo connection = { "localhost", 10423 };
-
 	Networking::AsyncSynapse<
             Networking::BerkeleyAxonNetworkController<Networking::TCP, Networking::SynapseMode::CLIENT>
-            > clientConnection(connection);
+            > clientConnection("localhost", 10423);
     clientConnection.getEventManager().subscribe<Networking::SynapseMessageReceivedEvent>(onMessageReceived);
     clientConnection.start();
 

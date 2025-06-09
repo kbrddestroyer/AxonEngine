@@ -9,7 +9,7 @@ int main() {
             > server(10432);
     Networking::AsyncSynapse<
             Networking::BerkeleyAxonNetworkController<Networking::UDP, Networking::SynapseMode::CLIENT>
-            > client({"localhost", 10432});
+            > client("localhost", 10432);
     server.start();
     client.start();
 
