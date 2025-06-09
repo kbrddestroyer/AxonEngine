@@ -10,7 +10,7 @@ namespace Networking {
     class AXON_DECLSPEC AxonNetworkPtr : public AxonNetworkObject {
         static_assert(!std::is_abstract<T>::value);
         static_assert(
-                std::is_literal_type_v<T> || !std::is_trivially_copyable<T>::value,
+                std::is_trivially_copyable<T>::value,
                 "Type must be trivially copyable to be compatible with Axon Network Pointer");
     public:
         AxonNetworkPtr() = delete;

@@ -1,17 +1,20 @@
 #include "AxonNetworkObject.hpp"
 #include <networking/utility/MessageProcessor.hpp>
 
-
-
 Networking::AxonNetworkObject::AxonNetworkObject(SynapseInterface * synapse) :
     synapse(synapse) {
     if (synapse) {
-
         synapse->getEventManager().subscribe<
             AxonNetworkObject, SynapseMessageReceivedEvent
             >(&AxonNetworkObject::onIDResolved, this);
         resolveNetworkID();
     }
+}
+
+Networking::AxonNetworkObject::~AxonNetworkObject() {
+    synapse->getEventManager().unsubscribe<
+            AxonNetworkObject, SynapseMessageReceivedEvent
+    >(&AxonNetworkObject::onIDResolved, this);
 }
 
 void Networking::AxonNetworkObject::resolveNetworkID() {
@@ -34,6 +37,10 @@ void Networking::AxonNetworkObject::onIDResolved(const SynapseMessageReceivedEve
     if (repl.clientSideID != this->clientID) return;
 
     this->serverID = repl.serverSideID;
+
+    synapse->getEventManager().unsubscribe<
+            AxonNetworkObject, SynapseMessageReceivedEvent
+    >(&AxonNetworkObject::onIDResolved, this);
 }
 
 
