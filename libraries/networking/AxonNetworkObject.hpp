@@ -8,9 +8,9 @@ namespace Networking {
     public:
         AxonNetworkObject() = delete;
         AxonNetworkObject( SynapseInterface * );
-        virtual ~AxonNetworkObject() = default;
+        virtual ~AxonNetworkObject();
 
-        WGETTER ( bool ready() ) { return serverID != 0; }
+        WGETTER( bool ready() ) { return serverID != 0; }
         WGETTER( uint64_t id() ) { return serverID; }
     protected:
         void resolveNetworkID();

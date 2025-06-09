@@ -5,7 +5,7 @@
 
 TEST(TEST_NETWORK_POINTER, TEST_GET_SERVER_ID) {
     Networking::Synapse<TestUtils::FakeNetworkController> server(10432);
-    Networking::Synapse<TestUtils::FakeNetworkController> client({"test-nodes-fake-host", 10432});
+    Networking::Synapse<TestUtils::FakeNetworkController> client("test-nodes-fake-host", 10432);
 
     server.start();
     client.start();

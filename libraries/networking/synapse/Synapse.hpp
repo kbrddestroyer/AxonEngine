@@ -23,7 +23,7 @@ namespace Networking
 		/** Initializes Synapse in server mode */
 		explicit Synapse(uint32_t port) : BasicSynapse<controller>(port) {}
 		/** Initialize Synapse in client mode */
-		explicit Synapse(const ConnectionInfo &info) : BasicSynapse<controller>(info) {}
+        Synapse (const char *hostname, const uint32_t port) : BasicSynapse<controller>({hostname, port}) {}
 
 		~Synapse() override = default;
 #pragma endregion
@@ -55,9 +55,9 @@ namespace Networking
 		explicit AsyncSynapse(uint32_t port) : Synapse<controller>(port) {}
 
 		/** Initialize Synapse in client mode */
-		explicit AsyncSynapse(const ConnectionInfo &info) : Synapse<controller>(info) {}
+		explicit AsyncSynapse (const char *hostname, const uint32_t port) : Synapse<controller>(hostname, port) {}
 
-		~AsyncSynapse() override;
+        ~AsyncSynapse() override;
 
 		void start() override;
 		void kill() override;

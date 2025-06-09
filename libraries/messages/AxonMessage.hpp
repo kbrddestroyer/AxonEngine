@@ -52,8 +52,8 @@ namespace Networking
 
     	~SerializedAxonMessage();
 
-    	GETTER size_t getSize()  const { return size; }
-    	GETTER const char* getBits() const { return bytes; }
+    	WGETTER( size_t getSize() ) { return size; }
+    	WGETTER ( const char* getBits() ) { return bytes; }
 
     	SerializedAxonMessage& operator=(const SerializedAxonMessage&);
     	SerializedAxonMessage& operator=(SerializedAxonMessage&&) noexcept;

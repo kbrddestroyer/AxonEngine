@@ -28,7 +28,7 @@ TEST(TEST_SYNAPSE, TEST_FAKE_NETWORK) {
     > server(10435);
     Networking::Synapse<
             TestUtils::FakeNetworkController
-    > client({"test-nodes-fake-host", 10435});
+    > client("test-nodes-fake-host", 10435);
 
     server.getEventManager().subscribe<Networking::SynapseMessageReceivedEvent>(onMessageReceived);
     server.start();
@@ -42,7 +42,7 @@ TEST(TEST_SYNAPSE, TEST_FAKE_NETWORK) {
 
 TEST(TEST_SYNAPSE, TEST_GET_SERVER_ID) {
     Networking::Synapse<TestUtils::FakeNetworkController> server(10432);
-    Networking::Synapse<TestUtils::FakeNetworkController> client({"test-nodes-fake-host", 10432});
+    Networking::Synapse<TestUtils::FakeNetworkController> client("test-nodes-fake-host", 10432);
     client.getEventManager().subscribe<Networking::SynapseMessageReceivedEvent>(onMessageReceivedWithUniqueID);
 
     server.start();
