@@ -1,8 +1,5 @@
 #pragma once
-#include "AxonNetworkPointer.hpp"
-
 #include <utility/MessageProcessor.hpp>
-
 #include "MessageProcessor.hpp"
 
 namespace Networking {
