@@ -14,7 +14,9 @@ Work in progress, there's no stable version yet
 
 ## Before you start
 
-[Discord server](https://discord.gg/FQvZhSeHrr)
+- [Discord server](https://discord.gg/FQvZhSeHrr)
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [Wiki](https://github.com/kbrddestroyer/AxonEngine/wiki)
 
 ## Overview
 
@@ -34,19 +36,5 @@ cd conan/
 
 ```bash
 mkdir cmake-build && cd cmake-build
-cmake .. -DCMAKE-TOOLCHAIN-FILE=../conan/build/Debug/conan_toolchain.cmake
+cmake .. -DCMAKE-TOOLCHAIN-FILE=../conan/build/Debug/conan_toolchain.cmake -DBUILD_TESTS=ON -DBUILD_EXAMPLES=ON
 ```
-
-2. CLion
-
-3. Visual Studio 2022+
-
-Modify and use CMakePresets.json
-
-## Usage
-
-## API and modding | scripting
-
-## Contributing
-
-## Footer
