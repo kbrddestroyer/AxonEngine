@@ -23,9 +23,7 @@ namespace Networking {
     };
 
     /**
-    * Low-level connection info for convenient storage
-    * TODO:
-    * - Research replacement
+    * Low-level connection info for convenient storage.
     */
     struct ConnectionInfo
     {

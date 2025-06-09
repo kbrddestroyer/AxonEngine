@@ -46,25 +46,17 @@ namespace Networking
     public:
     	SerializedAxonMessage() = delete;
     	SerializedAxonMessage(const char*, size64_t);
-    	SerializedAxonMessage(const SerializedAxonMessage&);
     	explicit SerializedAxonMessage(const AxonMessage&);
-    	SerializedAxonMessage(SerializedAxonMessage&&) noexcept;
-
-    	~SerializedAxonMessage();
 
     	WGETTER( size_t getSize() ) { return size; }
-    	WGETTER ( const char* getBits() ) { return bytes; }
-
-    	SerializedAxonMessage& operator=(const SerializedAxonMessage&);
-    	SerializedAxonMessage& operator=(SerializedAxonMessage&&) noexcept;
+    	WGETTER ( const char* getBits() ) { return bytes.get(); }
     protected:
     	static TAG_T compressTag(uint8_t, uint8_t, uint16_t);
     private:
     	size64_t    size        = 0;
-    	uint16_t    uniqueID    = 0;
     	uintptr_t   offset      = 0;
-    	bool        owning      = true;     // todo: `uint16_t _refcnt;` or shared_ptr around bytes array
-    	const char* bytes       = nullptr;
+
+        std::shared_ptr<const char> bytes = nullptr;
 
         friend class AxonMessage;
     };
