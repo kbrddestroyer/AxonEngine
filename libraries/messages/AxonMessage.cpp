@@ -8,22 +8,68 @@ Networking::SerializedAxonMessage::SerializedAxonMessage(const AxonMessage &mess
     size(message.getSize())
 {
     const TAG_T tag = compressTag(message.getPartID(), message.getFlags(), message.ID());
-    const char *buffer = serialize(static_cast<char*>(message.getMessage()), message.getSize(), tag, &size);
-
-    bytes = std::shared_ptr<const char>( buffer );
+    bytes = serialize(static_cast<char*>(message.getMessage()), message.getSize(), tag, &size);
 }
 
 Networking::SerializedAxonMessage::SerializedAxonMessage(const char* bits, size64_t actualSize) :
     size(actualSize)
 {
     if (actualSize > 0) {
-        bytes = std::make_shared<const char>(size);
-        memcpy(const_cast<char *>(bytes.get()), bits, size);
+        bytes = new char[size];
+        memcpy(const_cast<char *>(bytes), bits, size);
     }
+}
+
+Networking::SerializedAxonMessage::SerializedAxonMessage(const SerializedAxonMessage &message) :
+    size(message.size),
+    offset(message.offset)
+{
+    if (size > 0)
+    {
+        bytes = new char[size];
+        memcpy(const_cast<char*>(bytes), message.bytes, size);
+    }
+}
+
+Networking::SerializedAxonMessage::SerializedAxonMessage(SerializedAxonMessage &&message) noexcept :
+        size(std::exchange(message.size, 0)),
+        bytes(std::exchange(message.bytes, nullptr))
+{}
+
+Networking::SerializedAxonMessage::~SerializedAxonMessage() {
+    if (bytes && owning)
+        delete[] bytes;
 }
 
 TAG_T Networking::SerializedAxonMessage::compressTag(uint8_t optionalData, uint8_t newFlags, uint16_t id) {
     return ((optionalData << 8) | newFlags) << 16 | id;
+}
+
+Networking::SerializedAxonMessage &
+Networking::SerializedAxonMessage::operator=(const SerializedAxonMessage &message) {
+    if (&message == this)
+        return *this;
+
+    size = message.size;
+
+    if (size > 0)
+    {
+        bytes = new char[size];
+        memcpy(const_cast<char*>(bytes), message.bytes, size);
+    }
+
+    return * this;
+}
+
+Networking::SerializedAxonMessage &
+Networking::SerializedAxonMessage::operator=(SerializedAxonMessage &&message) noexcept {
+    if (&message == this)
+        return *this;
+
+    std::exchange(size, message.size);
+    std::exchange(bytes, message.bytes);
+
+    return * this;
 }
 
 #pragma endregion
@@ -45,16 +91,14 @@ Networking::AxonMessage::AxonMessage(const void* message, size64_t size, uint8_t
 Networking::AxonMessage::AxonMessage(const SerializedAxonMessage &serialized)
 {
     TAG_T tag;
-    uint8_t _ret = deserialize(
-            serialized.bytes.get(),
+    deserialize(
+            serialized.bytes,
             serialized.size,
             &this->message,
             &this->size,
             &tag
     );
-
-    if (_ret == 0)
-        decompressTag(tag, &partID, &flags, &this->uniqueID);
+    decompressTag(tag, &partID, &flags, &this->uniqueID);
 }
 
 Networking::AxonMessage::AxonMessage(const AxonMessage &message, const uint8_t additionalFlags) :
