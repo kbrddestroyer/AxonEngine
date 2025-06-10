@@ -1,22 +1,30 @@
 #pragma once
 
 #include <AxonUtility.h>
+#include <networking/AxonNetworkObject.hpp>
 #include <networking/synapse/BasicSynapse.hpp>
 
 #include <memory>
+#include <vector>
+#include <initializer_list>
 
 namespace Networking
 {
-    class AXON_DECLSPEC AxonNetworkManager {
+    class AXON_DECLSPEC AxonNetwork {
     public:
-        AxonNetworkManager() = default;
+        AxonNetwork() = default;
 
-        template <class SynapseType>
+        template <class Synapse>
         void initialize();
 
-        virtual uint64_t getUniqueIDInNetwork() = 0;
+        template <class Object, typename... Args>
+        AxonNetworkObject * createObject(Args&&... args);
+        void registerObject(AxonNetworkObject *);
+
+        static AxonNetwork & instance();
     private:
         std::unique_ptr<SynapseInterface> synapse;
+        std::vector<std::unique_ptr<AxonNetworkObject>> objectRegistry;
     };
 }
 
