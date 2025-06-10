@@ -28,7 +28,9 @@ namespace Networking {
 
     template <typename T>
     void AxonNetworkPtr<T>::onValueChanged() {
+        AxonMessage msg({ *ptr, this->serverID } , sizeof(T));
 
+        synapse->send(msg);
     }
 
     template<typename T>

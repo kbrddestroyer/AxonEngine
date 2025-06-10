@@ -15,10 +15,9 @@ namespace Networking {
     protected:
         void resolveNetworkID();
         void onIDResolved(const SynapseMessageReceivedEvent&);
-    private:
+    protected:
         uint64_t serverID = 0;
         uint32_t clientID = 0;
-    protected:
         SynapseInterface * synapse = nullptr;
     };
 }

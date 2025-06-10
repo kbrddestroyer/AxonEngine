@@ -12,14 +12,19 @@ namespace Networking {
         static_assert(
                 std::is_trivially_copyable<T>::value,
                 "Type must be trivially copyable to be compatible with Axon Network Pointer");
+
+        struct payload {
+            T val;
+            uint64_t id;
+        };
     public:
         AxonNetworkPtr() = delete;
         AxonNetworkPtr(SynapseInterface *, T *);
         ~AxonNetworkPtr() override = default;
 
-        GETTER T *get() const { return ptr; }
+        GETTER T * get() const { return ptr; }
         void set(T);
-        T &operator*() const;
+        T &operator* () const;
         T *operator->() const;
     protected:
         virtual void onValueChanged();
