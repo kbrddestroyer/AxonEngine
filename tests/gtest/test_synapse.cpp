@@ -15,6 +15,9 @@ namespace {
         static uint64_t lastTaken = 0;
 
         if (!event.getMessage().hasFlag(Networking::NETOBJ_REPL)) return;
+
+        ASSERT_EQ(event.getMessage().getSize(), sizeof(Networking::MessageProcessor::RequestUniqueIDProto));
+
         Networking::MessageProcessor::RequestUniqueIDProto repl = * static_cast< Networking::MessageProcessor::RequestUniqueIDProto * > ( event.getMessage().getMessage() );
         ASSERT_NE( repl.serverSideID, lastTaken );
         lastTaken = repl.serverSideID;
