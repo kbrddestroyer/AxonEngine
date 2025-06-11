@@ -8,20 +8,68 @@ Networking::SerializedAxonMessage::SerializedAxonMessage(const AxonMessage &mess
     size(message.getSize())
 {
     const TAG_T tag = compressTag(message.getPartID(), message.getFlags(), message.ID());
-    bytes = std::shared_ptr<char[]> ( serialize(static_cast<char*>(message.getMessage()), message.getSize(), tag, &size) );
+    bytes = serialize(static_cast<char*>(message.getMessage()), message.getSize(), tag, &size);
 }
 
 Networking::SerializedAxonMessage::SerializedAxonMessage(const char* bits, size64_t actualSize) :
     size(actualSize)
 {
     if (actualSize > 0) {
-        bytes = std::shared_ptr<char[]> ( new char[size] );
-        memcpy(bytes.get(), bits, size);
+        bytes = new char[size];
+        memcpy(const_cast<char *>(bytes), bits, size);
     }
+}
+
+Networking::SerializedAxonMessage::SerializedAxonMessage(const SerializedAxonMessage &message) :
+    size(message.size),
+    offset(message.offset)
+{
+    if (size > 0)
+    {
+        bytes = new char[size];
+        memcpy(const_cast<char*>(bytes), message.bytes, size);
+    }
+}
+
+Networking::SerializedAxonMessage::SerializedAxonMessage(SerializedAxonMessage &&message) noexcept :
+        size(std::exchange(message.size, 0)),
+        bytes(std::exchange(message.bytes, nullptr))
+{}
+
+Networking::SerializedAxonMessage::~SerializedAxonMessage() {
+    if (bytes && owning)
+        delete[] bytes;
 }
 
 TAG_T Networking::SerializedAxonMessage::compressTag(uint8_t optionalData, uint8_t newFlags, uint16_t id) {
     return ((optionalData << 8) | newFlags) << 16 | id;
+}
+
+Networking::SerializedAxonMessage &
+Networking::SerializedAxonMessage::operator=(const SerializedAxonMessage &message) {
+    if (&message == this)
+        return *this;
+
+    size = message.size;
+
+    if (size > 0)
+    {
+        bytes = new char[size];
+        memcpy(const_cast<char*>(bytes), message.bytes, size);
+    }
+
+    return * this;
+}
+
+Networking::SerializedAxonMessage &
+Networking::SerializedAxonMessage::operator=(SerializedAxonMessage &&message) noexcept {
+    if (&message == this)
+        return *this;
+
+    std::exchange(size, message.size);
+    std::exchange(bytes, message.bytes);
+
+    return * this;
 }
 
 #pragma endregion
@@ -36,25 +84,20 @@ Networking::AxonMessage::AxonMessage(const void* message, size64_t size, uint8_t
 	if (message == nullptr || size == 0)
 		return;
 
-	this->message = std::shared_ptr<char[]>(new char[size]);
-	memcpy(this->message.get(), message, size);
+	this->message = new char[size];
+	memcpy(this->message, message, size);
 }
 
 Networking::AxonMessage::AxonMessage(const SerializedAxonMessage &serialized)
 {
     TAG_T tag;
-
-    void * buffer;
-
     deserialize(
-            serialized.bytes.get(),
+            serialized.bytes,
             serialized.size,
-            &buffer,
+            &this->message,
             &this->size,
             &tag
     );
-
-    message = std::shared_ptr<char[]>(static_cast<char*>(buffer));
     decompressTag(tag, &partID, &flags, &this->uniqueID);
 }
 
@@ -65,14 +108,36 @@ Networking::AxonMessage::AxonMessage(const AxonMessage &message, const uint8_t a
     addFlag(ACKNOWLEDGE);
 }
 
-Networking::AxonMessage::AxonMessage(const AxonMessage &message, size64_t size, uint8_t partID, uint8_t flags, uint64_t uniqueID, size64_t offset) :
+Networking::AxonMessage::AxonMessage(const AxonMessage& message) :
+    size(message.size),
+    partID(message.partID),
+    flags(message.flags),
+    uniqueID(message.uniqueID)
+{
+    if (!message.getMessage() || message.size == 0)
+        return;
+
+	this->message = new char[size];
+	memcpy(this->message, message.getMessage(), this->size);
+}
+
+Networking::AxonMessage::AxonMessage(AxonMessage &message, size64_t size, uint8_t partID, uint8_t flags, uint64_t uniqueID, size64_t offset) :
     size(size),
     message(message.message),
     partID(partID),
     flags(flags),
     uniqueID(uniqueID),
     offset(offset)
-{}
+{
+    message.owning = false;
+}
+
+Networking::AxonMessage::~AxonMessage()
+{
+	if (this->message && owning)
+		delete[] static_cast<char*>( message );
+    message = nullptr;
+}
 
 Networking::SerializedAxonMessage Networking::AxonMessage::getSerialized() const noexcept {
     return SerializedAxonMessage(*this);
@@ -101,18 +166,23 @@ Networking::AxonMessage::UniqueAxonMessagePtr Networking::AxonMessage::split(con
     return std::make_unique<AxonMessage>(*this, left, partID + 1, flags ^ PARTIAL, uniqueID, size);
 }
 
-void Networking::AxonMessage::append(const AxonMessage &other) {
+void Networking::AxonMessage::append(const Networking::AxonMessage &other) {
     if (!other.getMessage() || other.size == 0 || other.partID != partID + 1)
         return;
 
     char* tempBuffer = new char[other.size + size];
 
+    // assert((uintptr_t) &size < (uintptr_t) tempBuffer || (uintptr_t) &size > (uintptr_t) tempBuffer + other.size + size);
+
     if (message) {
         memcpy(tempBuffer, getMessage(), size);
+        if (owning)
+            delete[] static_cast<char*>(message);
+        message = nullptr;
     }
-    memcpy(tempBuffer + size, other.getMessage(), other.size);
+    memcpy((static_cast<char*>(tempBuffer) + size), other.getMessage(), other.size);
 
-    message = std::shared_ptr<char[]>(tempBuffer);
+    message = tempBuffer;
     size += other.size;
     partID = other.partID;
 }
