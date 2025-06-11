@@ -37,7 +37,7 @@ TEST(TEST_SYNAPSE, TEST_FAKE_NETWORK) {
     server.start();
     client.start();
 
-    Networking::AxonMessage msg("Hello World!", strlen("Hello World!"));
+    Networking::AxonMessage msg("Hello World!", strlen("Hello World!") + 1);
     client.send(msg);
     ASSERT_TRUE(hasVisited);
     hasVisited = false;
