@@ -54,10 +54,8 @@ namespace Networking
     	static TAG_T compressTag(uint8_t, uint8_t, uint16_t);
     private:
     	size64_t    size        = 0;
-    	uint16_t    uniqueID    = 0;
-    	uintptr_t   offset      = 0;
-
     	std::shared_ptr<char[]> bytes       = nullptr;
+
         friend class AxonMessage;
     };
 
@@ -100,7 +98,7 @@ namespace Networking
 		AxonMessage(const AxonMessage &, size64_t, uint8_t, uint8_t, uint64_t, size64_t);
 
         WGETTER(SerializedAxonMessage getSerialized());
-        WGETTER(void* getMessage()) { return (message.get()) ? static_cast<void*>(message.get() + offset) : nullptr; }
+        WGETTER(void* getMessage()) { return (message.get()) ? (message.get() + offset) : nullptr; }
         WGETTER(size64_t getSize()) { return size; }
         WGETTER(uint16_t ID()) { return uniqueID; }
         WGETTER(uint8_t getFlags()) { return flags; }
