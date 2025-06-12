@@ -69,6 +69,48 @@ namespace Networking
         friend class AxonMessage;
     };
 
+    class AxonMessageHolder {
+        struct AxonMessageHolderPtr {
+            char * ptr = nullptr;
+            size_t refcnt = 0;
+        };
+    public:
+        AxonMessageHolder() = default;
+
+        AxonMessageHolder(char * ptr) {
+            this->ptr = new AxonMessageHolderPtr;
+            this->ptr->ptr = ptr;
+            this->ptr->refcnt = 1;
+        }
+
+        AxonMessageHolder(const AxonMessageHolder &other) : ptr(other.ptr) {
+            if (this->ptr)
+                ptr->refcnt++;
+        }
+
+        AxonMessageHolder & operator= (const AxonMessageHolder & other) {
+            this->ptr = other.ptr;
+            ptr->refcnt++;
+
+            return *this;
+        }
+
+        ~AxonMessageHolder() {
+            if (this->ptr) {
+                if (--ptr->refcnt == 0) {
+                    delete[] ptr->ptr;
+                    delete ptr;
+
+                    ptr = nullptr;
+                }
+            }
+        }
+
+        GETTER char * get(size_t offset = 0) const { return (this->ptr ? this->ptr->ptr + offset : nullptr); }
+    private:
+        AxonMessageHolderPtr * ptr = nullptr;
+    };
+
 	/**
 	* AxonMessage is a low-level interface for data storage, serialization and network sharing.
 	*
@@ -102,15 +144,10 @@ namespace Networking
          */
         AxonMessage(const AxonMessage &message, uint8_t additionalFlags);
 
-        /**
-         * Copy constructor
-         */
-        AxonMessage(const AxonMessage &);
 		AxonMessage(AxonMessage&, size64_t, uint8_t, uint8_t, uint64_t, size64_t);
-		~AxonMessage();
 
         WGETTER(SerializedAxonMessage getSerialized());
-        WGETTER(void* getMessage()) { return (message) ? static_cast<void*>(static_cast<uint8_t*>(message) + offset) : message; }
+        WGETTER(void* getMessage()) { return message.get(offset); }
         WGETTER(size64_t getSize()) { return size; }
         WGETTER(uint16_t ID()) { return uniqueID; }
         WGETTER(uint8_t getFlags()) { return flags; }
@@ -136,9 +173,9 @@ namespace Networking
         }
         static void decompressTag(TAG_T, uint8_t*, uint8_t*, uint16_t*);
 	private:
+        AxonMessageHolder message = {};
+
 		size64_t	size = 0;
-		void*		message = nullptr;
-        bool        owning  = true;
         uint8_t     partID = 0;
         uint8_t     flags = UNDEFINED;
         size64_t    offset = 0;

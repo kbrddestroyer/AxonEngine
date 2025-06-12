@@ -83,22 +83,24 @@ Networking::AxonMessage::AxonMessage(const void* message, size64_t size, uint8_t
 {
 	if (message == nullptr || size == 0)
 		return;
-
-	this->message = new char[size];
-	memcpy(this->message, message, size);
+    char * buffer = new char[size];
+	memcpy(buffer, message, size);
+    this->message = AxonMessageHolder(buffer);
 }
 
 Networking::AxonMessage::AxonMessage(const SerializedAxonMessage &serialized)
 {
     TAG_T tag;
+    char *buffer;
     deserialize(
             serialized.bytes,
             serialized.size,
-            &this->message,
+            (void**) &buffer,
             &this->size,
             &tag
     );
     decompressTag(tag, &partID, &flags, &this->uniqueID);
+    this->message = AxonMessageHolder(buffer);
 }
 
 Networking::AxonMessage::AxonMessage(const AxonMessage &message, const uint8_t additionalFlags) :
@@ -108,19 +110,6 @@ Networking::AxonMessage::AxonMessage(const AxonMessage &message, const uint8_t a
     addFlag(ACKNOWLEDGE);
 }
 
-Networking::AxonMessage::AxonMessage(const AxonMessage& message) :
-    size(message.size),
-    partID(message.partID),
-    flags(message.flags),
-    uniqueID(message.uniqueID)
-{
-    if (!message.getMessage() || message.size == 0)
-        return;
-
-	this->message = new char[size];
-	memcpy(this->message, message.getMessage(), this->size);
-}
-
 Networking::AxonMessage::AxonMessage(AxonMessage &message, size64_t size, uint8_t partID, uint8_t flags, uint64_t uniqueID, size64_t offset) :
     size(size),
     message(message.message),
@@ -128,16 +117,7 @@ Networking::AxonMessage::AxonMessage(AxonMessage &message, size64_t size, uint8_
     flags(flags),
     uniqueID(uniqueID),
     offset(offset)
-{
-    message.owning = false;
-}
-
-Networking::AxonMessage::~AxonMessage()
-{
-	if (this->message && owning)
-		delete[] static_cast<char*>( message );
-    message = nullptr;
-}
+{}
 
 Networking::SerializedAxonMessage Networking::AxonMessage::getSerialized() const noexcept {
     return SerializedAxonMessage(*this);
@@ -174,13 +154,10 @@ void Networking::AxonMessage::append(const Networking::AxonMessage &other) {
 
     // assert((uintptr_t) &size < (uintptr_t) tempBuffer || (uintptr_t) &size > (uintptr_t) tempBuffer + other.size + size);
 
-    if (message) {
+    if (message.get()) {
         memcpy(tempBuffer, getMessage(), size);
-        if (owning)
-            delete[] static_cast<char*>(message);
-        message = nullptr;
     }
-    memcpy((static_cast<char*>(tempBuffer) + size), other.getMessage(), other.size);
+    memcpy(tempBuffer + size, other.getMessage(), other.size);
 
     message = tempBuffer;
     size += other.size;

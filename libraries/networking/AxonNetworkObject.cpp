@@ -25,6 +25,7 @@ void Networking::AxonNetworkObject::resolveNetworkID() {
     };
 
     AxonMessage msg(&request, sizeof(request), 0, NETOBJ_INI);
+    msg.getMessage();
     synapse->send(msg);
 }
 
