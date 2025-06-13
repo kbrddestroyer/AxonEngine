@@ -77,6 +77,10 @@ namespace Networking
 	*/
 	class AXON_DECLSPEC AxonMessage
 	{
+        struct MessageHolder {
+            char * messagePtr = nullptr;
+            size_t references = 0;
+        };
 	public:
         typedef std::unique_ptr<AxonMessage> UniqueAxonMessagePtr;
 		AxonMessage() = default;
@@ -111,7 +115,8 @@ namespace Networking
 		~AxonMessage();
 
         WGETTER(SerializedAxonMessage getSerialized());
-        WGETTER(void* getMessage()) { return (message) ? message + offset : message; }
+        WGETTER(void* getMessage())
+            { return (message && message->messagePtr) ? message->messagePtr + offset : nullptr; }
         WGETTER(size64_t getSize()) { return size; }
         WGETTER(uint16_t ID()) { return uniqueID; }
         WGETTER(uint8_t getFlags()) { return flags; }
@@ -137,8 +142,9 @@ namespace Networking
         }
         static void decompressTag(TAG_T, uint8_t*, uint8_t*, uint16_t*);
 	private:
-		size64_t	size = 0;
-		char *		message = nullptr;
+        MessageHolder *	message = nullptr;
+
+        size64_t	size = 0;
         bool        owning  = true;
         uint8_t     partID = 0;
         uint8_t     flags = UNDEFINED;
