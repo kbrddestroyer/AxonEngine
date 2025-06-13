@@ -20,21 +20,15 @@ Networking::SerializedAxonMessage::SerializedAxonMessage(const char* bits, size6
     }
 }
 
-Networking::SerializedAxonMessage::SerializedAxonMessage(const SerializedAxonMessage &message) :
-    size(message.size),
-    offset(message.offset)
+Networking::SerializedAxonMessage::SerializedAxonMessage(const SerializedAxonMessage &message)
 {
-    if (size > 0)
-    {
-        bytes = new char[size];
-        memcpy(const_cast<char*>(bytes), message.bytes, size);
-    }
+    this->copy(message);
 }
 
-Networking::SerializedAxonMessage::SerializedAxonMessage(SerializedAxonMessage &&message) noexcept :
-        size(std::exchange(message.size, 0)),
-        bytes(std::exchange(message.bytes, nullptr))
-{}
+Networking::SerializedAxonMessage::SerializedAxonMessage(SerializedAxonMessage &&message) noexcept
+{
+    this->move(message);
+}
 
 Networking::SerializedAxonMessage::~SerializedAxonMessage() {
     if (bytes && owning)
@@ -50,14 +44,7 @@ Networking::SerializedAxonMessage::operator=(const SerializedAxonMessage &messag
     if (&message == this)
         return *this;
 
-    size = message.size;
-
-    if (size > 0)
-    {
-        bytes = new char[size];
-        memcpy(const_cast<char*>(bytes), message.bytes, size);
-    }
-
+    this->copy(message);
     return * this;
 }
 
@@ -66,10 +53,22 @@ Networking::SerializedAxonMessage::operator=(SerializedAxonMessage &&message) no
     if (&message == this)
         return *this;
 
-    std::exchange(size, message.size);
-    std::exchange(bytes, message.bytes);
-
+    this->move(message);
     return * this;
+}
+
+void Networking::SerializedAxonMessage::copy(const Networking::SerializedAxonMessage &message) {
+    size = message.size;
+    if (size > 0)
+    {
+        bytes = new char[size];
+        memcpy(const_cast<char*>(bytes), message.bytes, size);
+    }
+}
+
+void Networking::SerializedAxonMessage::move(Networking::SerializedAxonMessage &message) noexcept {
+    size = std::exchange(message.size, 0);
+    bytes = std::exchange(message.bytes, nullptr);
 }
 
 #pragma endregion
@@ -94,7 +93,7 @@ Networking::AxonMessage::AxonMessage(const SerializedAxonMessage &serialized)
     deserialize(
             serialized.bytes,
             serialized.size,
-            &this->message,
+            reinterpret_cast<void**>(&this->message),
             &this->size,
             &tag
     );

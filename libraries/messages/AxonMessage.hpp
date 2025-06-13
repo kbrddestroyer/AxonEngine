@@ -59,10 +59,11 @@ namespace Networking
     	SerializedAxonMessage& operator=(SerializedAxonMessage&&) noexcept;
     protected:
     	static TAG_T compressTag(uint8_t, uint8_t, uint16_t);
+
+        void copy(const SerializedAxonMessage&);
+        void move(SerializedAxonMessage&) noexcept;
     private:
     	size64_t    size        = 0;
-    	uint16_t    uniqueID    = 0;
-    	uintptr_t   offset      = 0;
     	bool        owning      = true;     // todo: `uint16_t _refcnt;` or shared_ptr around bytes array
     	const char* bytes       = nullptr;
 
@@ -110,7 +111,7 @@ namespace Networking
 		~AxonMessage();
 
         WGETTER(SerializedAxonMessage getSerialized());
-        WGETTER(void* getMessage()) { return (message) ? static_cast<void*>(static_cast<uint8_t*>(message) + offset) : message; }
+        WGETTER(void* getMessage()) { return (message) ? message + offset : message; }
         WGETTER(size64_t getSize()) { return size; }
         WGETTER(uint16_t ID()) { return uniqueID; }
         WGETTER(uint8_t getFlags()) { return flags; }
@@ -137,7 +138,7 @@ namespace Networking
         static void decompressTag(TAG_T, uint8_t*, uint8_t*, uint16_t*);
 	private:
 		size64_t	size = 0;
-		void*		message = nullptr;
+		char *		message = nullptr;
         bool        owning  = true;
         uint8_t     partID = 0;
         uint8_t     flags = UNDEFINED;
