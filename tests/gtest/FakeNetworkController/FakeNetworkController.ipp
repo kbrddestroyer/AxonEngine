@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 inline void TestUtils::FakeNetwork::sendto(const Networking::SerializedAxonMessage &serialized, uint32_t socket, uint32_t from) {
     pool[socket]->owner()->processIncomingMessage(serialized, { static_cast<SOCKET_T>( from ), {} });
 }
@@ -9,16 +11,26 @@ inline uint32_t TestUtils::FakeNetwork::create(
         uint32_t port
         ) {
     uint32_t desc = getDesc();
-    this->nodes[hostname][port] = desc;
+
+    if (nodes.find(hostname) == nodes.end())
+    {
+        nodes.insert_or_assign(hostname, std::unordered_map<uint32_t, uint32_t>());
+    }
+    auto& node = nodes[hostname];
+
+    node.insert_or_assign(port, desc);
     return desc;
 }
 
 inline uint32_t TestUtils::FakeNetwork::connect(const std::string &hostname, uint32_t port) {
+    assert (this->nodes.find(hostname) != this->nodes.end());
+    assert (this->nodes[hostname].find(port) != this->nodes[hostname].end());
+
     return this->nodes[hostname][port];
 }
 
 inline void TestUtils::FakeNetwork::bind(uint32_t desc, FakeNetworkController *controller) {
-    pool[desc] = controller;
+    pool.insert_or_assign(desc, controller);
 }
 
 inline void TestUtils::FakeNetworkController::listen() {}
