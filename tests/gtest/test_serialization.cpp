@@ -102,23 +102,24 @@ TEST(TEST_SERIALIZATION, TEST_MESSAGE_TAG) {
 
 TEST(TEST_SERIALIZATION, TEST_MESSAGE_SPLIT) {
     const char* message = "Hello World!";
-    Networking::AxonMessage message_( const_cast<char*> ( message ), strlen(message) + 1, 0);
+    auto * message_ = new Networking::AxonMessage( const_cast<char*> ( message ), strlen(message) + 1, 0);
 
-    ASSERT_STREQ(static_cast<char*>(message_.getMessage()), "Hello World!");
-    Networking::AxonMessage::UniqueAxonMessagePtr ptr = message_.split(5);
+    ASSERT_STREQ(static_cast<char*>(message_->getMessage()), "Hello World!");
+    Networking::AxonMessage::UniqueAxonMessagePtr ptr = message_->split(5);
 
     ASSERT_TRUE(ptr.get());
     ASSERT_EQ(ptr->getSize(), 8);
-    ASSERT_EQ(message_.getSize(), 5);
+    ASSERT_EQ(message_->getSize(), 5);
 
-    ASSERT_STREQ(static_cast<char*>(message_.getMessage()), "Hello World!");
+    ASSERT_STREQ(static_cast<char*>(message_->getMessage()), "Hello World!");
 
-    ASSERT_TRUE(message_.hasFlag(Networking::PARTIAL));
+    ASSERT_TRUE(message_->hasFlag(Networking::PARTIAL));
     ASSERT_FALSE(ptr->hasFlag(Networking::PARTIAL));
 
-    ASSERT_EQ(message_.ID(), ptr->ID());
-    ASSERT_EQ(message_.getPartID() + 1, ptr->getPartID());
+    ASSERT_EQ(message_->ID(), ptr->ID());
+    ASSERT_EQ(message_->getPartID() + 1, ptr->getPartID());
 
-    message_.~AxonMessage();
+    delete message_;
+
     ASSERT_STREQ(static_cast<char*>(ptr->getMessage()), " World!");
 }
