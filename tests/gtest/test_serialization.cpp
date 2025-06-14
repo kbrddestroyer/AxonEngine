@@ -119,7 +119,7 @@ TEST(TEST_SERIALIZATION, TEST_MESSAGE_SPLIT) {
     ASSERT_EQ(message_->ID(), ptr->ID());
     ASSERT_EQ(message_->getPartID() + 1, ptr->getPartID());
 
-    delete message;
+    delete message_;
 
     ASSERT_STREQ(static_cast<char*>(ptr->getMessage()), " World!");
 }
