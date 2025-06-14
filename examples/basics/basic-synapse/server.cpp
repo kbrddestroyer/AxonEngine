@@ -1,11 +1,11 @@
 /*
-* This example shows basic connection, using Axon internal tools
-* Synapse provides connection between two points
+* This example shows basic server, using Axon internal tools.
+* Synapse provides connection between two points, this one is created in server mode.
 * 
-* This file defines basic server logic, with message handling using Synapse event system
+* This file shows basic server logic and message handling using asynchronous Synapse with event system.
 */
 
-#include <networking/AxonNetwork.hpp>
+#include <networking/AxonLibrary.hpp>
 #include <iostream>
 #include <iomanip>
 
@@ -31,7 +31,9 @@ void onMessageReceived(const Networking::SynapseMessageReceivedEvent& event)
 
 int main()
 {
-	Networking::Synapse<Networking::ConnectionMode::UDP, Networking::SynapseMode::SERVER> serverConnection(10423);
+	Networking::Synapse<
+            Networking::BerkeleyAxonNetworkController<Networking::ConnectionMode::TCP, Networking::SynapseMode::SERVER>
+            > serverConnection(10423);
 	serverConnection.getEventManager().subscribe<Networking::SynapseMessageReceivedEvent>(onMessageReceived);
 
 	std::cout << "Starting Synapse connection" << std::endl;

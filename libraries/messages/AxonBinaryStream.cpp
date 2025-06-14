@@ -64,7 +64,7 @@ namespace Networking {
         return *this;
     }
 
-    void Networking::AxonBinaryStreamBase::append(const char* data, std::size_t dataSize)
+    void AxonBinaryStreamBase::append(const char* data, std::size_t dataSize)
     {
         char* containerBufferPointer = new char[containerSize + dataSize];
         memcpy(containerBufferPointer, containerPtr, containerSize);
@@ -74,7 +74,7 @@ namespace Networking {
         containerSize += dataSize;
     }
 
-    void Networking::AxonBinaryStreamBase::clear() {
+    void AxonBinaryStreamBase::clear() {
         delete[] containerPtr;
         containerSize = 0;
     }

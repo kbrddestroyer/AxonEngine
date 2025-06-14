@@ -3,7 +3,7 @@
 
 EventSystem::AxonEventManager::~AxonEventManager()
 {
-	for (std::pair<std::type_index, std::vector<std::function<void(AxonEvent*)>>> calls : subscribers)
+	for (auto & calls : subscribers)
 	{
 		calls.second.clear();
 	}
@@ -12,17 +12,17 @@ EventSystem::AxonEventManager::~AxonEventManager()
 
 void EventSystem::AxonEventManager::invoke(AxonEvent* event)
 {
-	std::type_index type = std::type_index(typeid(*event));
-	std::vector<std::function<void(AxonEvent*)>> calls = subscribers[type];
+	const auto type = std::type_index(typeid(*event));
+	calls_c calls = subscribers[type];
 
-	for (const std::function<void(AxonEvent*)>& callback : calls)
+	for (const auto & callback : calls)
 	{
-		callback(event);
+		callback.second(event);
 	}
 }
 
-EventSystem::GlobalEventManager& EventSystem::GlobalEventManager::Instance()
+EventSystem::GlobalEventManager& EventSystem::GlobalEventManager::Instance() noexcept
 {
-    static EventSystem::GlobalEventManager instance;
+    static GlobalEventManager instance;
 	return instance;
 }

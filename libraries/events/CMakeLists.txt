@@ -1,7 +1,7 @@
-project ("AxonEngine.libraries")
+project ("AxonEngine.libraries.events")
 
 file(GLOB_RECURSE SOURCES "*.c" "*.h" "*.cpp" "*.hpp" "*.ipp")
 add_library(events STATIC ${SOURCES})
 
-set (LIB_HOME ${CMAKE_HOME_DIRECTORY}/libraries)
-target_include_directories(events PUBLIC "${LIB_HOME}")
+target_include_directories(events PUBLIC "${LIBS_DIR}")
+target_compile_definitions(events PUBLIC AXON_LIB)

@@ -1,14 +1,25 @@
 #pragma once
 
-#include <networking/message/AxonBinaryStream.hpp>
-#include <networking/networking-core/SynapseEvents.hpp>
-#include <networking/networking-core/SynapseUtility.hpp>
-#include <networking/networking-core/Synapse.hpp>
-#include <events/AxonEvent.hpp>
-#include <networking/utility/MessagePool.hpp>
+#include <AxonUtility.h>
+#include <networking/synapse/BasicSynapse.hpp>
+
+#include <memory>
 
 namespace Networking
 {
+    class AXON_DECLSPEC AxonNetworkManager {
+    public:
+        AxonNetworkManager() = default;
+
+        template <class SynapseType>
+        void initialize();
+
+        virtual uint64_t getUniqueIDInNetwork() = 0;
+    private:
+        std::unique_ptr<SynapseInterface> synapse;
+    };
 }
+
+#include "AxonNetwork.ipp"
 
 /* AxonNetwork.hpp */

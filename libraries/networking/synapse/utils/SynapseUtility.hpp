@@ -1,8 +1,8 @@
 #pragma once
 
 #include <string>
-#include <backends/backend.hpp>
-#include <AxonUtility.h>
+#include "backends/backend.hpp"
+#include "AxonUtility.h"
 
 namespace Networking {
     /**
@@ -43,7 +43,7 @@ namespace Networking {
         const uint8_t err;
     public:
         explicit AxonNetworkingInternalError(const uint8_t err = 0) : err(err) {}
-        GETTER  constexpr uint8_t code() const { return err; }
+        GETTER constexpr uint8_t code() const { return err; }
         GETTER const char* what() const noexcept override;
     };
 }

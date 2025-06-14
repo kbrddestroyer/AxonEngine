@@ -145,6 +145,11 @@ Functions like `malloc`, `calloc`, and `free` are forbidden in C++ code.
 
 Speaking of class layout, [*the rule of zero*](https://en.cppreference.com/w/cpp/language/rule_of_three.html) is preferred 
 
+### Code documenting
+
+Comments in code are preferred, but not always necessary. There are some basic rules of proper code documentation, 
+which can be found [here](https://developer.lsst.io/cpp/api-docs.html).
+
 ---
 
 If you find code that doesn’t follow these guidelines, [open an issue](https://github.com/kbrddestroyer/AxonEngine/issues/new) with the `refactoring` label.

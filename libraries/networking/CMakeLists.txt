@@ -1,4 +1,5 @@
-project ("AxonEngine.libraries")
+project ("AxonEngine.libraries.networking" LANGUAGES C CXX)
+SET (CMAKE_CXX_STANDARD 17)
 
 file(GLOB_RECURSE SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
@@ -8,11 +9,15 @@ file(GLOB_RECURSE SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/*.ipp"
 )
 
-add_library(networking SHARED ${SOURCES})
-set (LIB_HOME ${CMAKE_HOME_DIRECTORY}/libraries)
+if (AXON_STATIC)
+    add_library(networking STATIC ${SOURCES})
+    add_compile_definitions(AXON_STATIC)
+else()
+    add_library(networking SHARED ${SOURCES})
+endif()
 
 target_compile_definitions(networking PUBLIC AXON_LIB)
-target_link_libraries(networking events serialization backends)
+target_link_libraries(networking events serialization backends messages)
 
-target_include_directories(networking PUBLIC "${LIB_HOME}")
-target_include_directories(networking PUBLIC "${LIB_HOME}/networking")
+target_include_directories(networking PUBLIC "${LIBS_DIR}")
+target_include_directories(networking PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
