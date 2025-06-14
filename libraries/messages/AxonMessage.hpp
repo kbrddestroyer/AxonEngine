@@ -64,7 +64,6 @@ namespace Networking
         void move(SerializedAxonMessage&) noexcept;
     private:
     	size64_t    size        = 0;
-    	bool        owning      = true;     // todo: `uint16_t _refcnt;` or shared_ptr around bytes array
     	const char* bytes       = nullptr;
 
         friend class AxonMessage;
@@ -103,15 +102,17 @@ namespace Networking
          */
         AxonMessage(const AxonMessage &message, uint8_t additionalFlags);
 
-        /**
-         * Copy constructor
-         */
         AxonMessage(const AxonMessage &);
-		AxonMessage(AxonMessage&, size64_t, uint8_t, uint8_t, uint64_t, size64_t);
+		AxonMessage(AxonMessage &&) noexcept;
+
+		AxonMessage(const AxonMessage&, size64_t, uint8_t, uint8_t, uint64_t, size64_t);
 		~AxonMessage();
 
+		AxonMessage & operator= (const AxonMessage &);
+		AxonMessage & operator= (AxonMessage &&) noexcept;
+
         WGETTER(SerializedAxonMessage getSerialized());
-        WGETTER(void* getMessage()) { return (message) ? message + offset : message; }
+        WGETTER(void* getMessage()) { return message; }
         WGETTER(size64_t getSize()) { return size; }
         WGETTER(uint16_t ID()) { return uniqueID; }
         WGETTER(uint8_t getFlags()) { return flags; }
@@ -139,10 +140,8 @@ namespace Networking
 	private:
 		size64_t	size = 0;
 		char *		message = nullptr;
-        bool        owning  = true;
         uint8_t     partID = 0;
         uint8_t     flags = UNDEFINED;
-        size64_t    offset = 0;
         uint16_t    uniqueID = generateUniqueID();
 	};
 }
