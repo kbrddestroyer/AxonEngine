@@ -143,6 +143,8 @@ namespace MyNamespace {
 As said above, avoid raw memory allocation in C++ code. Use smart pointers instead. 
 Functions like `malloc`, `calloc`, and `free` are forbidden in C++ code.
 
+Speaking of class layout, [*the rule of zero*](https://en.cppreference.com/w/cpp/language/rule_of_three.html) is preferred 
+
 ### Code documenting
 
 Comments in code are preferred, but not always necessary. There are some basic rules of proper code documentation, 
