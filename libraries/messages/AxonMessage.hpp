@@ -111,7 +111,7 @@ namespace Networking
          * Copy constructor
          */
         AxonMessage(const AxonMessage &);
-		AxonMessage(AxonMessage&, size64_t, uint8_t, uint8_t, uint64_t, size64_t);
+		AxonMessage(const AxonMessage&, size64_t, uint8_t, uint8_t, uint64_t, size64_t);
 		~AxonMessage();
 
         WGETTER(SerializedAxonMessage getSerialized());
@@ -122,11 +122,9 @@ namespace Networking
         WGETTER(uint8_t getFlags()) { return flags; }
         WGETTER(uint8_t getPartID()) { return partID; }
         WGETTER(bool hasFlag(const TAG_FLAGS flag)) { return flags & flag; }
-
         WGETTER(std::bitset<8> getFlagSet()) { return flags; }
 
         void setPartID(const uint8_t id) { this->partID = id; }
-
         void setFlags(const uint8_t flagSet) { this->flags = flagSet; }
         void addFlag(const TAG_FLAGS flag) { this->flags |= flag; }
         void removeFlag(const TAG_FLAGS flag) { this->flags ^= flag; }

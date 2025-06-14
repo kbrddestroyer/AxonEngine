@@ -26,12 +26,12 @@ namespace {
 }
 
 TEST(TEST_SYNAPSE, TEST_FAKE_NETWORK) {
-    Networking::Synapse<
-            TestUtils::FakeNetworkController
+    Networking::AsyncSynapse<
+        Networking::BerkeleyAxonNetworkController<Networking::UDP, Networking::SynapseMode::SERVER>
     > server(10435);
-    Networking::Synapse<
-            TestUtils::FakeNetworkController
-    > client("test-nodes-fake-host", 10435);
+    Networking::AsyncSynapse<
+        Networking::BerkeleyAxonNetworkController<Networking::UDP, Networking::SynapseMode::CLIENT>
+    > client("localhost", 10435);
 
     server.getEventManager().subscribe<Networking::SynapseMessageReceivedEvent>(onMessageReceived);
     server.start();
@@ -39,6 +39,9 @@ TEST(TEST_SYNAPSE, TEST_FAKE_NETWORK) {
 
     Networking::AxonMessage msg("Hello World!", strlen("Hello World!") + 1);
     client.send(msg);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
     ASSERT_TRUE(hasVisited);
     hasVisited = false;
 }
@@ -60,4 +63,3 @@ TEST(TEST_SYNAPSE, TEST_GET_SERVER_ID) {
 
     ASSERT_TRUE(hasVisited);
 }
-

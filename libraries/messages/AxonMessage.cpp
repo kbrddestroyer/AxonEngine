@@ -116,16 +116,14 @@ Networking::AxonMessage::AxonMessage(const AxonMessage& message) :
     size(message.size),
     partID(message.partID),
     flags(message.flags),
-    uniqueID(message.uniqueID)
+    uniqueID(message.uniqueID),
+    message(message.message)
 {
-    if (!message.getMessage() || message.size == 0)
-        return;
-
-    this->message = message.message;
-	this->message->references++;
+    if (this->message)
+        this->message->references++;
 }
 
-Networking::AxonMessage::AxonMessage(AxonMessage &message, size64_t size, uint8_t partID, uint8_t flags, uint64_t uniqueID, size64_t offset) :
+Networking::AxonMessage::AxonMessage(const AxonMessage &message, size64_t size, uint8_t partID, uint8_t flags, uint64_t uniqueID, size64_t offset) :
     size(size),
     message(message.message),
     partID(partID),
